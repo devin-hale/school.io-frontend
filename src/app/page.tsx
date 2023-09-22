@@ -86,7 +86,6 @@ export default function Login(): JSX.Element {
 							<Button
 								form='myForm'
 								variant='contained'
-								onClick={handleLogin}
 							>
 								Login
 							</Button>
