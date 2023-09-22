@@ -26,10 +26,9 @@ Tech used:
 
 ## Status
 
-### **UPDATE: 9-21-2023:**
+### **UPDATE: 9-22-2023:**
+- Decided on Material UI as UI framework.
 
-I've completed the final preliminary version of the backend over the past month.
-The current plan is to work my way throught the front end, and modify the backend as needed.
 
 ### **NEXT:**
 Decide on a ui framework, set up some tailwind themes, and deal with some initial visual stuff,
@@ -40,7 +39,7 @@ just so I'm not painting the plane, as I'm building it, as I'm flying it.
 ## Development Roadmap
 
 [] **Organizational Tasks**
-- [] Decide on UI Framework OR Create Custom UI utilities w/ Tailwind
+- [x] Decide on UI Framework
 - [] Choose color scheme.  Define light/dark modes.
 - [] Brainstorm some kind of logo?
 

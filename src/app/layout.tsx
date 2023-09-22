@@ -2,7 +2,6 @@ import './globals.css';
 import type { Metadata } from 'next';
 
 import UserProvider from '@/redux/userStore/userProvider';
-
 import { Inter } from 'next/font/google';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
