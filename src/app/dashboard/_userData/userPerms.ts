@@ -41,7 +41,7 @@ const tools: userFeature[] = [
 		userTypes: ['Admin', 'Staff'],
 		icon: 'CorporateFareRounded'
 	},
-	{ name: 'App Settings', userTypes: ['Basic', 'Admin', 'Staff'], icon: "SettingsRounded" },
+	{ name: 'Settings', userTypes: ['Basic', 'Admin', 'Staff'], icon: "SettingsRounded" },
 ];
 
 export { features, tools };

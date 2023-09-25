@@ -32,7 +32,8 @@ export default function Login(): JSX.Element {
 	const dispatch: Dispatch<any> = useAppDispatch();
 	const router: AppRouterInstance = useRouter();
 	const user: UserState = useSelector((state: RootState) => state.user);
-	const localToken: string | null = localStorage.getItem('userToken');
+	const localToken: string | null =
+		typeof window !== 'undefined' ? localStorage.getItem('userToken') : null;
 	const [register, setRegister] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [emailState, setEmail] = useState({

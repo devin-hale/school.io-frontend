@@ -26,7 +26,8 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<body className={`${roboto.className} ${coolvetica.variable}`}>
-				<UserProvider>{children}</UserProvider>
+				<UserProvider>
+				{children}</UserProvider>
 			</body>
 		</html>
 	);
