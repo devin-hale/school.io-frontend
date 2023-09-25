@@ -5,19 +5,21 @@ import { logOut } from '@/redux/userStore/userSlice';
 import { useAppDispatch } from '@/app/hooks';
 import { SetStateAction } from 'react';
 import { Dispatch } from 'react';
-import { DispatchProp } from 'react-redux';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
 
 interface LogOutInterface {
-	setLoading: Dispatch<SetStateAction<boolean>>
+	setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function LogOutButton(props: LogOutInterface): JSX.Element {
-	const dispatch = useAppDispatch();
+	const dispatch: Dispatch<any> = useAppDispatch();
+	const router: AppRouterInstance = useRouter();
 
 	const handleLogOut = (): void => {
 		props.setLoading(true);
 		localStorage.clear();
 		dispatch(logOut());
+		router.push('/')
 	};
 
 	return (

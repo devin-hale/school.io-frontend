@@ -3,7 +3,7 @@ import { RootState } from '@/redux/userStore/userStore';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../hooks';
 import { Dispatch } from '@reduxjs/toolkit';
-import { authenticateToken, logOut } from '@/redux/userStore/userSlice';
+import { authenticateToken, logOut, setToken } from '@/redux/userStore/userSlice';
 
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -30,10 +30,9 @@ import { CircularProgress } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-import NavBar from './components/navbar';
-
 import { schoolioTheme } from '@/materialUI/theme';
 import { ThemeProvider } from '@mui/material';
+import { tools, features, userFeature } from './userData/userPerms';
 
 import LogOutButton from '@/components/logOutButton';
 import { useRouter } from 'next/navigation';
@@ -118,6 +117,28 @@ export default function Home(): JSX.Element {
 	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
 
+	console.log(features);
+
+	useEffect(() => {
+		if (localToken) {
+			dispatch(authenticateToken(localToken))
+			dispatch(setToken(localToken))
+		} else {
+			dispatch(logOut())	
+			setLoading(true);
+			router.push('/')
+		}
+	}, []);
+
+	const userPerms: userFeature[] = features.filter((feature: userFeature) =>
+		feature.userTypes.some((type: string) => {
+			type == userInfo.userInfo.accType;
+		})
+	);
+
+	console.log(userInfo.userInfo);
+	console.log(userPerms);
+
 	const handleDrawerOpen = () => {
 		setOpen(true);
 	};
@@ -132,31 +153,20 @@ export default function Home(): JSX.Element {
 		const interval = setInterval(() => {
 			dispatch(authenticateToken(userInfo.token));
 		}, MINUTE_MS);
-
 		return () => clearInterval(interval);
-	}, [userInfo.token, dispatch]);
-
-	useEffect(() => {
-		if (!userInfo.loggedIn && !localToken) {
-			router.push('/');
-		}
-	}, [userInfo.loggedIn, localToken,  router]);
-
-	useEffect(() => {
-		if (userInfo.token) {
-			dispatch(authenticateToken(userInfo.token));
-		}
 	}, [userInfo.token, dispatch]);
 
 	return (
 		<>
 			{loading ? (
 				<ThemeProvider theme={schoolioTheme}>
-				<div className='h-[100vh] w-[100vw]'>
-				<CircularProgress sx={{margin: 'auto'}} color='secondary' />
-				</div>
+					<div className='h-[100vh] w-[100vw]'>
+						<CircularProgress
+							sx={{ margin: 'auto' }}
+							color='secondary'
+						/>
+					</div>
 				</ThemeProvider>
-
 			) : (
 				<ThemeProvider theme={schoolioTheme}>
 					<Box sx={{ display: 'flex' }}>
@@ -198,9 +208,9 @@ export default function Home(): JSX.Element {
 							</DrawerHeader>
 							<Divider />
 							<List>
-								{['Inbox', 'Drafts'].map((text, index) => (
+								{userPerms.map((perm, index) => (
 									<ListItem
-										key={text}
+										key={perm.name}
 										disablePadding
 										sx={{ display: 'block' }}
 									>
@@ -217,11 +227,9 @@ export default function Home(): JSX.Element {
 													mr: open ? 3 : 'auto',
 													justifyContent: 'center',
 												}}
-											>
-												<Description />
-											</ListItemIcon>
+											></ListItemIcon>
 											<ListItemText
-												primary={text}
+												primary={perm.name}
 												sx={{ opacity: open ? 1 : 0 }}
 											/>
 										</ListItemButton>

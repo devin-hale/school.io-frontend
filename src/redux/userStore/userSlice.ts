@@ -96,9 +96,6 @@ export const userSlice = createSlice({
 				accType: null,
 				verified: null,
 			};
-			console.log(state.loggedIn);
-			console.log(state.token);
-			console.log(localStorage.getItem('userToken'));
 		},
 		setToken: (state, action: PayloadAction<string>) => {
 			if (typeof action.payload === 'string') {
@@ -154,7 +151,6 @@ export const userSlice = createSlice({
 				};
 			})
 			.addCase(authenticateToken.pending, (state) => {
-				state.loggedIn = true;
 				state.loading = true;
 				state.error = null;
 				state.userInfo = {
@@ -168,7 +164,6 @@ export const userSlice = createSlice({
 				};
 			})
 			.addCase(authenticateToken.fulfilled, (state, action) => {
-				state.loggedIn = true;
 				state.loading = false;
 				state.error = null;
 				state.userInfo = action.payload;

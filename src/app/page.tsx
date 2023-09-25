@@ -32,6 +32,7 @@ export default function Login(): JSX.Element {
 	const dispatch: Dispatch<any> = useAppDispatch();
 	const router: AppRouterInstance = useRouter();
 	const user: UserState = useSelector((state: RootState) => state.user);
+	const localToken: string | null = localStorage.getItem('userToken');
 	const [register, setRegister] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [emailState, setEmail] = useState({
@@ -44,26 +45,25 @@ export default function Login(): JSX.Element {
 	});
 
 	useEffect(() => {
-		const userToken = JSON.parse(localStorage.getItem('userToken')!);
-
-		if (userToken) {
-			dispatch(setToken(userToken));
+		if (localToken) {
+			dispatch(authenticateToken(localToken));
+			dispatch(setToken(localToken));
 		}
-	}, [user.token, dispatch]);
+	}, []);
 
 	useEffect(() => {
-		if (user.loggedIn) {
+		if (user.loggedIn && user.error === 'Login Successful') {
+			localStorage.setItem('userToken', user.token!);
+			dispatch(authenticateToken(user.token));
+		}
+	});
+
+	useEffect(() => {
+		if (user.userInfo.verified) {
 			setLoading(true);
 			router.push('/dashboard');
 		}
-	}, [user.loggedIn, router]);
-
-	useEffect(() => {
-		if (user.token) {
-			localStorage.setItem('userToken', JSON.stringify(user.token));
-			dispatch(authenticateToken(user.token));
-		}
-	}, [user.token]);
+	}, [user.userInfo.verified, router]);
 
 	const handleEmailInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		const emailInput: string = e.target.value;
