@@ -172,6 +172,7 @@ export const userSlice = createSlice({
 				state.loggedIn = false;
 				state.loading = false;
 				state.error = 'User has been logged out.';
+				state.token = null;
 				state.userInfo = {
 					user: null,
 					userId: null,

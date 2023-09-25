@@ -3,7 +3,11 @@ import { RootState } from '@/redux/userStore/userStore';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../hooks';
 import { Dispatch } from '@reduxjs/toolkit';
-import { authenticateToken, logOut, setToken } from '@/redux/userStore/userSlice';
+import {
+	authenticateToken,
+	logOut,
+	setToken,
+} from '@/redux/userStore/userSlice';
 
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -121,23 +125,22 @@ export default function Home(): JSX.Element {
 
 	useEffect(() => {
 		if (localToken) {
-			dispatch(authenticateToken(localToken))
-			dispatch(setToken(localToken))
+			dispatch(authenticateToken(localToken));
+			dispatch(setToken(localToken));
 		} else {
-			dispatch(logOut())	
+			dispatch(logOut());
 			setLoading(true);
-			router.push('/')
+			router.push('/');
 		}
 	}, []);
 
 	const userPerms: userFeature[] = features.filter((feature: userFeature) =>
-		feature.userTypes.some((type: string) => {
-			type == userInfo.userInfo.accType;
-		})
+		feature.userTypes.some((type: string) => type == userInfo.userInfo.accType)
 	);
 
-	console.log(userInfo.userInfo);
-	console.log(userPerms);
+	const toolPerms: userFeature[] = tools.filter((feature: userFeature) =>
+		feature.userTypes.some((type: string) => type == userInfo.userInfo.accType)
+	);
 
 	const handleDrawerOpen = () => {
 		setOpen(true);
@@ -148,13 +151,21 @@ export default function Home(): JSX.Element {
 	};
 
 	const MINUTE_MS = 60000;
-
 	useEffect(() => {
 		const interval = setInterval(() => {
 			dispatch(authenticateToken(userInfo.token));
 		}, MINUTE_MS);
 		return () => clearInterval(interval);
 	}, [userInfo.token, dispatch]);
+
+	useEffect(() => {
+		if (userInfo.error === 'User has been logged out.') {
+			dispatch(logOut());
+			localStorage.clear();
+			setLoading(true);
+			router.push('/');
+		}
+	}, [userInfo.error, dispatch, router]);
 
 	return (
 		<>
