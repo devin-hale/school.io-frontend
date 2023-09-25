@@ -153,15 +153,6 @@ export const userSlice = createSlice({
 			.addCase(authenticateToken.pending, (state) => {
 				state.loading = true;
 				state.error = null;
-				state.userInfo = {
-					user: null,
-					userId: null,
-					firstName: null,
-					lastName: null,
-					org: null,
-					accType: null,
-					verified: null,
-				};
 			})
 			.addCase(authenticateToken.fulfilled, (state, action) => {
 				state.loading = false;

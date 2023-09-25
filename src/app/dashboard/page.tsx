@@ -19,7 +19,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import { Description, Groups } from '@mui/icons-material';
+
+import PermIcon from './components/permIcon';
+
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -29,7 +31,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, Icon } from '@mui/material';
 
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -117,11 +119,10 @@ export default function Home(): JSX.Element {
 	const theme = useTheme();
 	const dispatch = useAppDispatch();
 	const userInfo = useSelector((state: RootState) => state.user);
-	const localToken: string | null = localStorage.getItem('userToken');
+	const localToken: string | null =
+		typeof window !== 'undefined' ? localStorage.getItem('userToken') : null;
 	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
-
-	console.log(features);
 
 	useEffect(() => {
 		if (localToken) {
@@ -150,7 +151,7 @@ export default function Home(): JSX.Element {
 		setOpen(false);
 	};
 
-	const MINUTE_MS = 60000;
+	const MINUTE_MS = 6000;
 	useEffect(() => {
 		const interval = setInterval(() => {
 			dispatch(authenticateToken(userInfo.token));
@@ -167,11 +168,71 @@ export default function Home(): JSX.Element {
 		}
 	}, [userInfo.error, dispatch, router]);
 
+	const toolList = toolPerms.map((perm, index) => (
+		<ListItem
+			key={perm.name}
+			disablePadding
+			sx={{ display: 'block' }}
+		>
+			<ListItemButton
+				sx={{
+					minHeight: 48,
+					justifyContent: open ? 'initial' : 'center',
+					px: 2.5,
+				}}
+			>
+				<ListItemIcon
+					sx={{
+						minWidth: 0,
+						mr: open ? 3 : 'auto',
+						justifyContent: 'center',
+					}}
+				>
+					<PermIcon iconType={perm.icon} />
+				</ListItemIcon>
+				<ListItemText
+					primary={perm.name}
+					sx={{ opacity: open ? 1 : 0 }}
+				/>
+			</ListItemButton>
+		</ListItem>
+	));
+
+	const permList = userPerms.map((Perm, index) => (
+		<ListItem
+			key={Perm.name}
+			disablePadding
+			sx={{ display: 'block' }}
+		>
+			<ListItemButton
+				sx={{
+					minHeight: 48,
+					justifyContent: open ? 'initial' : 'center',
+					px: 2.5,
+				}}
+			>
+				<ListItemIcon
+					sx={{
+						minWidth: 0,
+						mr: open ? 3 : 'auto',
+						justifyContent: 'center',
+					}}
+				>
+					<PermIcon iconType={Perm.icon} />
+				</ListItemIcon>
+				<ListItemText
+					primary={Perm.name}
+					sx={{ opacity: open ? 1 : 0 }}
+				/>
+			</ListItemButton>
+		</ListItem>
+	));
+
 	return (
 		<>
 			{loading ? (
 				<ThemeProvider theme={schoolioTheme}>
-					<div className='h-[100vh] w-[100vw]'>
+					<div className='h-[100vh] w-[100vw] flex flex-row justify-center items-center'>
 						<CircularProgress
 							sx={{ margin: 'auto' }}
 							color='secondary'
@@ -209,6 +270,7 @@ export default function Home(): JSX.Element {
 							open={open}
 						>
 							<DrawerHeader>
+								<h1 className='m-auto font-bold text-2xl'>Menu</h1>
 								<IconButton onClick={handleDrawerClose}>
 									{theme.direction === 'rtl' ? (
 										<ChevronRightIcon />
@@ -219,65 +281,31 @@ export default function Home(): JSX.Element {
 							</DrawerHeader>
 							<Divider />
 							<List>
-								{userPerms.map((perm, index) => (
-									<ListItem
-										key={perm.name}
-										disablePadding
-										sx={{ display: 'block' }}
-									>
-										<ListItemButton
-											sx={{
-												minHeight: 48,
-												justifyContent: open ? 'initial' : 'center',
-												px: 2.5,
-											}}
-										>
-											<ListItemIcon
-												sx={{
-													minWidth: 0,
-													mr: open ? 3 : 'auto',
-													justifyContent: 'center',
-												}}
-											></ListItemIcon>
-											<ListItemText
-												primary={perm.name}
-												sx={{ opacity: open ? 1 : 0 }}
-											/>
-										</ListItemButton>
-									</ListItem>
-								))}
+								{userInfo.userInfo.accType ? (
+									permList
+								) : (
+									<div className='w-full, h-full flex justify-center'>
+										<CircularProgress
+											size={20}
+											sx={{ margin: 'auto' }}
+											color='primary'
+										/>
+									</div>
+								)}
 							</List>
 							<Divider />
 							<List>
-								{['All mail', 'Trash', 'Spam'].map((text, index) => (
-									<ListItem
-										key={text}
-										disablePadding
-										sx={{ display: 'block' }}
-									>
-										<ListItemButton
-											sx={{
-												minHeight: 48,
-												justifyContent: open ? 'initial' : 'center',
-												px: 2.5,
-											}}
-										>
-											<ListItemIcon
-												sx={{
-													minWidth: 0,
-													mr: open ? 3 : 'auto',
-													justifyContent: 'center',
-												}}
-											>
-												{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-											</ListItemIcon>
-											<ListItemText
-												primary={text}
-												sx={{ opacity: open ? 1 : 0 }}
-											/>
-										</ListItemButton>
-									</ListItem>
-								))}
+								{userInfo.userInfo.accType ? (
+									toolList
+								) : (
+									<div className='w-full, h-full flex justify-center'>
+										<CircularProgress
+											size={20}
+											sx={{ margin: 'auto' }}
+											color='primary'
+										/>
+									</div>
+								)}
 							</List>
 						</Drawer>
 						<Box
