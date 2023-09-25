@@ -22,16 +22,28 @@ type UserInfo = {
 
 export const authenticateToken = createAsyncThunk(
 	'userInfo/authenticateToken',
-	async (token: string) => {
-		const request = await fetch(`${APIDOMAIN}/authenticate`, {
-			method: 'post',
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-			mode: 'cors',
-		});
-		const userData = await request.json();
-		return userData;
+	async (token: string | null) => {
+		if (token) {
+			const request = await fetch(`${APIDOMAIN}/authenticate`, {
+				method: 'post',
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+				mode: 'cors',
+			});
+			const userData = await request.json();
+			return userData;
+		} else {
+			return {
+				user: null,
+				firstName: null,
+				lastName: null,
+				userId: null,
+				org: null,
+				accType: null,
+				verified: null,
+			};
+		}
 	}
 );
 
@@ -84,9 +96,12 @@ export const userSlice = createSlice({
 				accType: null,
 				verified: null,
 			};
+			console.log(state.loggedIn);
+			console.log(state.token);
+			console.log(localStorage.getItem('userToken'));
 		},
 		setToken: (state, action: PayloadAction<string>) => {
-			if (typeof action.payload === "string") {
+			if (typeof action.payload === 'string') {
 				state.token = action.payload;
 			}
 		},
@@ -109,7 +124,7 @@ export const userSlice = createSlice({
 				};
 			})
 			.addCase(loginUser.fulfilled, (state, action) => {
-				state.loggedIn = false;
+				state.loggedIn = true;
 				state.loading = false;
 				state.error = action.payload.message;
 				state.token = action.payload.token;
@@ -139,7 +154,7 @@ export const userSlice = createSlice({
 				};
 			})
 			.addCase(authenticateToken.pending, (state) => {
-				state.loggedIn = false;
+				state.loggedIn = true;
 				state.loading = true;
 				state.error = null;
 				state.userInfo = {

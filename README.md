@@ -38,25 +38,22 @@ just so I'm not painting the plane, as I'm building it, as I'm flying it.
 
 ## Development Roadmap
 
-[] **Organizational Tasks**
+**Organizational Tasks**
 - [x] Decide on UI Framework
-- [] Choose color scheme.  Define light/dark modes.
+- [x] Choose color scheme.  Define light/dark modes.
 - [] Brainstorm some kind of logo?
 
-[] **Login/User Authentication(REFACTOR)**
+**Login/User Authentication(REFACTOR)**
 - [x] Login Page
-- [] Account Creation Page
-    - [] Org verification before signup.
-- [] Account Email Verification
-- [] Basic Landing Page
+- [x] Basic Landing Page
 - [x] User/Session Authentication
 
-[] **Classroom/Student(REFACTOR)**
+**Classroom/Student(REFACTOR)**
 - [] Classes Page
 - [] Class Instance Page
 - [] Student Instance Page
 
-[] **Documentation(PARTIAL REFACTOR)**
+**Documentation(PARTIAL REFACTOR)**
 - [] Documentation creation page
     - [] Incident
     - [] Communication

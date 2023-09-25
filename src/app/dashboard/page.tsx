@@ -3,7 +3,7 @@ import { RootState } from '@/redux/userStore/userStore';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../hooks';
 import { Dispatch } from '@reduxjs/toolkit';
-import { authenticateToken } from '@/redux/userStore/userSlice';
+import { authenticateToken, logOut } from '@/redux/userStore/userSlice';
 
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -36,6 +36,7 @@ import { schoolioTheme } from '@/materialUI/theme';
 import { ThemeProvider } from '@mui/material';
 
 import LogOutButton from '@/components/logOutButton';
+import { useRouter } from 'next/navigation';
 
 const drawerWidth = 240;
 
@@ -109,9 +110,11 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Home(): JSX.Element {
+	const router = useRouter();
 	const theme = useTheme();
 	const dispatch = useAppDispatch();
 	const userInfo = useSelector((state: RootState) => state.user);
+	const localToken: string | null = localStorage.getItem('userToken');
 	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
 
@@ -123,17 +126,37 @@ export default function Home(): JSX.Element {
 		setOpen(false);
 	};
 
+	const MINUTE_MS = 60000;
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			dispatch(authenticateToken(userInfo.token));
+		}, MINUTE_MS);
+
+		return () => clearInterval(interval);
+	}, [userInfo.token, dispatch]);
+
+	useEffect(() => {
+		if (!userInfo.loggedIn && !localToken) {
+			router.push('/');
+		}
+	}, [userInfo.loggedIn, localToken,  router]);
+
 	useEffect(() => {
 		if (userInfo.token) {
-			localStorage.setItem('userToken', JSON.stringify(userInfo.token));
 			dispatch(authenticateToken(userInfo.token));
 		}
-	}, [userInfo.token]);
+	}, [userInfo.token, dispatch]);
 
 	return (
 		<>
 			{loading ? (
-				<CircularProgress color='secondary' />
+				<ThemeProvider theme={schoolioTheme}>
+				<div className='h-[100vh] w-[100vw]'>
+				<CircularProgress sx={{margin: 'auto'}} color='secondary' />
+				</div>
+				</ThemeProvider>
+
 			) : (
 				<ThemeProvider theme={schoolioTheme}>
 					<Box sx={{ display: 'flex' }}>
@@ -243,6 +266,7 @@ export default function Home(): JSX.Element {
 							sx={{ flexGrow: 1, p: 3 }}
 						>
 							<DrawerHeader />
+							<LogOutButton setLoading={setLoading} />
 						</Box>
 					</Box>
 				</ThemeProvider>
