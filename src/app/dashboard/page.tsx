@@ -42,6 +42,7 @@ import { tools, features, userFeature } from './userData/userPerms';
 
 import LogOutButton from '@/components/logOutButton';
 import { useRouter } from 'next/navigation';
+import { BorderColor } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -268,6 +269,7 @@ export default function Home(): JSX.Element {
 						<Drawer
 							variant='permanent'
 							open={open}
+							sx={{boxShadow: 3, height: '100lvh', borderRight: 0, border: 'none'}}
 						>
 							<DrawerHeader>
 								<h1 className='m-auto font-bold text-2xl'>Menu</h1>
@@ -279,8 +281,7 @@ export default function Home(): JSX.Element {
 									)}
 								</IconButton>
 							</DrawerHeader>
-							<Divider />
-							<List>
+							<List sx={{borderRight: 'none'}} >
 								{userInfo.userInfo.accType ? (
 									permList
 								) : (
@@ -293,7 +294,6 @@ export default function Home(): JSX.Element {
 									</div>
 								)}
 							</List>
-							<Divider />
 							<List>
 								{userInfo.userInfo.accType ? (
 									toolList
