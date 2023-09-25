@@ -5,6 +5,9 @@ const themeOptions: ThemeOptions = {
     mode: 'light',
     primary: {
       main: '#76B947',
+	  light: 'rgb(145, 199, 107)',
+	  dark: 'rgb(82, 129, 49)',
+	  contrastText: 'rgba(0, 0, 0, 0.87)'
     },
     secondary: {
       main: '#4776b9',

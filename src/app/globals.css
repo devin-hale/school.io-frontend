@@ -2,4 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+.bg-radialHome {
+	background: radial-gradient(circle, rgba(8,177,87,1) 0%, rgba(2,0,36,1) 100%);
+}
+
 

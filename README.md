@@ -26,7 +26,7 @@ Tech used:
 
 ## Status
 
-### **UPDATE: 9-22-2023:**
+### **UPDATE: 9-24-2023:**
 - Decided on Material UI as UI framework.
 
 
@@ -44,12 +44,12 @@ just so I'm not painting the plane, as I'm building it, as I'm flying it.
 - [] Brainstorm some kind of logo?
 
 [] **Login/User Authentication(REFACTOR)**
-- [] Login Page
+- [x] Login Page
 - [] Account Creation Page
     - [] Org verification before signup.
 - [] Account Email Verification
 - [] Basic Landing Page
-- [] User/Session Authentication
+- [x] User/Session Authentication
 
 [] **Classroom/Student(REFACTOR)**
 - [] Classes Page

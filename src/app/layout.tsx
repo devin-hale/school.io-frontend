@@ -2,13 +2,16 @@ import './globals.css';
 import type { Metadata } from 'next';
 
 import UserProvider from '@/redux/userStore/userProvider';
-import { Inter } from 'next/font/google';
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
+import { Roboto } from 'next/font/google';
+import localFont from 'next/font/local';
 
-const inter = Inter({ subsets: ['latin'] });
+const coolvetica = localFont({src: './../fonts/coolveticarg.otf', variable: '--font-coolvetica'})
+
+const roboto = Roboto({
+	weight: ['400', '500', '700'],
+	style: ['normal', 'italic'],
+	subsets: ['latin'],
+});
 
 export const metadata: Metadata = {
 	title: 'school.io',
@@ -22,7 +25,7 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang='en'>
-			<body className={inter.className}>
+			<body className={`${roboto.className} ${coolvetica.variable}`}>
 				<UserProvider>{children}</UserProvider>
 			</body>
 		</html>

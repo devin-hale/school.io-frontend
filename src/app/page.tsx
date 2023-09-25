@@ -1,15 +1,23 @@
 'use client';
 import { useRouter } from 'next/navigation';
 
-import { useEffect, useState } from 'react';
+import { Dispatch, useEffect, useState } from 'react';
 
 import { ThemeProvider } from '@mui/material/styles';
 import { schoolioTheme } from '@/materialUI/theme';
 
-import { Box, Button, CircularProgress, TextField } from '@mui/material';
-import { Card, CardContent } from '@mui/material';
+import {
+	Box,
+	Button,
+	CircularProgress,
+	TextField,
+	Alert,
+	Fade,
+} from '@mui/material';
+import { Card, CardContent, Typography } from '@mui/material';
 
 import {
+	UserState,
 	authenticateToken,
 	loginUser,
 	setToken,
@@ -17,11 +25,14 @@ import {
 import { useAppDispatch } from './hooks';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/userStore/userStore';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
+import Registration from './register/page';
 
 export default function Login(): JSX.Element {
-	const dispatch = useAppDispatch();
-	const router = useRouter();
-	const user = useSelector((state: RootState) => state.user);
+	const dispatch: Dispatch<any> = useAppDispatch();
+	const router: AppRouterInstance = useRouter();
+	const user: UserState = useSelector((state: RootState) => state.user);
+	const [register, setRegister] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [emailState, setEmail] = useState({
 		email: '',
@@ -33,14 +44,12 @@ export default function Login(): JSX.Element {
 	});
 
 	useEffect(() => {
-		const userToken: string | null = JSON.parse(
-			localStorage.getItem('userToken')!
-		);
+		const userToken = JSON.parse(localStorage.getItem('userToken')!);
 
 		if (userToken) {
 			dispatch(setToken(userToken));
 		}
-	}, []);
+	}, [user.token, dispatch]);
 
 	useEffect(() => {
 		if (user.loggedIn) {
@@ -54,7 +63,7 @@ export default function Login(): JSX.Element {
 			localStorage.setItem('userToken', JSON.stringify(user.token));
 			dispatch(authenticateToken(user.token));
 		}
-	}, [user.token, dispatch]);
+	}, [user.token]);
 
 	const handleEmailInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		const emailInput: string = e.target.value;
@@ -76,7 +85,7 @@ export default function Login(): JSX.Element {
 		}
 	};
 
-	const handleLogin = (e: React.MouseEvent) => {
+	const handleLogin = (e: React.FormEvent) => {
 		e.preventDefault();
 		let credentials: object = {
 			email: emailState.email,
@@ -87,60 +96,94 @@ export default function Login(): JSX.Element {
 	};
 
 	return (
-		<div className=''>
+		<div className='bg-radialHome flex flex-col justify-center items-center h-[100lvh]'>
 			<ThemeProvider theme={schoolioTheme}>
-				<Card sx={{ maxWidth: 300 }}>
-					<CardContent>
+				<h1 className='font-coolvetica text-[75px] text-white drop-shadow-md'>
+					school.io
+				</h1>
+				{user.error && (
+					<Alert
+						severity='error'
+						sx={{ margin: 2 }}
+						variant='filled'
+					>
+						{user.error}
+					</Alert>
+				)}
+				<Card
+					sx={{
+						maxWidth: 300,
+						minWidth: 'fit-content',
+						minHeight: 250,
+						maxHeight: 'fit-content',
+					}}
+				>
+					<CardContent className='h-full'>
 						{loading || user.loading ? (
 							<CircularProgress color='primary' />
 						) : (
-							<Box
-								id='myForm'
-								component='form'
-							>
-								<TextField
-									value={emailState.email}
-									onChange={handleEmailInput}
-									id='email'
-									type='text'
-									label='Email'
-									variant='filled'
-									error={emailState.error}
-									required
-								></TextField>
-								<TextField
-									value={passState.pass}
-									onChange={handlePassInput}
-									id='password'
-									type='password'
-									label='Password'
-									variant='filled'
-									error={passState.error}
-									required
-								></TextField>
-								{user.loading ? (
-									<Button
-										form='myForm'
-										variant='contained'
-									>
-										Login
-									</Button>
+							<>
+								{register ? (
+									<Registration
+										registerStatus={register}
+										setRegisterStatus={setRegister}
+									/>
 								) : (
-									<Button
-										form='myForm'
-										variant='outlined'
-										onClick={handleLogin}
-										disabled={
-											emailState.error ||
-											passState.error ||
-											emailState.email.length === 0 ||
-											passState.pass.length === 0
-										}
+									<Box
+										id='myForm'
+										component='form'
+										className='h-full flex flex-col justify-evenly'
+										onSubmit={handleLogin}
 									>
-										Login
-									</Button>
+										<TextField
+											value={emailState.email}
+											onChange={handleEmailInput}
+											id='email'
+											type='text'
+											label='Email'
+											variant='filled'
+											error={emailState.error}
+											required
+										></TextField>
+										<TextField
+											value={passState.pass}
+											onChange={handlePassInput}
+											id='password'
+											type='password'
+											label='Password'
+											variant='filled'
+											error={passState.error}
+											required
+										></TextField>
+
+										<Button
+											form='myForm'
+											variant='contained'
+											color='primary'
+											type='submit'
+											disabled={
+												emailState.error ||
+												passState.error ||
+												emailState.email.length === 0 ||
+												passState.pass.length === 0
+											}
+										>
+											Login
+										</Button>
+										<Button
+											type='button'
+											color='info'
+											variant='contained'
+											onClick={() => {
+												setRegister(true);
+											}}
+											disabled={true}
+										>
+											Register
+										</Button>
+									</Box>
 								)}
-							</Box>
+							</>
 						)}
 					</CardContent>
 				</Card>

@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
+const APIDOMAIN: string = process.env.NEXT_PUBLIC_APIDOMAIN!;
+
 export type UserState = {
 	loggedIn: boolean;
 	loading: boolean;
@@ -21,7 +23,7 @@ type UserInfo = {
 export const authenticateToken = createAsyncThunk(
 	'userInfo/authenticateToken',
 	async (token: string) => {
-		const request = await fetch('http://localhost:3008/authenticate', {
+		const request = await fetch(`${APIDOMAIN}/authenticate`, {
 			method: 'post',
 			headers: {
 				Authorization: `Bearer ${token}`,
@@ -37,7 +39,7 @@ export const loginUser = createAsyncThunk(
 	'userInfo/loginUser',
 	async (credentials: object) => {
 		const body: BodyInit = JSON.stringify(credentials);
-		const request = await fetch('http://localhost:3008/login', {
+		const request = await fetch(`${APIDOMAIN}/login`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			mode: 'cors',
@@ -84,7 +86,9 @@ export const userSlice = createSlice({
 			};
 		},
 		setToken: (state, action: PayloadAction<string>) => {
-			state.token = action.payload;
+			if (typeof action.payload === "string") {
+				state.token = action.payload;
+			}
 		},
 	},
 	extraReducers: (builder) => {
@@ -107,8 +111,8 @@ export const userSlice = createSlice({
 			.addCase(loginUser.fulfilled, (state, action) => {
 				state.loggedIn = false;
 				state.loading = false;
-				state.error = null;
-				state.token = action.payload;
+				state.error = action.payload.message;
+				state.token = action.payload.token;
 				state.userInfo = {
 					user: null,
 					userId: null,
