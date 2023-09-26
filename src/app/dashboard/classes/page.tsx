@@ -1,17 +1,19 @@
 'use client';
 import { ClassState, IClass, getClasses } from '@/redux/slices/classSlice';
+import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { UserState } from '@/redux/slices/userSlice';
 import { RootState } from '@/redux/store/store';
 import { useEffect } from 'react';
 import { useAppDispatch } from '@/app/hooks';
+import { List, ListItem, ListItemText, ListItemButton } from '@mui/material';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
 
 export default function ClassPage(): JSX.Element {
-	const localToken: string | null =
-		typeof window !== 'undefined' ? localStorage.getItem('userToken') : null;
 	const classState: ClassState = useSelector((state: RootState) => state.class);
 	const user: UserState = useSelector((state: RootState) => state.user);
 	const dispatch = useAppDispatch();
+	const navRouter : AppRouterInstance = useRouter();
 
 	useEffect(() => {
 		if (user.userInfo.userId && user.token) {
@@ -19,12 +21,16 @@ export default function ClassPage(): JSX.Element {
 		}
 	}, [user.token, user.userInfo.userId, dispatch]);
 
-	// @ts-ignore
-	const classList = classState.classes.map((classObj:IClass) => 
-		<div key={classObj.name}>{classObj.name}</div>
-	)
+	const classList = classState.classes.map((classObj: IClass) => (
+		<ListItem key={classObj._id}>
+			<ListItemButton className='bg-slate-200 rounded' onClick={()=> navRouter.push(`/dashboard/classes/${classObj._id}`)}>
+				<ListItemText
+					primary={classObj.name}
+					secondary={`Grade Level: ${classObj.grade_level}`}
+				/>
+			</ListItemButton>
+		</ListItem>
+	));
 
-	return (
-			<div>{classList}</div>
-	);
+	return <List>{classList}</List>;
 }
