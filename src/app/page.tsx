@@ -21,10 +21,10 @@ import {
 	authenticateToken,
 	loginUser,
 	setToken,
-} from '@/redux/userStore/userSlice';
+} from '@/redux/slices/userSlice';
 import { useAppDispatch } from './hooks';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/userStore/userStore';
+import { RootState } from '@/redux/store/store';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
 import Registration from './register/page';
 

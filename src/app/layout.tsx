@@ -1,7 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 
-import UserProvider from '@/redux/userStore/userProvider';
+import ReduxProvider from '@/redux/store/ReduxProvider';
 import { Roboto } from 'next/font/google';
 import localFont from 'next/font/local';
 
@@ -26,8 +26,8 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<body className={`${roboto.className} ${coolvetica.variable}`}>
-				<UserProvider>
-				{children}</UserProvider>
+				<ReduxProvider>
+				{children}</ReduxProvider>
 			</body>
 		</html>
 	);

@@ -7,7 +7,7 @@ export type ClassState = {
 	message: string | null;
 	classes: IClass[];
 };
-type IClass = {
+export type IClass = {
 	_id: string;
 	name: string;
 	grade_level: string;

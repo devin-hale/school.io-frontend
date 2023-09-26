@@ -1,5 +1,5 @@
 'use client';
-import { RootState } from '@/redux/userStore/userStore';
+import { RootState } from '@/redux/store/store';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../hooks';
 import { Dispatch } from '@reduxjs/toolkit';
@@ -7,7 +7,7 @@ import {
 	authenticateToken,
 	logOut,
 	setToken,
-} from '@/redux/userStore/userSlice';
+} from '@/redux/slices/userSlice';
 
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -158,7 +158,7 @@ export default function DashBoardLayout({
 
 	};
 
-	const MINUTE_MS = 6000;
+	const MINUTE_MS = 60000;
 	useEffect(() => {
 		const interval = setInterval(() => {
 			dispatch(authenticateToken(userInfo.token));
@@ -175,7 +175,7 @@ export default function DashBoardLayout({
 		}
 	}, [userInfo.error, dispatch, router]);
 
-	const toolList = toolPerms.map((perm, index) => (
+	const toolList : React.ReactNode = toolPerms.map((perm, index) => (
 		<ListItem
 			key={perm.name}
 			disablePadding
@@ -207,7 +207,7 @@ export default function DashBoardLayout({
 		</ListItem>
 	));
 
-	const permList = userPerms.map((Perm, index) => (
+	const permList: React.ReactNode = userPerms.map((Perm, index) => (
 		<ListItem
 			key={Perm.name}
 			disablePadding

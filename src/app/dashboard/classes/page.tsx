@@ -1,17 +1,16 @@
 'use client';
-import { ClassState, getClasses } from '@/redux/classStore/classSlice';
+import { ClassState, IClass, getClasses } from '@/redux/slices/classSlice';
 import { useSelector } from 'react-redux';
-import { UserState } from '@/redux/userStore/userSlice';
-import { RootState as ClassRootState } from '@/redux/classStore/classStore';
-import { RootState as UserRootState } from '@/redux/userStore/userStore';
+import { UserState } from '@/redux/slices/userSlice';
+import { RootState } from '@/redux/store/store';
 import { useEffect } from 'react';
 import { useAppDispatch } from '@/app/hooks';
 
 export default function ClassPage(): JSX.Element {
 	const localToken: string | null =
 		typeof window !== 'undefined' ? localStorage.getItem('userToken') : null;
-	const classState: ClassState = useSelector((state: UserRootState) => state.class);
-	const user: UserState = useSelector((state: UserRootState) => state.user);
+	const classState: ClassState = useSelector((state: RootState) => state.class);
+	const user: UserState = useSelector((state: RootState) => state.user);
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
@@ -20,7 +19,12 @@ export default function ClassPage(): JSX.Element {
 		}
 	}, [user.token, user.userInfo.userId, dispatch]);
 
+	// @ts-ignore
+	const classList = classState.classes.map((classObj:IClass) => 
+		<div key={classObj.name}>{classObj.name}</div>
+	)
+
 	return (
-			<div></div>
+			<div>{classList}</div>
 	);
 }
