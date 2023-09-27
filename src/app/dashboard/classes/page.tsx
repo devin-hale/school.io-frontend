@@ -32,5 +32,8 @@ export default function ClassPage(): JSX.Element {
 		</ListItem>
 	));
 
+
+
+
 	return <List>{classList}</List>;
 }

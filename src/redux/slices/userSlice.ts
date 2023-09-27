@@ -157,7 +157,7 @@ export const userSlice = createSlice({
 			.addCase(authenticateToken.fulfilled, (state, action) => {
 				state.loading = false;
 				state.error = null;
-				state.userInfo = action.payload;
+				state.userInfo = action.payload.content;
 			})
 			.addCase(authenticateToken.rejected, (state) => {
 				state.loggedIn = false;
