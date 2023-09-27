@@ -66,7 +66,7 @@ const initialState: ClassInstanceState = {
 	students: [],
 };
 
-export const classSlice = createSlice({
+export const classInstanceSlice = createSlice({
 	name: 'userClasses',
 	initialState,
 	reducers: {},
@@ -90,12 +90,22 @@ export const classSlice = createSlice({
 			.addCase(getClassStudents.pending, (state) => {
 				state.loading = true;
 			})
-			.addCase(getClassStudents.fulfilled, (state) => {
+			.addCase(getClassStudents.fulfilled, (state, action) => {
 				state.loading = false;
+				state.error = false;
+				state.message = action.payload.message
+				state.students = action.payload.students
+			})
+			.addCase(getClassStudents.rejected, (state) => {
+				state.loading = false;
+				state.message = 'Failed to retrieve student data.'
+				state.error = true;
+				state.students = [];
+
 			})
 	},
 });
 
-export const {} = classSlice.actions;
+export const {} = classInstanceSlice.actions;
 
-export default classSlice.reducer;
+export default classInstanceSlice.reducer;

@@ -3,11 +3,7 @@ import { RootState } from '@/redux/store/store';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../hooks';
 import { Dispatch } from '@reduxjs/toolkit';
-import {
-	authenticateToken,
-	logOut,
-	setToken,
-} from '@/redux/slices/userSlice';
+import { authenticateToken, logOut, setToken } from '@/redux/slices/userSlice';
 
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -155,7 +151,6 @@ export default function DashBoardLayout({
 	const handleRoute = (pageName: string): void => {
 		setCurrentPage(pageName);
 		router.push(`/dashboard/${pageName.toLowerCase()}`);
-
 	};
 
 	const MINUTE_MS = 60000;
@@ -175,7 +170,7 @@ export default function DashBoardLayout({
 		}
 	}, [userInfo.error, dispatch, router]);
 
-	const toolList : React.ReactNode = toolPerms.map((perm, index) => (
+	const toolList: React.ReactNode = toolPerms.map((perm, index) => (
 		<ListItem
 			key={perm.name}
 			disablePadding
@@ -188,7 +183,7 @@ export default function DashBoardLayout({
 					px: 2.5,
 				}}
 				selected={currentPage === perm.name}
-				onClick={()=>handleRoute(perm.name)}
+				onClick={() => handleRoute(perm.name)}
 			>
 				<ListItemIcon
 					sx={{
@@ -220,7 +215,7 @@ export default function DashBoardLayout({
 					px: 2.5,
 				}}
 				selected={currentPage === Perm.name}
-				onClick={()=>handleRoute(Perm.name)}
+				onClick={() => handleRoute(Perm.name)}
 			>
 				<ListItemIcon
 					sx={{
@@ -326,6 +321,7 @@ export default function DashBoardLayout({
 							sx={{ flexGrow: 1, p: 3 }}
 						>
 							<div className='h-[40px] mb-[10px]'></div>
+							<LogOutButton setLoading={setLoading} />
 							{children}
 						</Box>
 					</Box>

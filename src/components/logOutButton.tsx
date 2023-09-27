@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { logOut } from '@/redux/userStore/userSlice';
+import { logOut } from '@/redux/slices/userSlice';
 import { useAppDispatch } from '@/app/hooks';
 import { SetStateAction } from 'react';
 import { Dispatch } from 'react';

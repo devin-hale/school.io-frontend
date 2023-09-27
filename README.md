@@ -1,7 +1,7 @@
 # school.io (NEXTJS FRONT END REFACTOR)
 
 ## Description
-### Version 0.4.2
+### Version 0.4.3
 This is the beginning stages of a project intended to act as a simple website for teachers to create, update, and store important documentation.
 The idea came from listening to my wife, who is a 3rd grade teacher.  According to her, the biggest annoyance is a teacher is keeping track of
 documentation.  This can be as simple as writing down "I spoke with little Billy's parents at X time on Y date.  We spoke about this...".  This
@@ -26,13 +26,16 @@ Tech used:
 
 ## Status
 
-### **UPDATE: 9-24-2023:**
+### **UPDATE: 9-26-2023:**
 - Decided on Material UI as UI framework.
+- Created basic dashboard/UI layout.
+- Blue/Green color scheme.
+- Class Page pulling data.  Needs to be fleshed out.
 
 
 ### **NEXT:**
-Decide on a ui framework, set up some tailwind themes, and deal with some initial visual stuff,
-just so I'm not painting the plane, as I'm building it, as I'm flying it.
+Add utility pages for adding users/students/classes as an admin
+^^ So I can make data to populate the other pages without manually entering into DB.
 
 
 
@@ -48,7 +51,7 @@ just so I'm not painting the plane, as I'm building it, as I'm flying it.
 - [x] Basic Landing Page
 - [x] User/Session Authentication
 
-**Classroom/Student(REFACTOR)**
+**Classroom/Student(REFACTOR)
 - [] Classes Page
 - [] Class Instance Page
 - [] Student Instance Page

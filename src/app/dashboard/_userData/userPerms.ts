@@ -20,17 +20,21 @@ const features: userFeature[] = [
 	{
 		name: 'Incidents',
 		userTypes: ['Basic', 'Admin', 'Staff'],
-		icon: 'DirectionsRunRounded'
+		icon: 'DirectionsRunRounded',
 	},
 	{
 		name: 'PST',
 		userTypes: ['Basic', 'Admin', 'Staff'],
-		icon: 'ArticleRounded'
+		icon: 'ArticleRounded',
 	},
 ];
 
 const tools: userFeature[] = [
-	{ name: 'Users', userTypes: ['Admin', 'Staff'], icon: 'ManageAccountsRounded' },
+	{
+		name: 'Users',
+		userTypes: ['Admin', 'Staff'],
+		icon: 'ManageAccountsRounded',
+	},
 	{
 		name: 'Students',
 		userTypes: ['Admin', 'Staff'],
@@ -39,9 +43,13 @@ const tools: userFeature[] = [
 	{
 		name: 'Organization',
 		userTypes: ['Admin', 'Staff'],
-		icon: 'CorporateFareRounded'
+		icon: 'CorporateFareRounded',
 	},
-	{ name: 'Settings', userTypes: ['Basic', 'Admin', 'Staff'], icon: "SettingsRounded" },
+	{
+		name: 'Settings',
+		userTypes: ['Basic', 'Admin', 'Staff'],
+		icon: 'SettingsRounded',
+	},
 ];
 
 export { features, tools };
