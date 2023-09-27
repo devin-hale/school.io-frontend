@@ -41,7 +41,6 @@ export default function ClassInstancePage({
 		}
 	}, [classInstance.classInfo, userState.token, dispatch, params.classId]);
 
-	console.log(classInstance)	
 
 	return <div></div>;
 }

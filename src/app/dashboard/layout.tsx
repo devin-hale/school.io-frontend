@@ -34,6 +34,8 @@ import { tools, features, userFeature } from './_userData/userPerms';
 import LogOutButton from '@/components/logOutButton';
 import { useRouter } from 'next/navigation';
 
+const AppVersion : string = process.env.NEXT_PUBLIC_APPVERSION!;
+
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -252,7 +254,7 @@ export default function DashBoardLayout({
 							position='fixed'
 							open={open}
 						>
-							<Toolbar>
+							<Toolbar sx={{display: 'flex', alignItems: 'center'}}>
 								<IconButton
 									color='inherit'
 									aria-label='open drawer'
