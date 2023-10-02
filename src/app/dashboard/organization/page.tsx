@@ -9,12 +9,14 @@ import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { UserState } from '@/redux/slices/userSlice';
 import { RootState } from '@/redux/store/store';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch } from '@/app/hooks';
 import { List, ListItem, ListItemText, ListItemButton, Modal } from '@mui/material';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
+import CreateClassModal from './_components/createClassModal';
 
 export default function ClassPage(): JSX.Element {
+	const [createClassModal, setCreateClassModal] = useState(true);
 	const classState: ClassState = useSelector((state: RootState) => state.class);
 	const user: UserState = useSelector((state: RootState) => state.user);
 	const dispatch = useAppDispatch();
@@ -43,6 +45,7 @@ export default function ClassPage(): JSX.Element {
 
 	return (
 		<>
+			<CreateClassModal createClassModalOpen={createClassModal} setCreateClassModalOpen={setCreateClassModal} />
 			<List>{classList}</List>
 		</>
 	);
