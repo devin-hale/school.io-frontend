@@ -60,11 +60,11 @@ export default function Login(): JSX.Element {
 	});
 
 	useEffect(() => {
-		if (user.userInfo.verified) {
+		if (user.authenticated) {
 			setLoading(true);
 			router.push('/dashboard');
 		}
-	}, [user.userInfo.verified, router]);
+	},);
 
 	const handleEmailInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		const emailInput: string = e.target.value;

@@ -1,13 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './../slices/userSlice';
 import classReducer from './../slices/classSlice';
-import classInstanceSlice from '../slices/classInstanceSlice';
+import classInstanceReducer from '../slices/classInstanceSlice';
+import classModifyReducer from '../slices/modifyClass';
+import userDataReducer from '../slices/userDataSlice';
 
 export const store = configureStore({
 	reducer: {
 		user: userReducer,
+		userData: userDataReducer,
 		class: classReducer,
-		classInstance: classInstanceSlice
+		classInstance: classInstanceReducer,
+		classModify: classModifyReducer,
 	},
 });
 

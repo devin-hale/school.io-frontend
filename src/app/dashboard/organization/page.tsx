@@ -11,7 +11,7 @@ import { UserState } from '@/redux/slices/userSlice';
 import { RootState } from '@/redux/store/store';
 import { useEffect } from 'react';
 import { useAppDispatch } from '@/app/hooks';
-import { List, ListItem, ListItemText, ListItemButton } from '@mui/material';
+import { List, ListItem, ListItemText, ListItemButton, Modal } from '@mui/material';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
 
 export default function ClassPage(): JSX.Element {
@@ -43,7 +43,6 @@ export default function ClassPage(): JSX.Element {
 
 	return (
 		<>
-				
 			<List>{classList}</List>
 		</>
 	);

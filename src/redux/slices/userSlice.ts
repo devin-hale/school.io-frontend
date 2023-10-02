@@ -4,6 +4,7 @@ const APIDOMAIN: string = process.env.NEXT_PUBLIC_APIDOMAIN!;
 
 export type UserState = {
 	loggedIn: boolean;
+	authenticated: boolean;
 	loading: boolean;
 	error: string | null;
 	token: string | null;
@@ -28,10 +29,12 @@ export const authenticateToken = createAsyncThunk(
 				method: 'post',
 				headers: {
 					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json;charset=utf-8',
 				},
 				mode: 'cors',
 			});
 			const userData = await request.json();
+			console.log(userData);
 			return userData;
 		} else {
 			return {
@@ -64,6 +67,7 @@ export const loginUser = createAsyncThunk(
 
 const initialState: UserState = {
 	loggedIn: false,
+	authenticated: false,
 	loading: false,
 	error: null,
 	token: null,
@@ -84,6 +88,7 @@ export const userSlice = createSlice({
 	reducers: {
 		logOut: (state) => {
 			state.loggedIn = false;
+			state.authenticated = false;
 			state.loading = false;
 			state.error = null;
 			state.token = null;
@@ -152,15 +157,20 @@ export const userSlice = createSlice({
 			})
 			.addCase(authenticateToken.pending, (state) => {
 				state.loading = true;
+				state.authenticated = false;
 				state.error = null;
 			})
 			.addCase(authenticateToken.fulfilled, (state, action) => {
-				state.loading = false;
-				state.error = null;
-				state.userInfo = action.payload.content;
+				if (action.payload.statusCode !== 403) {
+					state.loading = false;
+					state.authenticated = true;
+					state.error = null;
+					state.userInfo = action.payload.content;
+				}
 			})
 			.addCase(authenticateToken.rejected, (state) => {
 				state.loggedIn = false;
+				state.authenticated = true;
 				state.loading = false;
 				state.error = 'User has been logged out.';
 				state.token = null;
