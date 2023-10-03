@@ -8,10 +8,14 @@ export interface IModifyClassState {
 
 interface ICreateClassState {
 	loading: boolean;
+	complete: boolean;
+	message: string;
 	success: boolean | null;
 }
 const initialCreateClassState: ICreateClassState = {
 	loading: false,
+	complete: false,
+	message: '',
 	success: null,
 };
 
@@ -35,15 +39,15 @@ export const createClass = createAsyncThunk(
 	'classModify/createClass',
 	async (reqContent: ICreateClass) => {
 		const response = await fetch(`${APIDOMAIN}/classes/create`, {
-			mode: 'cors',
 			method: 'post',
 			headers: {
 				Authorization: `Bearer ${reqContent.token}`,
+				'Content-Type': 'application/json;charset=utf-8'
 			},
+			mode: 'cors',
 			body: JSON.stringify(reqContent.body),
 		});
-
-		const data = response.json();
+		const data = await response.json();
 		return data;
 	}
 );
@@ -63,11 +67,14 @@ export const classModifySlice = createSlice({
 			})
 			.addCase(createClass.rejected, (state) => {
 				state.create.loading = false;
+				state.create.complete = true;
 				state.create.success = false;
 			})
-			.addCase(createClass.fulfilled, (state) => {
+			.addCase(createClass.fulfilled, (state, action) => {
 				state.create.loading = false;
-				state.create.success = true;
+				state.create.complete = true;
+				state.create.message = action.payload.message;
+				state.create.success = action.payload.statusCode == 201 ? true : false;
 			})
 	}
 })

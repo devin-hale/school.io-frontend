@@ -152,6 +152,7 @@ export default function DashBoardLayout({
 
 	const handleRoute = (pageName: string): void => {
 		setCurrentPage(pageName);
+		setOpen(false);
 		router.push(`/dashboard/${pageName.toLowerCase()}`);
 	};
 

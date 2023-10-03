@@ -34,7 +34,6 @@ export const authenticateToken = createAsyncThunk(
 				mode: 'cors',
 			});
 			const userData = await request.json();
-			console.log(userData);
 			return userData;
 		} else {
 			return {

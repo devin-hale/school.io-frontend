@@ -34,7 +34,6 @@ export default function ClassInstancePage({
 
 	useEffect(() => {
 		if (classInstance.classInfo && userState.token) {
-			console.log('yo')
 			dispatch(
 				getClassStudents({ classId: params.classId, token: userState.token! })
 			);
