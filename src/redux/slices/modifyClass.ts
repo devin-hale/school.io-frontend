@@ -56,8 +56,8 @@ export const classModifySlice = createSlice({
 	name: 'modifyClass',
 	initialState,
 	reducers: {
-		resetCreate: (state) => {
-			state.create.success = null;
+		resetCreateClass: (state) => {
+			state.create = initialCreateClassState;
 		}
 	},
 	extraReducers: (builder) => {
@@ -79,6 +79,6 @@ export const classModifySlice = createSlice({
 	}
 })
 
-export const {resetCreate} = classModifySlice.actions;
+export const {resetCreateClass} = classModifySlice.actions;
 
 export default classModifySlice.reducer;

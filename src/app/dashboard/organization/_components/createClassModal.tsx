@@ -3,7 +3,6 @@ import {
 	Dialog,
 	DialogContent,
 	DialogTitle,
-	Autocomplete,
 	TextField,
 	Box,
 	Select,
@@ -13,15 +12,13 @@ import {
 	InputLabel,
 	Button,
 	CircularProgress,
-	CloseReason,
 } from '@mui/material';
-import { EventHandler, PointerEvent, SetStateAction, useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
-import { IUserDataState } from '@/redux/slices/userDataSlice';
 import { Dispatch } from 'react';
 import { useAppDispatch } from '@/app/hooks';
-import { ICreateClass, createClass } from '@/redux/slices/modifyClass';
+import { ICreateClass, createClass, resetCreateClass } from '@/redux/slices/modifyClass';
 import { getOrgClasses } from '@/redux/slices/classSlice';
 
 export interface ICreateClassModalProps {
@@ -58,6 +55,7 @@ export default function CreateClassModal(
 			dispatch(
 				getOrgClasses({ orgId: user.userInfo.org!, token: user.token! })
 			);
+			dispatch(resetCreateClass());
 			props.setCreateClassModalOpen(false);
 	}
 

@@ -39,6 +39,7 @@ export const getClassInfo = createAsyncThunk(
 			mode: 'cors',
 		});
 		const data = await request.json();
+		console.log(data)
 		return data;
 	}
 );
@@ -81,7 +82,7 @@ export const classInstanceSlice = createSlice({
 				state.loading = false;
 				state.message = action.payload.message;
 				state.error = false;
-				state.classInfo = action.payload.classInstance;
+				state.classInfo = action.payload.content;
 			})
 			.addCase(getClassInfo.rejected, (state, action) => {
 				state.loading = false;
@@ -96,7 +97,7 @@ export const classInstanceSlice = createSlice({
 				state.loading = false;
 				state.error = false;
 				state.message = action.payload.message
-				state.students = action.payload.students
+				state.students = action.payload.content
 			})
 			.addCase(getClassStudents.rejected, (state) => {
 				state.loading = false;
