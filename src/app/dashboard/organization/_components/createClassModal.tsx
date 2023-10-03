@@ -13,6 +13,7 @@ import {
 	InputLabel,
 	Button,
 	CircularProgress,
+	CloseReason,
 } from '@mui/material';
 import { EventHandler, PointerEvent, SetStateAction, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -54,7 +55,9 @@ export default function CreateClassModal(
 			setSubject('');
 			setSubjectError(false);
 			setSubjectErrorMessage('');
-			dispatch(getOrgClasses({ orgId: user.userInfo.org!, token: user.token! }));
+			dispatch(
+				getOrgClasses({ orgId: user.userInfo.org!, token: user.token! })
+			);
 			props.setCreateClassModalOpen(false);
 	}
 
@@ -127,12 +130,20 @@ export default function CreateClassModal(
 		dispatch(createClass(dispatchBody));
 	}
 
+	const handleDlgClose = (event:object, reason:string) => {
+		if (reason && reason == "backdropClick") {
+			return
+		}
+		handleClose();
+	}
+
 	return (
 		<>
 			<Dialog
 				open={props.createClassModalOpen}
-				onClose={handleClose}
+				onClose={handleDlgClose}
 				className='flex flex-nowrap justify-center'
+				disableEscapeKeyDown
 			>
 				{modifyClassData.create.loading ? (
 					<div>
@@ -143,7 +154,14 @@ export default function CreateClassModal(
 						{modifyClassData.create.complete ? (
 							<>
 								<DialogTitle>{`${modifyClassData.create.message}`}</DialogTitle>
-								<Button onClick={handleClose} color='success' variant='contained' className='w-fit bg-green-400 self-center m-1'>Close</Button>
+								<Button
+									onClick={handleClose}
+									color='success'
+									variant='contained'
+									className='w-fit bg-green-400 self-center m-1'
+								>
+									Close
+								</Button>
 							</>
 						) : (
 							<>

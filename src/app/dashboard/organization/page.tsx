@@ -45,6 +45,7 @@ export default function ClassPage(): JSX.Element {
 					primary={classObj.name}
 					secondary={`Grade Level: ${classObj.grade_level}`}
 				/>
+				<div>Words</div>
 			</ListItemButton>
 		</ListItem>
 	));
