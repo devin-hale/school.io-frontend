@@ -39,7 +39,6 @@ export const getClassInfo = createAsyncThunk(
 			mode: 'cors',
 		});
 		const data = await request.json();
-		console.log(data)
 		return data;
 	}
 );

@@ -12,6 +12,8 @@ import { Dispatch, useEffect } from 'react';
 import { useAppDispatch } from '@/app/hooks';
 import { UserState } from '@/redux/slices/userSlice';
 import { Paper, Button } from '@mui/material';
+import DeleteClassModal from './_components/deleteConfirm';
+import { useState } from 'react';
 
 export default function ClassInstancePage({
 	params,
@@ -20,6 +22,9 @@ export default function ClassInstancePage({
 }): JSX.Element {
 	const router: AppRouterInstance = useRouter();
 	const dispatch: Dispatch<any> = useAppDispatch();
+
+	const [deleteOpen, setDeleteOpen] = useState(false);
+
 	const userState: UserState = useSelector((state: RootState) => state.user);
 	const classInstance: ClassInstanceState = useSelector(
 		(state: RootState) => state.classInstance
@@ -41,27 +46,37 @@ export default function ClassInstancePage({
 		}
 	}, [classInstance.classInfo, userState.token, dispatch, params.classId]);
 
-	console.log(classInstance)
 
-
-	return <>
-		<Paper
+	return (
+		<>
+			<DeleteClassModal
+				deleteClassModalOpen={deleteOpen}
+				setDeleteClassModalOpen={setDeleteOpen}
+				classId={params.classId}
+			/>
+			<Paper
 				elevation={2}
 				className='m-2 p-3 flex justify-between'
 			>
 				<div>
 					<p>
-						<strong>
-						{classInstance.classInfo?.name}
-						</strong>
+						<strong>{classInstance.classInfo?.name}</strong>
 					</p>
 					<p>
 						<strong>Subject: </strong>
 						{classInstance.classInfo?.subject}
 					</p>
 				</div>
-							</Paper>
-
-
-	</>
+				<Button
+					className='bg-red-400 text-white'
+					color='warning'
+					variant='contained'
+					type='button'
+					onClick={()=>setDeleteOpen(true)}
+				>
+					Delete Class
+				</Button>
+			</Paper>
+		</>
+	);
 }
