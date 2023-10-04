@@ -21,7 +21,7 @@ import {
 	authenticateToken,
 	loginUser,
 	setToken,
-} from '@/redux/slices/userSlice';
+} from '@/redux/slices/user/userSlice';
 import { useAppDispatch } from './hooks';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';

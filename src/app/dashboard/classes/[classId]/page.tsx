@@ -5,12 +5,12 @@ import {
 	getClassStudents,
 	getClassInfo,
 	ClassInstanceState,
-} from '@/redux/slices/classInstanceSlice';
+} from '@/redux/slices/classes/classInstanceSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
 import { Dispatch, useEffect } from 'react';
 import { useAppDispatch } from '@/app/hooks';
-import { UserState } from '@/redux/slices/userSlice';
+import { UserState } from '@/redux/slices/user/userSlice';
 
 export default function ClassInstancePage({
 	params,

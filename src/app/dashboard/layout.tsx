@@ -3,7 +3,7 @@ import { RootState } from '@/redux/store/store';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../hooks';
 import { Dispatch } from '@reduxjs/toolkit';
-import { authenticateToken, logOut, setToken } from '@/redux/slices/userSlice';
+import { authenticateToken, logOut, setToken } from '@/redux/slices/user/userSlice';
 
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';

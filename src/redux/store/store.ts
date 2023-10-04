@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import orgInstanceReducer from './../slices/orgInstanceSlice'
-import userReducer from './../slices/userSlice';
-import userDataReducer from '../slices/userDataSlice';
-import classReducer from './../slices/classSlice';
-import classInstanceReducer from '../slices/classInstanceSlice';
+import orgInstanceReducer from './../slices/organizations/orgInstanceSlice'
+import userReducer from './../slices/user/userSlice';
+import userDataReducer from '../slices/user/userDataSlice';
+import classReducer from './../slices/classes/classSlice';
+import classInstanceReducer from '../slices/classes/classInstanceSlice';
 import classModifyReducer from '../slices/modifyClass';
 
 export const store = configureStore({

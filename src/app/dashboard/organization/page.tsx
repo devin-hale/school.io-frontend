@@ -4,14 +4,14 @@ import {
 	IClass,
 	getClasses,
 	getOrgClasses,
-} from '@/redux/slices/classSlice';
+} from '@/redux/slices/classes/classSlice';
 import {
 	IOrgInstanceState,
 	getOrgInstance,
-} from '@/redux/slices/orgInstanceSlice';
+} from '@/redux/slices/organizations/orgInstanceSlice';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
-import { UserState } from '@/redux/slices/userSlice';
+import { UserState } from '@/redux/slices/user/userSlice';
 import { RootState } from '@/redux/store/store';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '@/app/hooks';
@@ -27,6 +27,7 @@ import {
 } from '@mui/material';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
 import CreateClassModal from './_components/createClassModal';
+import PageLoader from '../_components/pageLoader';
 
 export default function ClassPage(): JSX.Element {
 	const [createClassModal, setCreateClassModal] = useState(false);
@@ -66,42 +67,51 @@ export default function ClassPage(): JSX.Element {
 
 	return (
 		<>
-			<CreateClassModal
-				createClassModalOpen={createClassModal}
-				setCreateClassModalOpen={setCreateClassModal}
-			/>
+			{orgInfo.loading ? (
+				<PageLoader />
+			) : (
+				<>
+					<CreateClassModal
+						createClassModalOpen={createClassModal}
+						setCreateClassModalOpen={setCreateClassModal}
+					/>
 
-			<Paper
-				elevation={2}
-				className='m-2 p-3 flex justify-between'
-			>
-				<div>
-					<p>
-						<strong>Organization: </strong>
-						{orgInfo.orgInfo.name}
-					</p>
-					<p>
-						<strong>Organization Code: </strong>
-						{orgInfo.orgInfo.orgCode}
-					</p>
-				</div>
-				<Button
-					onClick={() => setCreateClassModal(true)}
-					className='m-2 bg-green-400 text-white'
-					variant='contained'
-					color='primary'
-				>
-					<AddRounded className='mr-1' color='inherit' />
-					Create Class
-				</Button>
-			</Paper>
-			<div className='w-full flex flex-col'>
-				{classState.classGet.loading ? (
-					<CircularProgress color='primary' />
-				) : (
-					<List className='flex flex-row flex-wrap'>{classList}</List>
-				)}
-			</div>
+					<Paper
+						elevation={2}
+						className='m-2 p-3 flex justify-between'
+					>
+						<div>
+							<p>
+								<strong>Organization: </strong>
+								{orgInfo.orgInfo.name}
+							</p>
+							<p>
+								<strong>Organization Code: </strong>
+								{orgInfo.orgInfo.orgCode}
+							</p>
+						</div>
+						<Button
+							onClick={() => setCreateClassModal(true)}
+							className='m-2 bg-green-400 text-white'
+							variant='contained'
+							color='primary'
+						>
+							<AddRounded
+								className='mr-1'
+								color='inherit'
+							/>
+							Create Class
+						</Button>
+					</Paper>
+					<div className='w-full flex flex-col'>
+						{classState.classGet.loading ? (
+							<CircularProgress color='primary' />
+						) : (
+							<List className='flex flex-row flex-wrap'>{classList}</List>
+						)}
+					</div>
+				</>
+			)}
 		</>
 	);
 }

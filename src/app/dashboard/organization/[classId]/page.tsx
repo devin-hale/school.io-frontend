@@ -5,15 +5,16 @@ import {
 	getClassStudents,
 	getClassInfo,
 	ClassInstanceState,
-} from '@/redux/slices/classInstanceSlice';
+} from '@/redux/slices/classes/classInstanceSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
 import { Dispatch, useEffect } from 'react';
 import { useAppDispatch } from '@/app/hooks';
-import { UserState } from '@/redux/slices/userSlice';
+import { UserState } from '@/redux/slices/user/userSlice';
 import { Paper, Button } from '@mui/material';
 import DeleteClassModal from './_components/deleteConfirm';
 import { useState } from 'react';
+import PageLoader from '../../_components/pageLoader';
 
 export default function ClassInstancePage({
 	params,
@@ -49,6 +50,7 @@ export default function ClassInstancePage({
 
 	return (
 		<>
+			{classInstance.loading ? <PageLoader /> : <>
 			<DeleteClassModal
 				deleteClassModalOpen={deleteOpen}
 				setDeleteClassModalOpen={setDeleteOpen}
@@ -77,6 +79,7 @@ export default function ClassInstancePage({
 					Delete Class
 				</Button>
 			</Paper>
-		</>
+		</>}
+		</>	
 	);
 }

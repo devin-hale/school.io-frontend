@@ -1,8 +1,8 @@
 'use client';
-import { ClassState, IClass, getClasses } from '@/redux/slices/classSlice';
+import { ClassState, IClass, getClasses } from '@/redux/slices/classes/classSlice';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
-import { UserState } from '@/redux/slices/userSlice';
+import { UserState } from '@/redux/slices/user/userSlice';
 import { RootState } from '@/redux/store/store';
 import { useEffect } from 'react';
 import { useAppDispatch } from '@/app/hooks';
