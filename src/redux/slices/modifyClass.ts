@@ -110,6 +110,7 @@ export const classModifySlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
+			//Create Class
 			.addCase(createClass.pending, (state) => {
 				state.create.loading = true;
 			})
@@ -125,6 +126,7 @@ export const classModifySlice = createSlice({
 				state.create.message = action.payload.message;
 				state.create.success = action.payload.statusCode == 201 ? true : false;
 			})
+			//Delete Class
 			.addCase(deleteClass.pending, (state) => {
 				state.delete.loading = true;
 			})

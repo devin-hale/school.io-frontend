@@ -55,6 +55,8 @@ export const orgInstanceSlice = createSlice({
 		builder
 			.addCase(getOrgInstance.pending, (state) => {
 				state.loading = true;
+				state.message = null;
+				state.orgInfo = initialState.orgInfo;
 			})
 			.addCase(getOrgInstance.rejected, (state) => {
 				state.loading = false;

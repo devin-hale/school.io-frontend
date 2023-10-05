@@ -4,6 +4,7 @@ const APIDOMAIN: string = process.env.NEXT_PUBLIC_APIDOMAIN!;
 
 export interface IUserDataState {
 	loading: boolean;
+	message: string | null;
 	users: IUser[];
 }
 
@@ -19,6 +20,7 @@ interface IUser {
 
 const initialState : IUserDataState = {
 	loading: false,
+	message: null,
 	users: [],
 }
 
@@ -51,13 +53,17 @@ export const userDataSlice = createSlice({
 		builder
 			.addCase(getOrgUsers.pending, (state) => {
 				state.loading = true;
+				state.message = null;
+				state.users = [];
 			})
 			.addCase(getOrgUsers.rejected, (state) => {
 				state.loading = false;
+				state.message = 'Error: network request rejected.'
 				state.users = [];
 			})
 			.addCase(getOrgUsers.fulfilled, (state, action) => {
 				state.loading = false;
+				state.message = action.payload.message;
 				state.users = action.payload.content;
 			})
 	}

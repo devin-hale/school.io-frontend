@@ -59,7 +59,6 @@ export default function ClassPage(): JSX.Element {
 			<ListItemButton
 				className='bg-slate-200 rounded'
 				onClick={() => {
-					dispatch(resetClassInstanceState());
 					navRouter.push(`/dashboard/organization/${classObj._id}`);
 				}}
 			>

@@ -25,10 +25,7 @@ type getReqInfo = {
 	orgId?: string;
 	token: string;
 };
-type AddClassBody = {
-	token: string;
-	class: IClass;
-};
+
 
 export const getClasses = createAsyncThunk(
 	'userClasses/getClasses',
@@ -66,22 +63,6 @@ export const getOrgClasses = createAsyncThunk(
 	}
 );
 
-export const addClass = createAsyncThunk(
-	'userClasses/addClass',
-	async (classBody: AddClassBody) => {
-		const request = await fetch(`${APIDOMAIN}/create/`, {
-			method: 'post',
-			headers: {
-				Authorization: `Bearer ${classBody.token}`,
-			},
-			mode: 'cors',
-			body: JSON.stringify(classBody.class),
-		});
-		const data = await request.json();
-		return data;
-	}
-);
-
 const initialState: ClassState = {
 	classGet: {
 		loading: false,
@@ -106,9 +87,12 @@ export const classSlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
-			//Get Class by UserId
+			//Get Classes by UserId
 			.addCase(getClasses.pending, (state) => {
 				state.classGet.loading = true;
+				state.classGet.message = null;
+				state.classGet.statusCode = null;
+				state.classes = [];
 			})
 			.addCase(getClasses.fulfilled, (state, action) => {
 				state.classGet.loading = false;
@@ -122,9 +106,12 @@ export const classSlice = createSlice({
 				state.classGet.statusCode = 500;
 				state.classes = [];
 			})
-			//Get Class By Org
+			//Get Classes By Org
 			.addCase(getOrgClasses.pending, (state) => {
 				state.classGet.loading = true;
+				state.classGet.message = null;
+				state.classGet.statusCode = null;
+				state.classes = [];
 			})
 			.addCase(getOrgClasses.fulfilled, (state, action) => {
 				state.classGet.loading = false;
@@ -138,22 +125,6 @@ export const classSlice = createSlice({
 				state.classGet.message = 'Failed to retrieve class data.';
 				state.classes = [];
 			})
-			//Add Class
-			.addCase(addClass.pending, (state:ClassState) => {
-				state.classPost.loading = true;
-				state.classPost.statusCode = null;
-				state.classPost.message = null;
-			})
-			.addCase(addClass.fulfilled, (state:ClassState, action) => {
-				state.classPost.loading = false;
-				state.classPost.statusCode = Number(action.payload.statusCode);
-				state.classPost.message = action.payload.message;
-			})
-			.addCase(addClass.rejected, (state:ClassState) => {
-				state.classPost.loading = false;
-				state.classPost.statusCode = 500;
-				state.classPost.message = 'Failed to add class.';
-			});
 	},
 });
 

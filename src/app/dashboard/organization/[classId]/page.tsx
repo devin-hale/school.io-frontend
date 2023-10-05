@@ -6,6 +6,8 @@ import {
 	getClassInfo,
 	ClassInstanceState,
 	resetClassInstanceState,
+	ClassInfoState,
+	ClassStudentsState,
 } from '@/redux/slices/classes/classInstanceSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
@@ -28,9 +30,10 @@ export default function ClassInstancePage({
 	const [deleteOpen, setDeleteOpen] = useState(false);
 
 	const userState: UserState = useSelector((state: RootState) => state.user);
-	const classInstance: ClassInstanceState = useSelector(
-		(state: RootState) => state.classInstance
+	const classInstance: ClassInfoState = useSelector(
+		(state: RootState) => state.classInstance.classInstance
 	);
+	const classStudents : ClassStudentsState = useSelector((state: RootState) => state.classInstance.classStudents)
 
 	useEffect(() => {
 		if (userState.token) {
@@ -38,7 +41,7 @@ export default function ClassInstancePage({
 				getClassInfo({ classId: params.classId, token: userState.token! })
 			);
 		}
-	}, [userState.token, dispatch, params.classId]);
+	}, []);
 
 	useEffect(() => {
 		if (classInstance.classInfo && userState.token) {
@@ -46,7 +49,7 @@ export default function ClassInstancePage({
 				getClassStudents({ classId: params.classId, token: userState.token! })
 			);
 		}
-	}, [classInstance.classInfo, userState.token, dispatch, params.classId]);
+	}, [classInstance.classInfo]);
 
 
 	return (
