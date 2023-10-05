@@ -3,7 +3,11 @@ import { RootState } from '@/redux/store/store';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../hooks';
 import { Dispatch } from '@reduxjs/toolkit';
-import { authenticateToken, logOut, setToken } from '@/redux/slices/user/userSlice';
+import {
+	authenticateToken,
+	logOut,
+	setToken,
+} from '@/redux/slices/user/userSlice';
 
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -22,7 +26,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { CircularProgress, Icon } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
+import { CircularProgress, Divider, Icon } from '@mui/material';
 
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -34,7 +39,7 @@ import { tools, features, userFeature } from './_userData/userPerms';
 import LogOutButton from '@/components/logOutButton';
 import { useRouter } from 'next/navigation';
 
-const AppVersion : string = process.env.NEXT_PUBLIC_APPVERSION!;
+const AppVersion: string = process.env.NEXT_PUBLIC_APPVERSION!;
 
 const drawerWidth = 240;
 
@@ -179,29 +184,34 @@ export default function DashBoardLayout({
 			disablePadding
 			sx={{ display: 'block' }}
 		>
-			<ListItemButton
-				sx={{
-					minHeight: 48,
-					justifyContent: open ? 'initial' : 'center',
-					px: 2.5,
-				}}
-				selected={currentPage === perm.name}
-				onClick={() => handleRoute(perm.name)}
+			<Tooltip
+				placement='right'
+				title={!open ? perm.name : null}
 			>
-				<ListItemIcon
+				<ListItemButton
 					sx={{
-						minWidth: 0,
-						mr: open ? 3 : 'auto',
-						justifyContent: 'center',
+						minHeight: 48,
+						justifyContent: open ? 'initial' : 'center',
+						px: 2.5,
 					}}
+					selected={currentPage === perm.name}
+					onClick={() => handleRoute(perm.name)}
 				>
-					<PermIcon iconType={perm.icon} />
-				</ListItemIcon>
-				<ListItemText
-					primary={perm.name}
-					sx={{ opacity: open ? 1 : 0 }}
-				/>
-			</ListItemButton>
+					<ListItemIcon
+						sx={{
+							minWidth: 0,
+							mr: open ? 3 : 'auto',
+							justifyContent: 'center',
+						}}
+					>
+						<PermIcon iconType={perm.icon} />
+					</ListItemIcon>
+					<ListItemText
+						primary={perm.name}
+						sx={{ opacity: open ? 1 : 0 }}
+					/>
+				</ListItemButton>
+			</Tooltip>
 		</ListItem>
 	));
 
@@ -211,29 +221,34 @@ export default function DashBoardLayout({
 			disablePadding
 			sx={{ display: 'block' }}
 		>
-			<ListItemButton
-				sx={{
-					minHeight: 48,
-					justifyContent: open ? 'initial' : 'center',
-					px: 2.5,
-				}}
-				selected={currentPage === Perm.name}
-				onClick={() => handleRoute(Perm.name)}
+			<Tooltip
+				placement='right'
+				title={!open ? Perm.name : null}
 			>
-				<ListItemIcon
+				<ListItemButton
 					sx={{
-						minWidth: 0,
-						mr: open ? 3 : 'auto',
-						justifyContent: 'center',
+						minHeight: 48,
+						justifyContent: open ? 'initial' : 'center',
+						px: 2.5,
 					}}
+					selected={currentPage === Perm.name}
+					onClick={() => handleRoute(Perm.name)}
 				>
-					<PermIcon iconType={Perm.icon} />
-				</ListItemIcon>
-				<ListItemText
-					primary={Perm.name}
-					sx={{ opacity: open ? 1 : 0 }}
-				/>
-			</ListItemButton>
+					<ListItemIcon
+						sx={{
+							minWidth: 0,
+							mr: open ? 3 : 'auto',
+							justifyContent: 'center',
+						}}
+					>
+						<PermIcon iconType={Perm.icon} />
+					</ListItemIcon>
+					<ListItemText
+						primary={Perm.name}
+						sx={{ opacity: open ? 1 : 0 }}
+					/>
+				</ListItemButton>
+			</Tooltip>
 		</ListItem>
 	));
 
@@ -255,7 +270,7 @@ export default function DashBoardLayout({
 							position='fixed'
 							open={open}
 						>
-							<Toolbar sx={{display: 'flex', alignItems: 'center'}}>
+							<Toolbar sx={{ display: 'flex', alignItems: 'center' }}>
 								<IconButton
 									color='inherit'
 									aria-label='open drawer'
@@ -292,6 +307,7 @@ export default function DashBoardLayout({
 									)}
 								</IconButton>
 							</DrawerHeader>
+							<Divider variant='fullWidth' />
 							<List sx={{ borderRight: 'none' }}>
 								{userInfo.userInfo.accType ? (
 									permList
@@ -305,6 +321,7 @@ export default function DashBoardLayout({
 									</div>
 								)}
 							</List>
+							<Divider />
 							<List>
 								{userInfo.userInfo.accType ? (
 									toolList

@@ -71,7 +71,11 @@ const initialState: ClassInstanceState = {
 export const classInstanceSlice = createSlice({
 	name: 'userClasses',
 	initialState,
-	reducers: {},
+	reducers: {
+		resetClassInstanceState: (state) => {
+			state = initialState;
+		}
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(getClassInfo.pending, (state) => {
@@ -108,6 +112,6 @@ export const classInstanceSlice = createSlice({
 	},
 });
 
-export const {} = classInstanceSlice.actions;
+export const {resetClassInstanceState} = classInstanceSlice.actions;
 
 export default classInstanceSlice.reducer;

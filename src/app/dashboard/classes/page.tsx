@@ -1,5 +1,9 @@
 'use client';
-import { ClassState, IClass, getClasses } from '@/redux/slices/classes/classSlice';
+import {
+	ClassState,
+	IClass,
+	getClasses,
+} from '@/redux/slices/classes/classSlice';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { UserState } from '@/redux/slices/user/userSlice';
@@ -13,7 +17,8 @@ export default function ClassPage(): JSX.Element {
 	const classState: ClassState = useSelector((state: RootState) => state.class);
 	const user: UserState = useSelector((state: RootState) => state.user);
 	const dispatch = useAppDispatch();
-	const navRouter : AppRouterInstance = useRouter();
+	const navRouter: AppRouterInstance = useRouter();
+
 
 	useEffect(() => {
 		if (user.userInfo.userId && user.token) {
@@ -23,7 +28,10 @@ export default function ClassPage(): JSX.Element {
 
 	const classList = classState.classes.map((classObj: IClass) => (
 		<ListItem key={classObj._id}>
-			<ListItemButton className='bg-slate-200 rounded' onClick={()=> navRouter.push(`/dashboard/classes/${classObj._id}`)}>
+			<ListItemButton
+				className='bg-slate-200 rounded'
+				onClick={() => navRouter.push(`/dashboard/classes/${classObj._id}`)}
+			>
 				<ListItemText
 					primary={classObj.name}
 					secondary={`Grade Level: ${classObj.grade_level}`}
@@ -31,9 +39,6 @@ export default function ClassPage(): JSX.Element {
 			</ListItemButton>
 		</ListItem>
 	));
-
-
-
 
 	return <List>{classList}</List>;
 }

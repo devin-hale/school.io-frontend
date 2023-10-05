@@ -5,6 +5,7 @@ import {
 	getClassStudents,
 	getClassInfo,
 	ClassInstanceState,
+	resetClassInstanceState,
 } from '@/redux/slices/classes/classInstanceSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
@@ -32,12 +33,12 @@ export default function ClassInstancePage({
 	);
 
 	useEffect(() => {
-		if (!classInstance.classInfo && userState.token) {
+		if (userState.token) {
 			dispatch(
 				getClassInfo({ classId: params.classId, token: userState.token! })
 			);
 		}
-	}, [classInstance.classInfo, userState.token, dispatch, params.classId]);
+	}, [userState.token, dispatch, params.classId]);
 
 	useEffect(() => {
 		if (classInstance.classInfo && userState.token) {

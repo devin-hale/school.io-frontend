@@ -99,7 +99,11 @@ const initialState: ClassState = {
 export const classSlice = createSlice({
 	name: 'userClasses',
 	initialState,
-	reducers: {},
+	reducers: {
+		resetClassState: (state) => {
+			state = initialState;
+		}
+	},
 	extraReducers: (builder) => {
 		builder
 			//Get Class by UserId
@@ -153,6 +157,6 @@ export const classSlice = createSlice({
 	},
 });
 
-export const {} = classSlice.actions;
+export const {resetClassState} = classSlice.actions;
 
 export default classSlice.reducer;

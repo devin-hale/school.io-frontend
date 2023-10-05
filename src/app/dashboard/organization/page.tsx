@@ -6,6 +6,11 @@ import {
 	getOrgClasses,
 } from '@/redux/slices/classes/classSlice';
 import {
+	getClassInfo,
+	getClassStudents,
+	resetClassInstanceState,
+} from '@/redux/slices/classes/classInstanceSlice';
+import {
 	IOrgInstanceState,
 	getOrgInstance,
 } from '@/redux/slices/organizations/orgInstanceSlice';
@@ -53,9 +58,10 @@ export default function ClassPage(): JSX.Element {
 		>
 			<ListItemButton
 				className='bg-slate-200 rounded'
-				onClick={() =>
-					navRouter.push(`/dashboard/organization/${classObj._id}`)
-				}
+				onClick={() => {
+					dispatch(resetClassInstanceState());
+					navRouter.push(`/dashboard/organization/${classObj._id}`);
+				}}
 			>
 				<ListItemText
 					primary={classObj.name}
