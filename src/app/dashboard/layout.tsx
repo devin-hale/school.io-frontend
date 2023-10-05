@@ -16,6 +16,7 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import IconButton from '@mui/material/IconButton';
+import { Menu, MenuItem, Button } from '@mui/material';
 
 import PermIcon from './_components/permIcon';
 
@@ -27,6 +28,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Tooltip from '@mui/material/Tooltip';
+import { Logout, AccountCircleRounded } from '@mui/icons-material';
 import { CircularProgress, Divider, Icon } from '@mui/material';
 
 import { useState } from 'react';
@@ -39,7 +41,7 @@ import { tools, features, userFeature } from './_userData/userPerms';
 import LogOutButton from '@/components/logOutButton';
 import { useRouter } from 'next/navigation';
 
-const AppVersion: string = process.env.NEXT_PUBLIC_APPVERSION!;
+
 
 const drawerWidth = 240;
 
@@ -128,6 +130,9 @@ export default function DashBoardLayout({
 	const [open, setOpen] = useState(false);
 	const [currentPage, setCurrentPage] = useState('Classes');
 
+	const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+	const menuOpen: boolean = Boolean(menuAnchor);
+
 	useEffect(() => {
 		if (localToken) {
 			dispatch(authenticateToken(localToken));
@@ -138,6 +143,14 @@ export default function DashBoardLayout({
 			router.push('/');
 		}
 	}, []);
+
+const handleLogOut = (): void => {
+		setLoading(true);
+		localStorage.clear();
+		dispatch(logOut());
+		router.push('/')
+	};
+
 
 	const userPerms: userFeature[] = features.filter((feature: userFeature) =>
 		feature.userTypes.some((type: string) => type == userInfo.userInfo.accType)
@@ -153,6 +166,14 @@ export default function DashBoardLayout({
 
 	const handleDrawerClose = () => {
 		setOpen(false);
+	};
+
+	const handleMenuClick = (event: React.MouseEvent<HTMLElement>): void => {
+		setMenuAnchor(event.currentTarget);
+	};
+
+	const handleMenuClose = (): void => {
+		setMenuAnchor(null);
 	};
 
 	const handleRoute = (pageName: string): void => {
@@ -270,22 +291,67 @@ export default function DashBoardLayout({
 							position='fixed'
 							open={open}
 						>
-							<Toolbar sx={{ display: 'flex', alignItems: 'center' }}>
-								<IconButton
-									color='inherit'
-									aria-label='open drawer'
-									onClick={handleDrawerOpen}
-									edge='start'
-									sx={{
-										marginRight: 5,
-										...(open && { display: 'none' }),
-									}}
+							<Toolbar
+								sx={{
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'space-between',
+								}}
+							>
+								<div className='flex'>
+									<IconButton
+										color='inherit'
+										aria-label='open drawer'
+										onClick={handleDrawerOpen}
+										edge='start'
+										sx={{
+											marginRight: 2,
+											...(open && { display: 'none' }),
+										}}
+									>
+										<MenuIcon />
+									</IconButton>
+									<h1 className='font-coolvetica text-[30px] text-white drop-shadow-md'>
+										school.io
+									</h1>
+								</div>
+
+								<Button
+									type='button'
+									variant='contained'
+									onClick={handleMenuClick}
+									className='bg-blue-400'
+									color='secondary'
+									sx={{ color: 'white', backgroundColor: 'rgb(96, 155, 250)' }}
 								>
-									<MenuIcon />
-								</IconButton>
-								<h1 className='font-coolvetica text-[30px] text-white drop-shadow-md'>
-									school.io
-								</h1>
+									{userInfo.userInfo.firstName ? (
+										<div className='mr-2 hidden sm:block'>
+											{`${userInfo.userInfo.firstName} ${userInfo.userInfo.lastName}`}	
+										</div>	
+									) : (
+										<CircularProgress
+											className='mr-2'
+											size={20}
+											color='secondary'
+										/>
+									)}
+									<AccountCircleRounded
+										sx={{ width: 32, height: 32 }}
+										className='text-white'
+									/>
+								</Button>
+								<Menu
+									anchorEl={menuAnchor}
+									open={menuOpen}
+									onClick={handleMenuClose}
+									onClose={handleMenuClose}
+									transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+									anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+								>
+									<MenuItem onClick={handleLogOut}>
+										<Logout /> Log Out
+									</MenuItem>
+								</Menu>
 							</Toolbar>
 						</AppBar>
 						<Drawer
@@ -341,7 +407,6 @@ export default function DashBoardLayout({
 							sx={{ flexGrow: 1, p: 3 }}
 						>
 							<div className='h-[40px] mb-[10px]'></div>
-							<LogOutButton setLoading={setLoading} />
 							{children}
 						</Box>
 					</Box>
