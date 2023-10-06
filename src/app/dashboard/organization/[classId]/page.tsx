@@ -23,6 +23,7 @@ import {
 	IconButton,
 	Autocomplete,
 	TextField,
+	CircularProgress,
 } from '@mui/material';
 import {
 	DeleteRounded,
@@ -48,17 +49,26 @@ export default function ClassInstancePage({
 
 	const [addTeacherOpen, setAddTeacherOpen] = useState(false);
 
+	useEffect(()=>{}, [addTeacherOpen])
+
+
 	const [optionsAnchor, setOptionsAnchor] = useState<null | HTMLElement>(null);
 	const optionsOpen: boolean = Boolean(optionsAnchor);
 
 	const userState: UserState = useSelector((state: RootState) => state.user);
 	const userData = useSelector((state: RootState) => state.userData);
+	const modifyState = useSelector((state: RootState) => state.classModify)
 	const classInstance: ClassInfoState = useSelector(
 		(state: RootState) => state.classInstance.classInstance
 	);
 	const classStudents: ClassStudentsState = useSelector(
 		(state: RootState) => state.classInstance.classStudents
 	);
+		const classTeachers = classInstance.classInfo?.teachers.map((teacher: any) => (
+			<div
+				key={teacher._id}
+			>{`${teacher.last_name}, ${teacher.first_name}`}</div>
+		))
 
 	useEffect(() => {
 		if (userState.token) {
@@ -69,7 +79,7 @@ export default function ClassInstancePage({
 				getOrgUsers({ orgId: userState.userInfo.org!, token: userState.token })
 			);
 		}
-	}, []);
+	}, [modifyState.addTeacher.complete]);
 
 	useEffect(() => {
 		if (classInstance.classInfo && userState.token) {
@@ -106,6 +116,7 @@ export default function ClassInstancePage({
 						open={addTeacherOpen}
 						setOpen={setAddTeacherOpen}
 						classId={classInstance.classInfo?._id!}
+						teachers={classInstance.classInfo?.teachers!}
 					/>
 					<Button
 						variant='text'
@@ -126,23 +137,20 @@ export default function ClassInstancePage({
 								{classInstance.classInfo?.subject}
 							</p>
 							<div className='flex-col'>
-								<div>
+								<div className='pb-1'>
 									<strong>Teacher(s): </strong>
 									<Button
 										onClick={() => setAddTeacherOpen(true)}
 										variant='contained'
-										className='bg-blue-400 text-white text-center p-2'
+										className='bg-blue-400 text-white text-center p-1'
 										color='secondary'
 										type='button'
 									>
-										Add/Remove Teachers
+										Add Teachers
 									</Button>
 								</div>
-								<div>
-									{classInstance.classInfo?.teachers.map((teacher: any) => (
-										<div key={teacher._id}>teacher.first_name</div>
-									))}
-								</div>
+								{modifyState.addTeacher.loading || modifyState.removeTeacher.loading ? <CircularProgress color='secondary' /> : classTeachers}
+								<div>{}</div>
 							</div>
 						</div>
 						<IconButton

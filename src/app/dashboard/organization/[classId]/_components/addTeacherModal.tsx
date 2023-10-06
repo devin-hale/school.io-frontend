@@ -1,7 +1,7 @@
 'use client';
 import { useSelector } from 'react-redux';
 import { UserState } from '@/redux/slices/user/userSlice';
-import { Dispatch, SetStateAction, useState, useEffect } from 'react';
+import { Dispatch, SetStateAction, useState, useEffect, ChangeEvent } from 'react';
 import { RootState } from '@/redux/store/store';
 import {
 	Dialog,
@@ -11,6 +11,7 @@ import {
 	Paper,
 	Divider,
 	IconButton,
+	TextField,
 } from '@mui/material';
 import {
 	Table,
@@ -31,19 +32,37 @@ interface IAddTeacherModalProps {
 	open: boolean;
 	setOpen: Dispatch<SetStateAction<boolean>>;
 	classId: string;
+	teachers: [];
 }
 
 export default function AddTeacherModal(
 	props: IAddTeacherModalProps
 ): JSX.Element {
-	const router= useRouter();
+	const router = useRouter();
 	const dispatch = useAppDispatch();
-	const [loading, setLoading] = useState(false);
 
 	const userData = useSelector((state: RootState) => state.userData);
 	const userState: UserState = useSelector((state: RootState) => state.user);
+	const modifyState = useSelector(
+		(state: RootState) => state.classModify.addTeacher
+	);
+	const defaultFilter = userData.users.filter(
+		(user) =>
+			!props.teachers.some(
+				(teacher: any) =>
+					`${teacher.first_name} ${teacher.last_name}` ===
+					`${user.first_name} ${user.last_name}`
+			)
+	);
 
-	const [usersFilter, setUsersFilter] = useState(userData.users);
+	const [isAddingTeacher, setIsAddingTeacher] = useState(false);
+
+	const [usersFilter, setUsersFilter] = useState(defaultFilter);
+	const [searchTerm, setSearchTerm] = useState('');
+
+	useEffect(() => {
+		setUsersFilter(defaultFilter);
+	}, [userData.users]);
 
 	useEffect(() => {
 		dispatch(
@@ -62,27 +81,55 @@ export default function AddTeacherModal(
 		handleClose();
 	};
 
-	const handleAdd = () => {
+	const handleAdd = (userId: string) => {
 		dispatch(
 			addTeacher({
 				token: userState.token!,
 				params: { classId: props.classId },
-				body: { userId: userState.userInfo.userId! },
+				body: { userId: userId },
 			})
 		);
 		handleClose();
-		router.refresh()
 	};
+
+	const handleSearchChange = (e:React.ChangeEvent<HTMLInputElement>) : void => {
+		if(e.target.value.length === 0) {
+			setSearchTerm('')
+			setUsersFilter(defaultFilter)
+		} else if (e.target.value.length < 10) {
+			setSearchTerm(e.target.value)
+			setUsersFilter(defaultFilter.filter(user => user.last_name!.includes(e.target.value)));
+		} else {
+
+		}
+
+	}
+
+	const handleFilterChange = () => {
+		if (searchTerm.length === 0) {
+			setUsersFilter(defaultFilter);
+		} else if (searchTerm.length < 10 && searchTerm.length > 0) {
+			setUsersFilter(defaultFilter.filter(user => user.last_name!.includes(searchTerm)));
+		} else {
+
+		}
+	}
 
 	return (
 		<>
 			<Dialog
 				open={props.open}
 				onClose={handleDlgClose}
-				className='flex flex-nowrap justify-center'
+				className='flex flex-nowrap justify-center p-3'
 				disableEscapeKeyDown
 			>
 				<DialogTitle>Add Teacher</DialogTitle>
+				<DialogContent >
+					<TextField className='w-[200px] z-50' value={searchTerm} onChange={(e:ChangeEvent<HTMLInputElement>)=> {
+						handleSearchChange(e);
+
+					}}  label="Search (Last Name)" variant='filled'/>
+				</DialogContent>
 				<Box>
 					<TableContainer component={Paper}>
 						<Table size='small'>
@@ -90,19 +137,19 @@ export default function AddTeacherModal(
 								<TableRow>
 									<TableCell align='right'>Last</TableCell>
 									<TableCell align='right'>First</TableCell>
-									<TableCell> </TableCell>
+									<TableCell align='right'> </TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody sx={{ maxHeight: 600, overflowX: 'scroll' }}>
-								{userData.users.map((row) => (
+								{usersFilter.map((row) => (
 									<TableRow
-										key={row.userId}
+										key={row._id}
 										sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 									>
 										<TableCell align='right'>{row.last_name}</TableCell>
 										<TableCell align='right'>{row.first_name}</TableCell>
 										<TableCell align='right'>
-											<IconButton onClick={handleAdd}>
+											<IconButton onClick={() => handleAdd(row._id!)}>
 												<AddCircleRounded color='secondary' />
 											</IconButton>
 										</TableCell>

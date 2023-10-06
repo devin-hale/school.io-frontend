@@ -69,10 +69,10 @@ Add utility pages for adding users/students/classes as an admin
 [] **Utilities**
 - [] Org Admin Page
     - [] Create classes
-        - [] Assign a teacher or teachers to classes
+        - [] Assign/Remove a teacher or teachers to classes
         - [] Assign students to class (easier for Elementary)
     - [] Create students
-        - [] Assign a class to students (easier for Middle/HS)
+        - [] Assign class to students (easier for Middle/HS)
     - [] Transfer students between classes
     - [] Cross Org Student Transfer Requests
 - [] Super Admin Page

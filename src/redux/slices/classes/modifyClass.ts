@@ -179,7 +179,7 @@ export const classModifySlice = createSlice({
 			})
 			//Delete Class
 			.addCase(deleteClass.pending, (state) => {
-				state.create = { ...initialCallState, loading: true };
+				state.delete = { ...initialCallState, loading: true };
 			})
 			.addCase(deleteClass.rejected, (state) => {
 				state.delete.loading = false;
