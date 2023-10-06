@@ -19,7 +19,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
 import { Dispatch } from 'react';
 import { useAppDispatch } from '@/app/hooks';
-import { resetDeleteClass, deleteClass } from '@/redux/slices/modifyClass';
+import { resetDeleteClass, deleteClass } from '@/redux/slices/classes/modifyClass';
 import { useRouter } from 'next/navigation';
 
 export interface ICreateClassModalProps {

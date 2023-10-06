@@ -5,6 +5,7 @@ import {
 	getClassStudents,
 	getClassInfo,
 	ClassInstanceState,
+    ClassInfoState,
 } from '@/redux/slices/classes/classInstanceSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
@@ -20,8 +21,8 @@ export default function ClassInstancePage({
 	const router: AppRouterInstance = useRouter();
 	const dispatch: Dispatch<any> = useAppDispatch();
 	const userState: UserState = useSelector((state: RootState) => state.user);
-	const classInstance: ClassInstanceState = useSelector(
-		(state: RootState) => state.classInstance
+	const classInstance: ClassInfoState = useSelector(
+		(state: RootState) => state.classInstance.classInstance
 	);
 
 	useEffect(() => {

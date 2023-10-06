@@ -4,7 +4,7 @@ import userReducer from './../slices/user/userSlice';
 import userDataReducer from '../slices/user/userDataSlice';
 import classReducer from './../slices/classes/classSlice';
 import classInstanceReducer from '../slices/classes/classInstanceSlice';
-import classModifyReducer from '../slices/modifyClass';
+import classModifyReducer from '../slices/classes/modifyClass';
 
 export const store = configureStore({
 	reducer: {

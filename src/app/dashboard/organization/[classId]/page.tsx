@@ -15,11 +15,26 @@ import { RootState } from '@/redux/store/store';
 import { Dispatch, useEffect } from 'react';
 import { useAppDispatch } from '@/app/hooks';
 import { UserState } from '@/redux/slices/user/userSlice';
-import { Paper, Button, Menu, MenuItem, IconButton, Autocomplete, TextField } from '@mui/material';
-import { DeleteRounded, SettingsRounded, ArrowLeftRounded } from '@mui/icons-material';
+import {
+	Paper,
+	Button,
+	Menu,
+	MenuItem,
+	IconButton,
+	Autocomplete,
+	TextField,
+} from '@mui/material';
+import {
+	DeleteRounded,
+	SettingsRounded,
+	ArrowLeftRounded,
+	Add,
+} from '@mui/icons-material';
 import DeleteClassModal from './_components/deleteConfirm';
+import AddTeacherModal from './_components/addTeacherModal';
 import { useState } from 'react';
 import PageLoader from '../../_components/pageLoader';
+import { userInfo } from 'os';
 
 export default function ClassInstancePage({
 	params,
@@ -30,11 +45,14 @@ export default function ClassInstancePage({
 	const dispatch: Dispatch<any> = useAppDispatch();
 
 	const [deleteOpen, setDeleteOpen] = useState(false);
+
+	const [addTeacherOpen, setAddTeacherOpen] = useState(false);
+
 	const [optionsAnchor, setOptionsAnchor] = useState<null | HTMLElement>(null);
 	const optionsOpen: boolean = Boolean(optionsAnchor);
 
 	const userState: UserState = useSelector((state: RootState) => state.user);
-	const userData = useSelector((state: RootState) => state.userData)
+	const userData = useSelector((state: RootState) => state.userData);
 	const classInstance: ClassInfoState = useSelector(
 		(state: RootState) => state.classInstance.classInstance
 	);
@@ -47,7 +65,9 @@ export default function ClassInstancePage({
 			dispatch(
 				getClassInfo({ classId: params.classId, token: userState.token! })
 			);
-			dispatch(getOrgUsers({orgId: userState.userInfo.org!, token: userState.token}))
+			dispatch(
+				getOrgUsers({ orgId: userState.userInfo.org!, token: userState.token })
+			);
 		}
 	}, []);
 
@@ -67,11 +87,9 @@ export default function ClassInstancePage({
 		setOptionsAnchor(null);
 	};
 
-	const handleBack = ():void => {
-		router.push(`/dashboard/organization`)
-	}
-
-	let userOptions = userData.users.map((user) => `${user.firstName} ${user.lastName}`);
+	const handleBack = (): void => {
+		router.push(`/dashboard/organization`);
+	};
 
 	return (
 		<>
@@ -84,7 +102,15 @@ export default function ClassInstancePage({
 						setDeleteClassModalOpen={setDeleteOpen}
 						classId={params.classId}
 					/>
-					<Button variant='text' onClick={handleBack}>
+					<AddTeacherModal
+						open={addTeacherOpen}
+						setOpen={setAddTeacherOpen}
+						classId={classInstance.classInfo?._id!}
+					/>
+					<Button
+						variant='text'
+						onClick={handleBack}
+					>
 						<ArrowLeftRounded /> Back
 					</Button>
 					<Paper
@@ -92,13 +118,32 @@ export default function ClassInstancePage({
 						className='m-2 p-3 flex justify-between items-center'
 					>
 						<div>
-							<p>
+							<p className='text-xl'>
 								<strong>{classInstance.classInfo?.name}</strong>
 							</p>
 							<p>
 								<strong>Subject: </strong>
 								{classInstance.classInfo?.subject}
 							</p>
+							<div className='flex-col'>
+								<div>
+									<strong>Teacher(s): </strong>
+									<Button
+										onClick={() => setAddTeacherOpen(true)}
+										variant='contained'
+										className='bg-blue-400 text-white text-center p-2'
+										color='secondary'
+										type='button'
+									>
+										Add/Remove Teachers
+									</Button>
+								</div>
+								<div>
+									{classInstance.classInfo?.teachers.map((teacher: any) => (
+										<div key={teacher._id}>teacher.first_name</div>
+									))}
+								</div>
+							</div>
 						</div>
 						<IconButton
 							sx={{ height: 40, width: 40 }}

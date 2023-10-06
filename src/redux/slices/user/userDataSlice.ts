@@ -12,8 +12,8 @@ export interface IUserDataState {
 interface IUser {
 	user: string | null;
 	userId: string | null;
-	firstName: string | null;
-	lastName: string | null;
+	first_name: string | null;
+	last_name: string | null;
 	org: string | null;
 	accType: string | null;
 	verified: boolean | null;

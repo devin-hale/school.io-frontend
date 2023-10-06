@@ -134,3 +134,7 @@ export const studentsSlice = createSlice({
 			});
 	},
 });
+
+export const {} = studentsSlice.actions;
+
+export default studentsSlice.reducer;
