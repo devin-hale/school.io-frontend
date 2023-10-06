@@ -24,18 +24,22 @@ import {
 	Autocomplete,
 	TextField,
 	CircularProgress,
+	Divider,
 } from '@mui/material';
 import {
 	DeleteRounded,
 	SettingsRounded,
 	ArrowLeftRounded,
 	Add,
+	DoNotDisturbOnRounded,
+	PersonAdd,
+	PersonAddRounded,
 } from '@mui/icons-material';
 import DeleteClassModal from './_components/deleteConfirm';
 import AddTeacherModal from './_components/addTeacherModal';
 import { useState } from 'react';
 import PageLoader from '../../_components/pageLoader';
-import { userInfo } from 'os';
+import RemoveTeacherModal from './_components/removeTeacherConfirmation';
 
 export default function ClassInstancePage({
 	params,
@@ -48,27 +52,49 @@ export default function ClassInstancePage({
 	const [deleteOpen, setDeleteOpen] = useState(false);
 
 	const [addTeacherOpen, setAddTeacherOpen] = useState(false);
+	const [removeTeacherOpen, setRemoveTeacherOpen] = useState(false);
+	const [removingTeacher, setRemovingTeacher] = useState({
+		userId: '',
+		name: '',
+	});
 
-	useEffect(()=>{}, [addTeacherOpen])
-
+	useEffect(() => {}, [addTeacherOpen]);
 
 	const [optionsAnchor, setOptionsAnchor] = useState<null | HTMLElement>(null);
 	const optionsOpen: boolean = Boolean(optionsAnchor);
 
 	const userState: UserState = useSelector((state: RootState) => state.user);
 	const userData = useSelector((state: RootState) => state.userData);
-	const modifyState = useSelector((state: RootState) => state.classModify)
+	const modifyState = useSelector((state: RootState) => state.classModify);
 	const classInstance: ClassInfoState = useSelector(
 		(state: RootState) => state.classInstance.classInstance
 	);
 	const classStudents: ClassStudentsState = useSelector(
 		(state: RootState) => state.classInstance.classStudents
 	);
-		const classTeachers = classInstance.classInfo?.teachers.map((teacher: any) => (
-			<div
+	const classTeachers = classInstance.classInfo?.teachers.map(
+		(teacher: any) => (
+			<Paper
+				elevation={1}
 				key={teacher._id}
-			>{`${teacher.last_name}, ${teacher.first_name}`}</div>
-		))
+				className='flex flex-row items-center justify-center p-2'
+			>
+				<div>{`${teacher.last_name}, ${teacher.first_name}`}</div>
+				<IconButton
+					color='error'
+					edge='end'
+					onClick={() =>
+						handleSetRemovingTeacher(
+							teacher._id,
+							`${teacher.first_name} ${teacher.last_name}`
+						)
+					}
+				>
+					<DoNotDisturbOnRounded sx={{ width: 15 }} />
+				</IconButton>
+			</Paper>
+		)
+	);
 
 	useEffect(() => {
 		if (userState.token) {
@@ -79,7 +105,7 @@ export default function ClassInstancePage({
 				getOrgUsers({ orgId: userState.userInfo.org!, token: userState.token })
 			);
 		}
-	}, [modifyState.addTeacher.complete]);
+	}, [modifyState.addTeacher.complete, modifyState.removeTeacher.complete]);
 
 	useEffect(() => {
 		if (classInstance.classInfo && userState.token) {
@@ -101,6 +127,11 @@ export default function ClassInstancePage({
 		router.push(`/dashboard/organization`);
 	};
 
+	const handleSetRemovingTeacher = (userId: string, name: string) => {
+		setRemovingTeacher({ userId: userId, name: name });
+		setRemoveTeacherOpen(true);
+	};
+
 	return (
 		<>
 			{classInstance.loading ? (
@@ -118,6 +149,13 @@ export default function ClassInstancePage({
 						classId={classInstance.classInfo?._id!}
 						teachers={classInstance.classInfo?.teachers!}
 					/>
+					<RemoveTeacherModal
+						open={removeTeacherOpen}
+						setOpen={setRemoveTeacherOpen}
+						classId={classInstance.classInfo?._id!}
+						userId={removingTeacher.userId}
+						teacherName={removingTeacher.name}
+					/>
 					<Button
 						variant='text'
 						onClick={handleBack}
@@ -126,7 +164,7 @@ export default function ClassInstancePage({
 					</Button>
 					<Paper
 						elevation={2}
-						className='m-2 p-3 flex justify-between items-center'
+						className='m-2 p-3 flex justify-between'
 					>
 						<div>
 							<p className='text-xl'>
@@ -136,21 +174,16 @@ export default function ClassInstancePage({
 								<strong>Subject: </strong>
 								{classInstance.classInfo?.subject}
 							</p>
-							<div className='flex-col'>
-								<div className='pb-1'>
-									<strong>Teacher(s): </strong>
-									<Button
-										onClick={() => setAddTeacherOpen(true)}
-										variant='contained'
-										className='bg-blue-400 text-white text-center p-1'
-										color='secondary'
-										type='button'
-									>
-										Add Teachers
-									</Button>
+							<div className='pb-1 flex flex-row items-center'>
+								<strong className='pr-1'>Teacher(s): </strong>
+								<div>
+									{modifyState.addTeacher.loading ||
+									modifyState.removeTeacher.loading ? (
+										<CircularProgress color='secondary' />
+									) : (
+										classTeachers
+									)}
 								</div>
-								{modifyState.addTeacher.loading || modifyState.removeTeacher.loading ? <CircularProgress color='secondary' /> : classTeachers}
-								<div>{}</div>
 							</div>
 						</div>
 						<IconButton
@@ -168,6 +201,10 @@ export default function ClassInstancePage({
 							transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 							anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 						>
+							<MenuItem onClick={() => setAddTeacherOpen(true)}>
+								<PersonAddRounded className='mr-2' /> Add Teacher
+							</MenuItem>
+							<Divider />
 							<MenuItem onClick={() => setDeleteOpen(true)}>
 								<DeleteRounded className='mr-2' /> Delete Class
 							</MenuItem>

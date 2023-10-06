@@ -21,7 +21,7 @@ import {
 	TableHead,
 	TableRow,
 } from '@mui/material';
-import { AddCircleRounded } from '@mui/icons-material';
+import { AddCircleRounded, CloseRounded } from '@mui/icons-material';
 import { useAppDispatch } from '@/app/hooks';
 import { getOrgUsers } from '@/redux/slices/user/userDataSlice';
 import { addTeacher } from '@/redux/slices/classes/modifyClass';
@@ -123,7 +123,7 @@ export default function AddTeacherModal(
 				className='flex flex-nowrap justify-center p-3'
 				disableEscapeKeyDown
 			>
-				<DialogTitle>Add Teacher</DialogTitle>
+				<DialogTitle>Add Teacher <IconButton className='float-right' onClick={handleClose}><CloseRounded /></IconButton></DialogTitle>
 				<DialogContent >
 					<TextField className='w-[200px] z-50' value={searchTerm} onChange={(e:ChangeEvent<HTMLInputElement>)=> {
 						handleSearchChange(e);

@@ -158,6 +158,12 @@ export const classModifySlice = createSlice({
 		resetDeleteClass: (state) => {
 			state.delete = initialCallState;
 		},
+		resetAddTeacher: (state) => {
+			state.addTeacher = initialCallState
+		},
+		resetRemoveTeacher: (state) => {
+			state.removeTeacher = initialCallState
+		}
 	},
 	extraReducers: (builder) => {
 		builder
@@ -232,6 +238,6 @@ export const classModifySlice = createSlice({
 	},
 });
 
-export const { resetCreateClass, resetDeleteClass } = classModifySlice.actions;
+export const { resetCreateClass, resetDeleteClass, resetAddTeacher, resetRemoveTeacher } = classModifySlice.actions;
 
 export default classModifySlice.reducer;
