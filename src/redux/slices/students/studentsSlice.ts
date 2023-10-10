@@ -5,6 +5,7 @@ const APIDOMAIN: string = process.env.NEXT_PUBLIC_APIDOMAIN!;
 export interface IStudentState {
 	orgStudents: IGetStudentState;
 	classStudents: IGetStudentState;
+	studentInstance: IGetStudentState;
 }
 
 export interface IStudent {
@@ -38,6 +39,7 @@ const initialGetState: IGetStudentState = {
 const initialState: IStudentState = {
 	orgStudents: initialGetState,
 	classStudents: initialGetState,
+	studentInstance: initialGetState,
 };
 
 interface getReq {
@@ -51,6 +53,29 @@ interface getOrgStudentsReq extends getReq {
 interface getClassStudentsReq extends getReq {
 	classId: string;
 }
+
+interface IGetStudentInstance extends getReq {
+	studentId: string;
+}
+
+export const getStudentInstance = createAsyncThunk(
+	'students/getStudentInstance',
+	async(req: IGetStudentInstance) => {
+		const response: Response = await fetch(
+			`${APIDOMAIN}/students/${req.studentId}`,
+			{
+				method: 'get',
+				mode: 'cors',
+				headers: {
+					Authorization: `Bearer ${req.token}`,
+					'Content-Type': 'application/json;charset=utf-8'
+				}
+			}
+		);
+		const data = await response.json();
+		return data;
+	}
+)
 
 export const getOrgStudents = createAsyncThunk(
 	'students/getOrgStudents',
@@ -96,6 +121,24 @@ export const studentsSlice = createSlice({
 	reducers: {},
 	extraReducers: (builder) => {
 		builder
+			.addCase(getStudentInstance.pending, (state) => {
+				state.studentInstance.loading = true;
+				state.studentInstance.error = false;
+				state.studentInstance.message = '';
+				state.studentInstance.students = [];
+			})
+			.addCase(getStudentInstance.rejected, (state) => {
+				state.studentInstance.loading = false;
+				state.studentInstance.error = true;
+				state.studentInstance.message = 'Error: Failed to retrieve student data for organization.';
+				state.studentInstance.students = [];
+			})
+			.addCase(getStudentInstance.fulfilled, (state, action) => {
+				state.studentInstance.loading = true;
+				state.studentInstance.error = false;
+				state.studentInstance.message = action.payload.message;
+				state.studentInstance.students = action.payload.content;
+			})
 			.addCase(getOrgStudents.pending, (state) => {
 				state.orgStudents.loading = true;
 				state.orgStudents.error = false;
