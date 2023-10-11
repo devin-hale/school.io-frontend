@@ -44,7 +44,7 @@ interface IReq {
 }
 
 //Create Student
-interface ICreateStudentReq extends IReq {
+export interface ICreateStudentReq extends IReq {
 	body: {
 		first_name: string;
 		last_name: string;
