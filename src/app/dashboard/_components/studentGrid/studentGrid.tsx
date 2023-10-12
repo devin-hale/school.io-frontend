@@ -15,10 +15,9 @@ import { IOrgInstanceState } from '@/redux/slices/organizations/orgInstanceSlice
 import { UserState } from '@/redux/slices/user/userSlice';
 import { Button, Menu, MenuItem, IconButton, Divider } from '@mui/material';
 import {
-	PersonAddRounded,
 	MoreHorizRounded,
-	EditRounded,
-	ToggleOffRounded
+	ToggleOffRounded,
+	ContactPageRounded
 } from '@mui/icons-material';
 import { IStudent } from '@/redux/slices/classes/classInstanceSlice';
 
@@ -84,8 +83,7 @@ export default function StudentGrid(props:IStudentGridProps): JSX.Element {
 		},
 	];
 
-	const studentRows = props.students;
-
+	const studentRows =  [...props.students].sort((a,b) => a.last_name < b.last_name ? -1 : 1);
 	useEffect(() => {
 		dispatch(getOrgStudents({ token: user.token!, orgId: user.userInfo.org! }));
 	}, [user.token, user.userInfo.org]);
@@ -101,11 +99,11 @@ export default function StudentGrid(props:IStudentGridProps): JSX.Element {
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 			>
 				<MenuItem onClick={() => console.log('yeah')}>
-					<EditRounded
+					<ContactPageRounded
 						sx={{ width: 20 }}
 						className='mr-2'
 					/>
-					Edit
+					Student Info
 				</MenuItem>
 				<Divider />
 								<MenuItem onClick={() => console.log('yeah')}>

@@ -40,6 +40,7 @@ import AddTeacherModal from './_components/addTeacherModal';
 import { useState } from 'react';
 import PageLoader from '../../_components/pageLoader';
 import RemoveTeacherModal from './_components/removeTeacherConfirmation';
+import StudentGrid from '../../_components/studentGrid/studentGrid';
 
 export default function ClassInstancePage({
 	params,
@@ -58,6 +59,8 @@ export default function ClassInstancePage({
 		name: '',
 	});
 
+
+
 	useEffect(() => {}, [addTeacherOpen]);
 
 	const [optionsAnchor, setOptionsAnchor] = useState<null | HTMLElement>(null);
@@ -69,9 +72,12 @@ export default function ClassInstancePage({
 	const classInstance: ClassInfoState = useSelector(
 		(state: RootState) => state.classInstance.classInstance
 	);
-	const classStudents: ClassStudentsState = useSelector(
-		(state: RootState) => state.classInstance.classStudents
-	);
+	const studentState = useSelector((state: RootState) => state.students);
+	
+	useEffect(() => {
+		dispatch(getClassStudents({ token: userState.token!, classId: params.classId }));
+	}, [userState.token, params.classId]);
+
 	const classTeachers = classInstance.classInfo?.teachers.map(
 		(teacher: any) => (
 			<Paper
@@ -210,6 +216,7 @@ export default function ClassInstancePage({
 							</MenuItem>
 						</Menu>
 					</Paper>
+					<StudentGrid students={studentState.classStudents.students} />
 				</>
 			)}
 		</>

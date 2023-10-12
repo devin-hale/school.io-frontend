@@ -44,7 +44,7 @@ export default function StudentsPage(): JSX.Element {
 				</Button>
 			</div>
 			<div className='w-full h-fit'>
-				<StudentGrid students={[...studentState.orgStudents.students].sort((a,b) => a.last_name < b.last_name ? -1 : 1)} />	
+				<StudentGrid students={studentState.orgStudents.students} />	
 			</div>
 		</div>
 	);
