@@ -29,6 +29,7 @@ import {
 	ICreateStudentReq,
 	IModifyStudentsState,
 	createStudent,
+	resetCreateStudent,
 } from '@/redux/slices/students/modifyStudentsSlice';
 
 export interface ICreateClassModalProps {
@@ -123,9 +124,22 @@ export default function CreateStudentModal(
 	}
 
 	function handleClose(): void {
+		setFirstNameField('');
+		setFirstNameError(false);
+		setFirstNameEText('');
+		setLastNameField('');
+		setLastNameError(false);
+		setLastNameEText('');
+		setGradeLevel('');
+		setGradeLevelError(false);
+		setGradeLevelEText('');
+		setIsGifted(false);
+		setIsELL(false);
+		setIsRetained(false);
+		setIsSpEd(false);
 		dispatch(getOrgStudents({ token: user.token!, orgId: user.userInfo.org! }));
 		props.setOpen(false);
-		dispatch(resetCreateClass());
+		dispatch(resetCreateStudent())
 	}
 
 	const handleDlgClose = (event: object, reason: string) => {

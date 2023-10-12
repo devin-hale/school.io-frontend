@@ -56,15 +56,17 @@ export default function StudentGrid(props:IStudentGridProps): JSX.Element {
 	}
 
 	const studentGridCols: GridColDef[] = [
-		{ field: 'last_name', headerName: 'Last name', width: 130 },
-		{ field: 'first_name', headerName: 'First name', width: 130 },
+		{ field: 'last_name', headerName: 'Last name'},
+		{ field: 'first_name', headerName: 'First name'},
 		{
 			field: 'grade_level',
 			headerName: 'Grade',
 			type: 'number',
-			width: 90,
 		},
 		{ field: 'gifted', headerName: 'Gifted', type: 'boolean' },
+		{ field: 'retained', headerName: 'Retained', type: 'boolean' },
+		{ field: 'sped', headerName: 'SpEd', type: 'boolean' },
+		{ field: 'english_language_learner', headerName: 'ELL', type: 'boolean' },
 		{ field: 'active', headerName: 'Active', type: 'boolean' },
 		{
 			field: 'actions',
@@ -128,7 +130,7 @@ export default function StudentGrid(props:IStudentGridProps): JSX.Element {
 							paginationModel: { page: 0, pageSize: 10 },
 						},
 					}}
-					pageSizeOptions={[5, 25]}
+					pageSizeOptions={[10, 25]}
 					disableColumnMenu
 					disableRowSelectionOnClick
 					disableColumnFilter

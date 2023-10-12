@@ -237,10 +237,14 @@ export const deleteStudent = createAsyncThunk(
 	}
 );
 
-export const modifyStudentsSlice: Slice = createSlice({
+export const modifyStudentsSlice = createSlice({
 	name: 'modifyStudent',
 	initialState: initialModifyState,
-	reducers: {},
+	reducers: {
+		resetCreateStudent: (state) => {
+			state.create = initialCallState;
+		}
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(createStudent.pending, (state) => {
@@ -393,6 +397,6 @@ export const modifyStudentsSlice: Slice = createSlice({
 	},
 });
 
-export const { } = modifyStudentsSlice.actions;
+export const {resetCreateStudent} = modifyStudentsSlice.actions;
 
 export default modifyStudentsSlice.reducer;
