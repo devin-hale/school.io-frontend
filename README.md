@@ -40,11 +40,12 @@ Tech used:
 - [x] Display Classes, Teachers, Students
 - [x] Add/Remove Teachers to/from class
 - [ ] Add/Remove Students to/from Class
+- [ ] Create class grid
 - [ ] Edit Class Info 
 
 **Students Admin Page**
 - [x] Display org students
-- [ ] Create students
+- [x] Create students
 - [ ] Edit Student Info
 - [ ] Delete Student
 - [ ] Add/Remove Students to/from Class

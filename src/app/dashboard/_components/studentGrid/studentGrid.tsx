@@ -3,17 +3,17 @@ import { RootState } from '@/redux/store/store';
 import {
 	DataGrid,
 	GridColDef,
-	GridValueGetterParams,
 	GridActionsCellItem,
 	GridToolbar,
 } from '@mui/x-data-grid';
+import { useRouter } from 'next/navigation';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '@/app/hooks';
 import { getOrgStudents } from '@/redux/slices/students/studentsSlice';
-import { IOrgInstanceState } from '@/redux/slices/organizations/orgInstanceSlice';
 import { UserState } from '@/redux/slices/user/userSlice';
-import { Button, Menu, MenuItem, IconButton, Divider } from '@mui/material';
+import { Menu, MenuItem, Divider } from '@mui/material';
 import {
 	MoreHorizRounded,
 	ToggleOffRounded,
@@ -28,15 +28,13 @@ interface IStudentGridProps {
 
 export default function StudentGrid(props:IStudentGridProps): JSX.Element {
 	const dispatch = useAppDispatch();
+	const router : AppRouterInstance = useRouter();
 	const [actionMenuAnchor, setActionMenuAchor] = useState<HTMLElement | null>(
 		null
 	);
 	const actionMenuOpen = Boolean(actionMenuAnchor);
-	const [actionMenuState, setActionMenuState] = useState<string | null>(null);
+	const [actionMenuStudentId, setActionMenuStudentId] = useState<string | null>(null);
 
-	const orgInfo: IOrgInstanceState = useSelector(
-		(state: RootState) => state.orgInstance
-	);
 	const user: UserState = useSelector((state: RootState) => state.user);
 
 	function handleActionMenuOpen(e: React.MouseEvent<HTMLElement>) {
@@ -45,6 +43,7 @@ export default function StudentGrid(props:IStudentGridProps): JSX.Element {
 
 	function handleActionMenuClose(): void {
 		setActionMenuAchor(null);
+		setActionMenuStudentId(null);
 	}
 
 	function handleActionMenuClick(
@@ -52,21 +51,27 @@ export default function StudentGrid(props:IStudentGridProps): JSX.Element {
 		studentId: string
 	) {
 		handleActionMenuOpen(e);
+		setActionMenuStudentId(studentId);
+	}
+
+	function handleStudentInfoNavigate(){
+		router.push(`/dashboard/students/${actionMenuStudentId}`)
 	}
 
 	const studentGridCols: GridColDef[] = [
-		{ field: 'last_name', headerName: 'Last name'},
-		{ field: 'first_name', headerName: 'First name'},
+		{ field: 'last_name', headerName: 'Last name', flex: 0.25},
+		{ field: 'first_name', headerName: 'First name', flex: 0.25},
 		{
 			field: 'grade_level',
 			headerName: 'Grade',
 			type: 'number',
+			flex: 0.2,
 		},
-		{ field: 'gifted', headerName: 'Gifted', type: 'boolean' },
-		{ field: 'retained', headerName: 'Retained', type: 'boolean' },
-		{ field: 'sped', headerName: 'SpEd', type: 'boolean' },
-		{ field: 'english_language_learner', headerName: 'ELL', type: 'boolean' },
-		{ field: 'active', headerName: 'Active', type: 'boolean' },
+		{ field: 'gifted', headerName: 'Gifted', type: 'boolean', flex: 0.2 },
+		{ field: 'retained', headerName: 'Retained', type: 'boolean', flex: 0.2 },
+		{ field: 'sped', headerName: 'SpEd', type: 'boolean', flex: 0.2 },
+		{ field: 'english_language_learner', headerName: 'ELL', type: 'boolean', flex: 0.2 },
+		{ field: 'active', headerName: 'Active', type: 'boolean', flex: 0.2 },
 		{
 			field: 'actions',
 			type: 'actions',
@@ -98,7 +103,7 @@ export default function StudentGrid(props:IStudentGridProps): JSX.Element {
 				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 			>
-				<MenuItem onClick={() => console.log('yeah')}>
+				<MenuItem onClick={handleStudentInfoNavigate}>
 					<ContactPageRounded
 						sx={{ width: 20 }}
 						className='mr-2'
@@ -119,6 +124,7 @@ export default function StudentGrid(props:IStudentGridProps): JSX.Element {
 						'&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
 							outline: 'none !important',
 						},
+						maxWidth: '90vw'
 					}}
 					rows={studentRows}
 					getRowId={(row) => row._id}

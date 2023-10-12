@@ -5,7 +5,7 @@ const APIDOMAIN: string = process.env.NEXT_PUBLIC_APIDOMAIN!;
 export interface IStudentState {
 	orgStudents: IGetStudentState;
 	classStudents: IGetStudentState;
-	studentInstance: IGetStudentState;
+	studentInstance: IGetStudentInstanceState;
 }
 
 export interface IStudent {
@@ -29,6 +29,13 @@ export interface IGetStudentState {
 	students: IStudent[];
 }
 
+export interface IGetStudentInstanceState {
+	loading: boolean;
+	message: string | null;
+	error: boolean;
+	student: IStudent | null;
+}
+
 const initialGetState: IGetStudentState = {
 	loading: false,
 	message: null,
@@ -36,10 +43,17 @@ const initialGetState: IGetStudentState = {
 	students: [],
 };
 
+const initialStudentInstanceState : IGetStudentInstanceState = {
+	loading: false,
+	message: null,
+	error: false,
+	student: null,
+}
+
 const initialState: IStudentState = {
 	orgStudents: initialGetState,
 	classStudents: initialGetState,
-	studentInstance: initialGetState,
+	studentInstance: initialStudentInstanceState,
 };
 
 interface getReq {
@@ -125,19 +139,19 @@ export const studentsSlice = createSlice({
 				state.studentInstance.loading = true;
 				state.studentInstance.error = false;
 				state.studentInstance.message = '';
-				state.studentInstance.students = [];
+				state.studentInstance.student = null;
 			})
 			.addCase(getStudentInstance.rejected, (state) => {
 				state.studentInstance.loading = false;
 				state.studentInstance.error = true;
 				state.studentInstance.message = 'Error: Failed to retrieve student data for organization.';
-				state.studentInstance.students = [];
+				state.studentInstance.student = null;
 			})
 			.addCase(getStudentInstance.fulfilled, (state, action) => {
-				state.studentInstance.loading = true;
+				state.studentInstance.loading = false;
 				state.studentInstance.error = false;
 				state.studentInstance.message = action.payload.message;
-				state.studentInstance.students = action.payload.content;
+				state.studentInstance.student = action.payload.content;
 			})
 			.addCase(getOrgStudents.pending, (state) => {
 				state.orgStudents.loading = true;
