@@ -176,7 +176,7 @@ export default function ClassInstancePage({
 							</p>
 							<div className='pb-1 flex flex-row items-center'>
 								<strong className='pr-1'>Teacher(s): </strong>
-								<div>
+								<div className='flex flex-row flex-wrap items-center justify-evenly m-1'>
 									{modifyState.addTeacher.loading ||
 									modifyState.removeTeacher.loading ? (
 										<CircularProgress color='secondary' />
