@@ -26,61 +26,32 @@ Tech used:
 
 ## Status
 
-### **UPDATE: 9-26-2023:**
-- Decided on Material UI as UI framework.
-- Created basic dashboard/UI layout.
-- Blue/Green color scheme.
-- Class Page pulling data.  Needs to be fleshed out.
+### **CURRENTLY:**
 
+**Logic**
+- [ ] Organize state logic into get slices, and modify slices.
+- [ ] Complete reducers for endpoints
+    - [x] Students
+    - [ ] Users
+    - [ ] Classes
+    - [ ] Orgs
 
-### **NEXT:**
-Add utility pages for adding users/students/classes as an admin
-^^ So I can make data to populate the other pages without manually entering into DB.
+**Orgs/ClassInstance Admin Page**
+- [x] Display Classes, Teachers, Students
+- [x] Add/Remove Teachers to/from class
+- [ ] Add/Remove Students to/from Class
+- [ ] Edit Class Info 
 
+**Students Admin Page**
+- [x] Display org students
+- [ ] Create students
+- [ ] Edit Student Info
+- [ ] Delete Student
+- [ ] Add/Remove Students to/from Class
 
+**Users Admin Page**
+- [ ] Display all org users.
+- [ ] Create user.
+- [ ] Edit user info.
+- [ ] Disable/Delete user.
 
-## Development Roadmap
-
-**Organizational Tasks**
-- [x] Decide on UI Framework
-- [x] Choose color scheme.  Define light/dark modes.
-- [] Brainstorm some kind of logo?
-
-**Login/User Authentication(REFACTOR)**
-- [x] Login Page
-- [x] Basic Landing Page
-- [x] User/Session Authentication
-
-**Classroom/Student(REFACTOR)
-- [] Classes Page
-- [] Class Instance Page
-- [] Student Instance Page
-
-**Documentation(PARTIAL REFACTOR)**
-- [] Documentation creation page
-    - [] Incident
-    - [] Communication
-    - [] PST
-- [] Page for existing documentation instances
-    - [] Incident
-    - [] Communication
-    - [] PST
-
-[] **Utilities**
-- [] Org Admin Page
-    - [] Create classes
-        - [x] Assign/Remove a teacher or teachers to classes
-        - [] Assign students to class (easier for Elementary)
-    - [] Create students
-        - [] Assign class to students (easier for Middle/HS)
-    - [] Transfer students between classes
-    - [] Cross Org Student Transfer Requests
-- [] Super Admin Page
-    - [] Create Orgs
-    - [] Create Org Admin Account
-    - [] "Promote" Users to Org Admin
-    - [] Data Utilities
-- [] User profile
-    - [] Profile Image
-    - [] Editing of basic information
-- [] Teacher to Teacher messaging within the same Org
