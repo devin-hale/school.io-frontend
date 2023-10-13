@@ -44,7 +44,7 @@ export default function StudentsPage(): JSX.Element {
 				</Button>
 			</div>
 			<div className='w-full h-fit'>
-				<StudentGrid students={studentState.orgStudents.students} />	
+				<StudentGrid students={studentState.orgStudents.students} type={'org'} sourceId={user.userInfo.org!} />	
 			</div>
 		</div>
 	);

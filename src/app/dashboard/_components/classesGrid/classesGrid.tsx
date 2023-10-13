@@ -11,10 +11,6 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '@/app/hooks';
-import {
-	getClassStudents,
-	getOrgStudents,
-} from '@/redux/slices/students/studentsSlice';
 import { UserState } from '@/redux/slices/user/userSlice';
 import { Menu, MenuItem, Divider } from '@mui/material';
 import {
@@ -22,70 +18,68 @@ import {
 	ToggleOffRounded,
 	ContactPageRounded,
 } from '@mui/icons-material';
-import { IStudent } from '@/redux/slices/classes/classInstanceSlice';
+import { IClass, getOrgClasses } from '@/redux/slices/classes/classSlice';
+import UnenrollStudentModal from '../../students/[studentId]/_components/unenrollStudents';
+import { getStudentInstance } from '@/redux/slices/students/studentsSlice';
 
-interface IStudentGridProps {
-	students: IStudent[];
-	type: 'org' | 'class';
+interface IClassGridProps {
+	classes: IClass[];
+	type: 'student' | 'org';
 	sourceId: string;
 }
 
-export default function StudentGrid(props: IStudentGridProps): JSX.Element {
+export default function ClassesGrid(props: IClassGridProps): JSX.Element {
 	const dispatch = useAppDispatch();
 	const router: AppRouterInstance = useRouter();
 	const [actionMenuAnchor, setActionMenuAchor] = useState<HTMLElement | null>(
 		null
 	);
 	const actionMenuOpen = Boolean(actionMenuAnchor);
-	const [actionMenuStudentId, setActionMenuStudentId] = useState<string | null>(
+	const [actionMenuClassId, setActionMenuClassId] = useState<string | null>(
 		null
 	);
 
+	const [removeClassOpen, setRemoveClassOpen] = useState<boolean>(false);
+	const [removeClassId, setRemoveClassId] = useState<string | null>(null);
+
+
 	const user: UserState = useSelector((state: RootState) => state.user);
 
-	function handleActionMenuOpen(e: React.MouseEvent<HTMLElement>) {
+	function handleActionMenuOpen(e: React.MouseEvent<HTMLElement>, classId:string) {
 		setActionMenuAchor(e.currentTarget);
+		setRemoveClassId(classId);
 	}
 
 	function handleActionMenuClose(): void {
 		setActionMenuAchor(null);
-		setActionMenuStudentId(null);
+		setActionMenuClassId(null);
 	}
 
 	function handleActionMenuClick(
 		e: React.MouseEvent<HTMLElement>,
-		studentId: string
+		classId: string
 	) {
-		handleActionMenuOpen(e);
-		setActionMenuStudentId(studentId);
+		handleActionMenuOpen(e, classId);
+		setActionMenuClassId(classId);
 	}
 
-	function handleStudentInfoNavigate() {
-		router.push(`/dashboard/students/${actionMenuStudentId}`);
+	function handleClassInfoNavigate() {
+		router.push(`/dashboard/organization/${actionMenuClassId}`);
 	}
 
-	const studentGridCols: GridColDef[] = [
-		{ field: 'last_name', headerName: 'Last name', flex: 0.25 },
-		{ field: 'first_name', headerName: 'First name', flex: 0.25 },
+	const classGridCols: GridColDef[] = [
+		{ field: 'name', headerName: 'Class', flex: 0.3 },
+		{ field: 'subject', headerName: 'Subject', type: 'string', flex: 0.3 },
 		{
 			field: 'grade_level',
 			headerName: 'Grade',
 			type: 'number',
 			flex: 0.2,
 		},
-		{ field: 'gifted', headerName: 'Gifted', type: 'boolean', flex: 0.2 },
-		{ field: 'retained', headerName: 'Retained', type: 'boolean', flex: 0.2 },
-		{ field: 'sped', headerName: 'SpEd', type: 'boolean', flex: 0.2 },
-		{
-			field: 'english_language_learner',
-			headerName: 'ELL',
-			type: 'boolean',
-			flex: 0.2,
-		},
-		{ field: 'active', headerName: 'Active', type: 'boolean', flex: 0.2 },
 		{
 			field: 'actions',
 			type: 'actions',
+			flex: 0.2,
 			getActions: (params: any) => [
 				<GridActionsCellItem
 					key={params.id}
@@ -99,22 +93,14 @@ export default function StudentGrid(props: IStudentGridProps): JSX.Element {
 		},
 	];
 
-	const studentRows = [...props.students].sort((a, b) =>
-		a.last_name < b.last_name ? -1 : 1
+	const classRows = [...props.classes].sort((a, b) =>
+		a.name < b.name ? -1 : 1
 	);
-	useEffect(() => {
-		switch (props.type) {
-			case "org":
-				dispatch(getOrgStudents({ token: user.token!, orgId: props.sourceId }));
-				break
-			case "class":
-				dispatch(getClassStudents({ token: user.token!, classId: props.sourceId }))
-				break
-		}
-	}, [user.token, props.sourceId, props.type]);
 
+	
 	return (
 		<div>
+			<UnenrollStudentModal open={removeClassOpen} setOpen={setRemoveClassOpen} studentId={props.sourceId} classId={removeClassId!} />
 			<Menu
 				anchorEl={actionMenuAnchor}
 				open={actionMenuOpen}
@@ -123,21 +109,31 @@ export default function StudentGrid(props: IStudentGridProps): JSX.Element {
 				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 			>
-				<MenuItem onClick={handleStudentInfoNavigate}>
+				<MenuItem 
+						onClick={handleClassInfoNavigate}
+				>
 					<ContactPageRounded
 						sx={{ width: 20 }}
 						className='mr-2'
 					/>
-					Student Info
+					Class Info
 				</MenuItem>
-				<Divider />
-				<MenuItem onClick={() => console.log('yeah')}>
-					<ToggleOffRounded
-						sx={{ width: 20 }}
-						className='mr-2'
-					/>
-					Toggle Active
-				</MenuItem>
+				{props.type === 'student' &&
+					(user.userInfo.accType === 'Admin' ||
+						user.userInfo.accType === 'Staff') && (
+						<div>
+							<Divider />
+							<MenuItem
+								onClick={()=>setRemoveClassOpen(true)}
+							>
+								<ContactPageRounded
+									sx={{ width: 20 }}
+									className='mr-2'
+								/>
+								Unenroll Student
+							</MenuItem>
+						</div>
+					)}
 			</Menu>
 			<DataGrid
 				sx={{
@@ -146,9 +142,9 @@ export default function StudentGrid(props: IStudentGridProps): JSX.Element {
 					},
 					maxWidth: '90vw',
 				}}
-				rows={studentRows}
+				rows={classRows}
 				getRowId={(row) => row._id}
-				columns={studentGridCols}
+				columns={classGridCols}
 				initialState={{
 					pagination: {
 						paginationModel: { page: 0, pageSize: 10 },

@@ -14,9 +14,7 @@ import {
 	IconButton,
 	Divider,
 	Card,
-	CardHeader,
 	CardContent,
-	CardActions,
 	Typography,
 	Chip,
 } from '@mui/material';
@@ -24,12 +22,15 @@ import {
 	SettingsRounded,
 	EditRounded,
 	DeleteRounded,
+	GroupAdd,
 } from '@mui/icons-material';
 import { useState } from 'react';
 import { getStudentInstance } from '@/redux/slices/students/studentsSlice';
 import PageLoader from '../../_components/pageLoader';
 import EditStudentModal from './_components/editStudentModal';
 import DeleteStudentModal from './_components/deleteConfirm';
+import ClassesGrid from '../../_components/classesGrid/classesGrid';
+import AddClassModal from './_components/classSearch';
 
 export default function ClassInstancePage({
 	params,
@@ -57,6 +58,20 @@ export default function ClassInstancePage({
 
 	const [deleteStudentModalOpen, setDeleteStudentModalOpen] =
 		useState<boolean>(false);
+
+	const [addClassOpen, setAddClassOpen] = useState<boolean>(false);
+
+
+	useEffect(() => {
+		if (!addClassOpen) {
+			dispatch(
+				getStudentInstance({
+					token: userState.token!,
+					studentId: params.studentId,
+				})
+			);
+		}
+	}, [addClassOpen]);
 
 	useEffect(() => {
 		if (userState.token) {
@@ -99,6 +114,12 @@ export default function ClassInstancePage({
 				<PageLoader />
 			) : (
 				<>
+					<AddClassModal
+						open={addClassOpen}
+						setOpen={setAddClassOpen}
+						student={studentInstance!}
+						orgId={userState.userInfo.org!}
+					/>
 					<DeleteStudentModal
 						open={deleteStudentModalOpen}
 						setOpen={setDeleteStudentModalOpen}
@@ -119,7 +140,7 @@ export default function ClassInstancePage({
 								studentInstance?.english_language_learner ?? false,
 						}}
 					/>
-					<Paper className='p-1'>
+					<Paper className='p-1 max-w-[90vw]'>
 						<Card
 							className='m-2'
 							variant='elevation'
@@ -185,6 +206,28 @@ export default function ClassInstancePage({
 									</MenuItem>
 								</Menu>
 							</CardContent>
+						</Card>
+						<Card className='m-2 p-3'>
+							<div className='flex flex-row flexwrap justify-between m-1 p-1'>
+								<Typography>
+									<strong className='underline'>Classes:</strong>
+								</Typography>
+								<Button
+									variant='contained'
+									className='bg-green-400 text-white'
+									onClick={() => setAddClassOpen(true)}
+								>
+									<GroupAdd className='mr-1' />
+									Add Class
+								</Button>
+							</div>
+							<div className='m-2'>
+								<ClassesGrid
+									classes={studentInstance!.classes}
+									type='student'
+									sourceId={studentInstance!._id}
+								/>
+							</div>
 						</Card>
 					</Paper>
 				</>

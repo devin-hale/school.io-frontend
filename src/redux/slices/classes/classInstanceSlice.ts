@@ -37,7 +37,7 @@ export type IStudent = {
 	retained: boolean;
 	sped: boolean;
 	english_language_learner: boolean;
-	classes?: string[];
+	classes?: IClass[];
 	org: string;
 	active: string;
 };

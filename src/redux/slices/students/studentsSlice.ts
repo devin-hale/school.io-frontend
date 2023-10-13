@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { IClass } from '../classes/classSlice';
 
 const APIDOMAIN: string = process.env.NEXT_PUBLIC_APIDOMAIN!;
 
@@ -17,7 +18,7 @@ export interface IStudent {
 	retained: boolean;
 	sped: boolean;
 	english_language_learner: boolean;
-	classes: string[];
+	classes: IClass[];
 	org: string;
 	active: string;
 }
