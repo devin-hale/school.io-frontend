@@ -11,9 +11,15 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
 import { Dispatch } from 'react';
 import { useAppDispatch } from '@/app/hooks';
-import { resetDeleteClass, deleteClass } from '@/redux/slices/classes/modifyClass';
+import {
+	resetDeleteClass,
+	deleteClass,
+} from '@/redux/slices/classes/modifyClass';
 import { useRouter } from 'next/navigation';
-import { deleteStudent, resetDeleteStudent } from '@/redux/slices/students/modifyStudentsSlice';
+import {
+	deleteStudent,
+	resetDeleteStudent,
+} from '@/redux/slices/students/modifyStudentsSlice';
 
 export interface ICreateClassModalProps {
 	open: boolean;
@@ -26,7 +32,9 @@ export default function DeleteStudentModal(
 ): JSX.Element {
 	const dispatch: Dispatch<any> = useAppDispatch();
 	const user = useSelector((state: RootState) => state.user);
-	const modifyStudentState = useSelector((state:RootState) => state.studentsModify.delete)
+	const modifyStudentState = useSelector(
+		(state: RootState) => state.studentsModify.delete
+	);
 	const router = useRouter();
 
 	function handleClose(): void {

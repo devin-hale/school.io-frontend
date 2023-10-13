@@ -23,7 +23,7 @@ import {
 import {
 	SettingsRounded,
 	EditRounded,
-	DeleteRounded
+	DeleteRounded,
 } from '@mui/icons-material';
 import { useState } from 'react';
 import { getStudentInstance } from '@/redux/slices/students/studentsSlice';
@@ -55,7 +55,8 @@ export default function ClassInstancePage({
 	const [editStudentModalOpen, setEditStudentModalOpen] =
 		useState<boolean>(false);
 
-	const [deleteStudentModalOpen, setDeleteStudentModalOpen] = useState<boolean>(false);
+	const [deleteStudentModalOpen, setDeleteStudentModalOpen] =
+		useState<boolean>(false);
 
 	useEffect(() => {
 		if (userState.token) {
@@ -98,7 +99,11 @@ export default function ClassInstancePage({
 				<PageLoader />
 			) : (
 				<>
-					<DeleteStudentModal open={deleteStudentModalOpen} setOpen={setDeleteStudentModalOpen} studentId={params.studentId} />
+					<DeleteStudentModal
+						open={deleteStudentModalOpen}
+						setOpen={setDeleteStudentModalOpen}
+						studentId={params.studentId}
+					/>
 					<EditStudentModal
 						open={editStudentModalOpen}
 						setOpen={setEditStudentModalOpen}
@@ -175,11 +180,9 @@ export default function ClassInstancePage({
 										<EditRounded className='mr-2' /> Edit Student
 									</MenuItem>
 									<Divider />
-<MenuItem onClick={() => setDeleteStudentModalOpen(true)}>
+									<MenuItem onClick={() => setDeleteStudentModalOpen(true)}>
 										<DeleteRounded className='mr-2' /> Delete Student
 									</MenuItem>
-
-									
 								</Menu>
 							</CardContent>
 						</Card>
