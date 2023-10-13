@@ -49,6 +49,7 @@ export default function ClassInstancePage({
 }): JSX.Element {
 	const router: AppRouterInstance = useRouter();
 	const dispatch: Dispatch<any> = useAppDispatch();
+	const [loading, setLoading] = useState<boolean>(true);
 
 	const [deleteOpen, setDeleteOpen] = useState(false);
 
@@ -58,8 +59,6 @@ export default function ClassInstancePage({
 		userId: '',
 		name: '',
 	});
-
-
 
 	useEffect(() => {}, [addTeacherOpen]);
 
@@ -73,9 +72,11 @@ export default function ClassInstancePage({
 		(state: RootState) => state.classInstance.classInstance
 	);
 	const studentState = useSelector((state: RootState) => state.students);
-	
+
 	useEffect(() => {
-		dispatch(getClassStudents({ token: userState.token!, classId: params.classId }));
+		dispatch(
+			getClassStudents({ token: userState.token!, classId: params.classId })
+		);
 	}, [userState.token, params.classId]);
 
 	const classTeachers = classInstance.classInfo?.teachers.map(
@@ -114,6 +115,11 @@ export default function ClassInstancePage({
 	}, [modifyState.addTeacher.complete, modifyState.removeTeacher.complete]);
 
 	useEffect(() => {
+		if (classInstance.loading) setLoading(true);
+		else setLoading(false);
+	}, [classInstance.loading]);
+
+	useEffect(() => {
 		if (classInstance.classInfo && userState.token) {
 			dispatch(
 				getClassStudents({ classId: params.classId, token: userState.token! })
@@ -140,7 +146,7 @@ export default function ClassInstancePage({
 
 	return (
 		<>
-			{classInstance.loading ? (
+			{classInstance.loading || loading ? (
 				<PageLoader />
 			) : (
 				<>

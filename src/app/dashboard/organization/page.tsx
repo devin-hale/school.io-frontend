@@ -35,6 +35,8 @@ import CreateClassModal from './_components/createClassModal';
 import PageLoader from '../_components/pageLoader';
 
 export default function ClassPage(): JSX.Element {
+	const [loading, setLoading] = useState<boolean>(true);
+	const [classLoading, setClassLoading] = useState<boolean>(true);
 	const [createClassModal, setCreateClassModal] = useState(false);
 	const classState: ClassState = useSelector((state: RootState) => state.class);
 	const orgInfo: IOrgInstanceState = useSelector(
@@ -50,6 +52,16 @@ export default function ClassPage(): JSX.Element {
 			dispatch(getOrgInstance({ orgId: user.userInfo.org, token: user.token }));
 		}
 	}, [user.token, user.userInfo.org, dispatch]);
+
+	useEffect(() => {
+		if(orgInfo.loading) setLoading(true);
+		else setLoading(false);
+		}, [orgInfo.loading])
+
+	useEffect(() => {
+		if(classState.classGet.loading) setClassLoading(true);
+		else setClassLoading(false);
+		}, [classState.classGet.loading])
 
 	const classList = classState.classes.map((classObj: IClass) => (
 		<ListItem
@@ -72,7 +84,7 @@ export default function ClassPage(): JSX.Element {
 
 	return (
 		<>
-			{orgInfo.loading ? (
+			{orgInfo.loading || loading ? (
 				<PageLoader />
 			) : (
 				<>
@@ -109,7 +121,7 @@ export default function ClassPage(): JSX.Element {
 						</Button>
 					</Paper>
 					<div className='w-full flex flex-col'>
-						{classState.classGet.loading ? (
+						{classState.classGet.loading || classLoading ? (
 							<CircularProgress color='primary' />
 						) : (
 							<List className='flex flex-row flex-wrap'>{classList}</List>

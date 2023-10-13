@@ -74,7 +74,7 @@ export const createStudent = createAsyncThunk(
 );
 
 //Edit Student Info
-interface IEditStudentReq extends IReq {
+export interface IEditStudentReq extends IReq {
 	params: {
 		studentId: string;
 	};
@@ -243,6 +243,9 @@ export const modifyStudentsSlice = createSlice({
 	reducers: {
 		resetCreateStudent: (state) => {
 			state.create = initialCallState;
+		},
+		resetEditStudent: (state) => {
+			state.editInfo = initialCallState;
 		}
 	},
 	extraReducers: (builder) => {
@@ -397,6 +400,6 @@ export const modifyStudentsSlice = createSlice({
 	},
 });
 
-export const {resetCreateStudent} = modifyStudentsSlice.actions;
+export const {resetCreateStudent, resetEditStudent} = modifyStudentsSlice.actions;
 
 export default modifyStudentsSlice.reducer;
