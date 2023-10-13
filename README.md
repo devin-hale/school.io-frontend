@@ -46,7 +46,7 @@ Tech used:
 **Students Admin Page**
 - [x] Display org students
 - [x] Create students
-- [ ] Edit Student Info
+- [x] Edit Student Info
 - [ ] Delete Student
 - [ ] Add/Remove Students to/from Class
 
