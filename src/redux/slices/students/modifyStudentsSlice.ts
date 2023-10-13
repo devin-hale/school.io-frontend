@@ -246,7 +246,11 @@ export const modifyStudentsSlice = createSlice({
 		},
 		resetEditStudent: (state) => {
 			state.editInfo = initialCallState;
+		},
+		resetDeleteStudent: (state) => {
+			state.delete = initialCallState;
 		}
+
 	},
 	extraReducers: (builder) => {
 		builder
@@ -400,6 +404,6 @@ export const modifyStudentsSlice = createSlice({
 	},
 });
 
-export const {resetCreateStudent, resetEditStudent} = modifyStudentsSlice.actions;
+export const {resetCreateStudent, resetEditStudent, resetDeleteStudent} = modifyStudentsSlice.actions;
 
 export default modifyStudentsSlice.reducer;
