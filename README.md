@@ -48,7 +48,7 @@ Tech used:
 - [x] Create students
 - [x] Edit Student Info
 - [x] Delete Student
-- [ ] Add/Remove Students to/from Class
+- [x] Add/Remove Students to/from Class
 
 **Users Admin Page**
 - [ ] Display all org users.
