@@ -8,7 +8,7 @@ import {
 } from '@mui/x-data-grid';
 import { useRouter } from 'next/navigation';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '@/app/hooks';
 import { UserState } from '@/redux/slices/user/userSlice';
@@ -21,11 +21,13 @@ import {
 import { IClass, getOrgClasses } from '@/redux/slices/classes/classSlice';
 import UnenrollStudentModal from '../../students/[studentId]/_components/unenrollStudents';
 import { getStudentInstance } from '@/redux/slices/students/studentsSlice';
+import { Dispatch } from 'react';
 
 interface IClassGridProps {
-	classes: IClass[];
 	type: 'student' | 'org';
 	sourceId: string;
+	removeClassOpen?: boolean;
+	setRemoveClassOpen?: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function ClassesGrid(props: IClassGridProps): JSX.Element {
@@ -39,13 +41,18 @@ export default function ClassesGrid(props: IClassGridProps): JSX.Element {
 		null
 	);
 
-	const [removeClassOpen, setRemoveClassOpen] = useState<boolean>(false);
 	const [removeClassId, setRemoveClassId] = useState<string | null>(null);
-
+	console.log(removeClassId);
 
 	const user: UserState = useSelector((state: RootState) => state.user);
+	const classState = useSelector(
+		(state: RootState) => state.students.studentInstance.student?.classes
+	);
 
-	function handleActionMenuOpen(e: React.MouseEvent<HTMLElement>, classId:string) {
+	function handleActionMenuOpen(
+		e: React.MouseEvent<HTMLElement>,
+		classId: string
+	) {
 		setActionMenuAchor(e.currentTarget);
 		setRemoveClassId(classId);
 	}
@@ -93,14 +100,16 @@ export default function ClassesGrid(props: IClassGridProps): JSX.Element {
 		},
 	];
 
-	const classRows = [...props.classes].sort((a, b) =>
-		a.name < b.name ? -1 : 1
-	);
+	const classRows = [...classState!].sort((a, b) => (a.name < b.name ? -1 : 1));
 
-	
 	return (
 		<div>
-			<UnenrollStudentModal open={removeClassOpen} setOpen={setRemoveClassOpen} studentId={props.sourceId} classId={removeClassId!} />
+			<UnenrollStudentModal
+				open={props.removeClassOpen!}
+				setOpen={props.setRemoveClassOpen!}
+				studentId={props.sourceId}
+				classId={removeClassId!}
+			/>
 			<Menu
 				anchorEl={actionMenuAnchor}
 				open={actionMenuOpen}
@@ -109,9 +118,7 @@ export default function ClassesGrid(props: IClassGridProps): JSX.Element {
 				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 			>
-				<MenuItem 
-						onClick={handleClassInfoNavigate}
-				>
+				<MenuItem onClick={handleClassInfoNavigate}>
 					<ContactPageRounded
 						sx={{ width: 20 }}
 						className='mr-2'
@@ -123,9 +130,7 @@ export default function ClassesGrid(props: IClassGridProps): JSX.Element {
 						user.userInfo.accType === 'Staff') && (
 						<div>
 							<Divider />
-							<MenuItem
-								onClick={()=>setRemoveClassOpen(true)}
-							>
+							<MenuItem onClick={() => props.setRemoveClassOpen!(true)}>
 								<ContactPageRounded
 									sx={{ width: 20 }}
 									className='mr-2'

@@ -60,18 +60,7 @@ export default function ClassInstancePage({
 		useState<boolean>(false);
 
 	const [addClassOpen, setAddClassOpen] = useState<boolean>(false);
-
-
-	useEffect(() => {
-		if (!addClassOpen) {
-			dispatch(
-				getStudentInstance({
-					token: userState.token!,
-					studentId: params.studentId,
-				})
-			);
-		}
-	}, [addClassOpen]);
+	const [removeClassOpen, setRemoveClassOpen] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (userState.token) {
@@ -85,7 +74,7 @@ export default function ClassInstancePage({
 	}, [userState.token, params.studentId]);
 
 	useEffect(() => {
-		if (userState.token) {
+		if (!removeClassOpen) {
 			dispatch(
 				getStudentInstance({
 					token: userState.token!,
@@ -93,9 +82,22 @@ export default function ClassInstancePage({
 				})
 			);
 		}
-	}, [modifyStudentState.editInfo.complete]);
+	}, [removeClassOpen]);
+	useEffect(() => {
+		console.log(loading)
+		console.log(addClassOpen)
+		if (!addClassOpen) {
+			dispatch(
+				getStudentInstance({
+					token: userState.token!,
+					studentId: params.studentId,
+				})
+			);
+		}
+	}, [addClassOpen]);
 
 	useEffect(() => {
+		console.log('doin the loading thing')
 		if (studentState.studentInstance.loading) setLoading(true);
 		else setLoading(false);
 	}, [studentState.studentInstance.loading]);
@@ -117,7 +119,7 @@ export default function ClassInstancePage({
 					<AddClassModal
 						open={addClassOpen}
 						setOpen={setAddClassOpen}
-						student={studentInstance!}
+						student={studentState.studentInstance.student!}
 						orgId={userState.userInfo.org!}
 					/>
 					<DeleteStudentModal
@@ -140,50 +142,50 @@ export default function ClassInstancePage({
 								studentInstance?.english_language_learner ?? false,
 						}}
 					/>
-					<Paper className='p-1 max-w-[90vw]'>
+					<Paper className='p0 max-w-[90vw]'>
 						<Card
-							className='m-2'
+							className='m-1'
 							variant='elevation'
-							elevation={3}
+							elevation={4}
 						>
 							<CardContent className='flex flex-row flex-wrap justify-between w-full items-center'>
-								<Typography className='mr-[50px]'>
+								<Typography className='mr-[51px]'>
 									<strong className='underline'>Student Name:</strong>
 									{` ${studentInstance?.first_name} ${studentInstance?.last_name}`}
 								</Typography>
-								<Typography className='mr-[50px]'>
+								<Typography className='mr-[51px]'>
 									<strong className='underline'>Grade:</strong>
 									{` ${studentInstance?.grade_level}`}
 								</Typography>
 								<div className='flex flex-row flex-wrap'>
 									{studentInstance?.gifted ? (
 										<Chip
-											className='bg-blue-500 m-1 text-white drop-shadow-md'
+											className='bg-blue-400 m-1 text-white drop-shadow-md'
 											label='Gifted'
 										/>
 									) : null}
 									{studentInstance?.retained ? (
 										<Chip
-											className='bg-orange-500 m-1 text-white drop-shadow-md'
+											className='bg-orange-400 m-1 text-white drop-shadow-md'
 											label='Retained'
 										/>
 									) : null}
 									{studentInstance?.sped ? (
 										<Chip
-											className='bg-yellow-500 m-1 text-white drop-shadow-md'
+											className='bg-yellow-400 m-1 text-white drop-shadow-md'
 											label='SpEd'
 										/>
 									) : null}
 									{studentInstance?.english_language_learner ? (
 										<Chip
-											className='bg-emerald-500 m-1 text-white drop-shadow-md'
+											className='bg-emerald-400 m-1 text-white drop-shadow-md'
 											label='ELL'
 										/>
 									) : null}
 								</div>
 								<IconButton
 									className='justify-self-end'
-									sx={{ height: 40, width: 40 }}
+									sx={{ height: 41, width: 40 }}
 									onClick={handleOptionsOpen}
 									edge='start'
 								>
@@ -198,11 +200,11 @@ export default function ClassInstancePage({
 									anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 								>
 									<MenuItem onClick={() => setEditStudentModalOpen(true)}>
-										<EditRounded className='mr-2' /> Edit Student
+										<EditRounded className='mr-1' /> Edit Student
 									</MenuItem>
 									<Divider />
 									<MenuItem onClick={() => setDeleteStudentModalOpen(true)}>
-										<DeleteRounded className='mr-2' /> Delete Student
+										<DeleteRounded className='mr-1' /> Delete Student
 									</MenuItem>
 								</Menu>
 							</CardContent>
@@ -223,9 +225,10 @@ export default function ClassInstancePage({
 							</div>
 							<div className='m-2'>
 								<ClassesGrid
-									classes={studentInstance!.classes}
 									type='student'
-									sourceId={studentInstance!._id}
+									sourceId={studentState.studentInstance.student!._id}
+									removeClassOpen={removeClassOpen}
+									setRemoveClassOpen={setRemoveClassOpen}
 								/>
 							</div>
 						</Card>

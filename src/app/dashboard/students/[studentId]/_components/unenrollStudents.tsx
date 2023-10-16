@@ -68,14 +68,12 @@ export default function UnenrollStudentModal(
 				classId: props.classId,
 			},
 		};
-		console.log(dispatchBody)
 		dispatch(removeStudentClass(dispatchBody));
 		handleClose();
 	};
 
 	return (
 		<>
-			{props.open ? (
 				<Dialog
 					open={props.open}
 					onClose={handleDlgClose}
@@ -112,7 +110,6 @@ export default function UnenrollStudentModal(
 								</div>
 							)}
 				</Dialog>
-			) : null}
 		</>
 	);
 }

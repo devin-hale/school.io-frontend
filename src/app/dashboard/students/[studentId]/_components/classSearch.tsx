@@ -7,6 +7,7 @@ import {
 	CircularProgress,
 	Autocomplete,
 	TextField,
+	DialogContent
 } from '@mui/material';
 import { SetStateAction, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -55,10 +56,8 @@ export default function AddClassModal(props: IClassAddModalProps): JSX.Element {
 	function handleClose(): void {
 		dispatch(resetAddClass());
 		setSelectedClass(null);
-		dispatch(getStudentInstance({token: user.token!, studentId: props.student._id!}))
 		props.setOpen(false);
 	}
-
 
 	const handleDlgClose = (event: object, reason: string) => {
 		if (reason && reason == 'backdropClick') {
@@ -67,7 +66,7 @@ export default function AddClassModal(props: IClassAddModalProps): JSX.Element {
 		handleClose();
 	};
 
-	const handleSave = () :void => {
+	const handleSave = async (): Promise<void> => {
 		let dispatchBody: IAddStudentClass = {
 			token: user.token!,
 			params: {
@@ -75,7 +74,7 @@ export default function AddClassModal(props: IClassAddModalProps): JSX.Element {
 				classId: selectedClass!.classId,
 			},
 		};
-		dispatch(addStudentClass(dispatchBody));
+		await dispatch(addStudentClass(dispatchBody));
 		handleClose();
 	};
 
@@ -101,40 +100,40 @@ export default function AddClassModal(props: IClassAddModalProps): JSX.Element {
 				className='flex flex-nowrap justify-center'
 				disableEscapeKeyDown
 			>
-			{modifyStudentState.loading ? null :				<div className='p-3'>
-			<DialogTitle>Enroll Student:</DialogTitle>
-			<Autocomplete
-				id='classes-search'
-				options={classOptions}
-				onChange={(e, value) => setSelectedClass(value)}
-				renderInput={(params) => (
-					<TextField
-						{...params}
-						label='Search Classes...'
-					/>
-				)}
-			/>
-			<div className='m-2 mt-4'>
-				<Button
-					variant='contained'
-					color='success'
-					className='bg-green-400 text-white mr-4'
-					disabled={!selectedClass ? true : false}
-					onClick={handleSave}
-				>
-					Enroll
-				</Button>
-				<Button
-					variant='contained'
-					color='error'
-					className='bg-red-400 text-white'
-					onClick={handleClose}
-				>
-					Cancel
-				</Button>
-			</div>
-		</div> }
-
+			<DialogContent>
+<DialogTitle>Enroll Student:</DialogTitle>
+				<Autocomplete
+					id='classes-search'
+					options={classOptions}
+					onChange={(e, value) => setSelectedClass(value)}
+					renderInput={(params) => (
+						<TextField
+							{...params}
+							label='Search Classes...'
+						/>
+					)}
+				/>
+				<div className='m-2 mt-4'>
+					<Button
+						variant='contained'
+						color='success'
+						className='bg-green-400 text-white mr-4'
+						disabled={!selectedClass ? true : false}
+						onClick={handleSave}
+					>
+						Enroll
+					</Button>
+					<Button
+						variant='contained'
+						color='error'
+						className='bg-red-400 text-white'
+						onClick={handleClose}
+					>
+						Cancel
+					</Button>
+				</div>
+			</DialogContent>
+				
 			</Dialog>
 		</>
 	);
