@@ -39,8 +39,7 @@ Tech used:
 **Orgs/ClassInstance Admin Page**
 - [x] Display Classes, Teachers, Students
 - [x] Add/Remove Teachers to/from class
-- [ ] Add/Remove Students to/from Class
-- [ ] Create class grid
+- [x] Create class grid
 - [ ] Edit Class Info 
 
 **Students Admin Page**

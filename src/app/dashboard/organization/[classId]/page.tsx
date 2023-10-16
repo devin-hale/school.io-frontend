@@ -34,6 +34,7 @@ import {
 	DoNotDisturbOnRounded,
 	PersonAdd,
 	PersonAddRounded,
+	EditRounded,
 } from '@mui/icons-material';
 import DeleteClassModal from './_components/deleteConfirm';
 import AddTeacherModal from './_components/addTeacherModal';
@@ -41,6 +42,7 @@ import { useState } from 'react';
 import PageLoader from '../../_components/pageLoader';
 import RemoveTeacherModal from './_components/removeTeacherConfirmation';
 import StudentGrid from '../../_components/studentGrid/studentGrid';
+import EditClassModal from './_components/editClass';
 
 export default function ClassInstancePage({
 	params,
@@ -53,6 +55,8 @@ export default function ClassInstancePage({
 
 	const [deleteOpen, setDeleteOpen] = useState(false);
 
+	const [editClassOpen, setEditClassOpen] = useState<boolean>(false);
+
 	const [addTeacherOpen, setAddTeacherOpen] = useState(false);
 	const [removeTeacherOpen, setRemoveTeacherOpen] = useState(false);
 	const [removingTeacher, setRemovingTeacher] = useState({
@@ -60,7 +64,7 @@ export default function ClassInstancePage({
 		name: '',
 	});
 
-	useEffect(() => {}, [addTeacherOpen]);
+	useEffect(() => { }, [addTeacherOpen]);
 
 	const [optionsAnchor, setOptionsAnchor] = useState<null | HTMLElement>(null);
 	const optionsOpen: boolean = Boolean(optionsAnchor);
@@ -104,7 +108,7 @@ export default function ClassInstancePage({
 	);
 
 	useEffect(() => {
-		if (userState.token) {
+		if (userState.token && !editClassOpen) {
 			dispatch(
 				getClassInfo({ classId: params.classId, token: userState.token! })
 			);
@@ -112,7 +116,12 @@ export default function ClassInstancePage({
 				getOrgUsers({ orgId: userState.userInfo.org!, token: userState.token })
 			);
 		}
-	}, [modifyState.addTeacher.complete, modifyState.removeTeacher.complete]);
+	}, [
+		modifyState.addTeacher.complete,
+		modifyState.removeTeacher.complete,
+		modifyState.edit.complete,
+		editClassOpen
+	]);
 
 	useEffect(() => {
 		if (classInstance.loading) setLoading(true);
@@ -150,6 +159,16 @@ export default function ClassInstancePage({
 				<PageLoader />
 			) : (
 				<>
+					<EditClassModal
+						open={editClassOpen}
+						setOpen={setEditClassOpen}
+						classInfo={{
+							classId: params.classId,
+							className: classInstance.classInfo!.name,
+							gradeLevel: classInstance.classInfo!.grade_level,
+							subject: classInstance.classInfo!.subject!,
+						}}
+					/>
 					<DeleteClassModal
 						deleteClassModalOpen={deleteOpen}
 						setDeleteClassModalOpen={setDeleteOpen}
@@ -190,7 +209,7 @@ export default function ClassInstancePage({
 								<strong className='pr-1'>Teacher(s): </strong>
 								<div className='flex flex-row flex-wrap items-center justify-evenly m-1'>
 									{modifyState.addTeacher.loading ||
-									modifyState.removeTeacher.loading ? (
+										modifyState.removeTeacher.loading ? (
 										<CircularProgress color='secondary' />
 									) : (
 										classTeachers
@@ -213,6 +232,9 @@ export default function ClassInstancePage({
 							transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 							anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 						>
+							<MenuItem onClick={() => setEditClassOpen(true)}>
+								<EditRounded className='mr-2' /> Edit Details
+							</MenuItem>
 							<MenuItem onClick={() => setAddTeacherOpen(true)}>
 								<PersonAddRounded className='mr-2' /> Add Teacher
 							</MenuItem>
@@ -222,7 +244,11 @@ export default function ClassInstancePage({
 							</MenuItem>
 						</Menu>
 					</Paper>
-					<StudentGrid students={studentState.classStudents.students} />
+					<StudentGrid
+						students={studentState.classStudents.students}
+						type='class'
+						sourceId={params.classId}
+					/>
 				</>
 			)}
 		</>

@@ -17,6 +17,7 @@ import {
 	MoreHorizRounded,
 	ToggleOffRounded,
 	ContactPageRounded,
+	RemoveRounded,
 } from '@mui/icons-material';
 import { IClass, getOrgClasses } from '@/redux/slices/classes/classSlice';
 import UnenrollStudentModal from '../../students/[studentId]/_components/unenrollStudents';
@@ -131,7 +132,7 @@ export default function ClassesGrid(props: IClassGridProps): JSX.Element {
 						<div>
 							<Divider />
 							<MenuItem onClick={() => props.setRemoveClassOpen!(true)}>
-								<ContactPageRounded
+								<RemoveRounded
 									sx={{ width: 20 }}
 									className='mr-2'
 								/>

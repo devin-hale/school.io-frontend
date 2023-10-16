@@ -4,6 +4,7 @@ const APIDOMAIN: string = process.env.NEXT_PUBLIC_APIDOMAIN!;
 
 export interface IModifyClassState {
 	create: IModifyCallState;
+	edit: IModifyCallState;
 	delete: IModifyCallState;
 	addTeacher: IModifyCallState;
 	removeTeacher: IModifyCallState;
@@ -25,6 +26,7 @@ const initialCallState: IModifyCallState = {
 
 const initialState: IModifyClassState = {
 	create: initialCallState,
+	edit: initialCallState,
 	delete: initialCallState,
 	addTeacher: initialCallState,
 	removeTeacher: initialCallState,
@@ -59,6 +61,36 @@ export const createClass = createAsyncThunk(
 		return data;
 	}
 );
+
+export interface IEditClassInfo {
+	token: string;
+	params: {
+		classId: string;
+	}
+	body: {
+		name: string;
+		grade_level: string;
+		subject: string;
+	}
+}
+
+export const editClassInfo = createAsyncThunk(
+	'classModify/editClassInfo',
+	async (reqContent: IEditClassInfo) => {
+		const response = await fetch(`${APIDOMAIN}/classes/edit/${reqContent.params.classId}`, {
+			method: 'put',
+			headers: {
+				Authorization: `Bearer ${reqContent.token}`,
+				'Content-Type': 'application/json;charset=utf-8',
+			},
+			mode: 'cors',
+			body: JSON.stringify(reqContent.body),
+		});
+		const data = await response.json();
+		return data;
+	}
+);
+
 
 export interface IDeleteClass {
 	token: string;
@@ -155,6 +187,9 @@ export const classModifySlice = createSlice({
 		resetCreateClass: (state) => {
 			state.create = initialCallState;
 		},
+		resetEditClass: (state) => {
+			state.edit = initialCallState;
+		},
 		resetDeleteClass: (state) => {
 			state.delete = initialCallState;
 		},
@@ -182,6 +217,22 @@ export const classModifySlice = createSlice({
 				state.create.complete = true;
 				state.create.message = action.payload.message;
 				state.create.success = action.payload.statusCode == 201 ? true : false;
+			})
+			//Edit Class
+			.addCase(editClassInfo.pending, (state) => {
+				state.edit = { ...initialCallState, loading: true };
+			})
+			.addCase(editClassInfo.rejected, (state) => {
+				state.edit.loading = false;
+				state.edit.complete = true;
+				state.edit.success = false;
+				state.edit.message = 'Encountered an error while creating class.';
+			})
+			.addCase(editClassInfo.fulfilled, (state, action) => {
+				state.edit.loading = false;
+				state.edit.complete = true;
+				state.edit.message = action.payload.message;
+				state.edit.success = action.payload.statusCode == 200 ? true : false;
 			})
 			//Delete Class
 			.addCase(deleteClass.pending, (state) => {
@@ -238,6 +289,6 @@ export const classModifySlice = createSlice({
 	},
 });
 
-export const { resetCreateClass, resetDeleteClass, resetAddTeacher, resetRemoveTeacher } = classModifySlice.actions;
+export const { resetCreateClass, resetEditClass, resetDeleteClass, resetAddTeacher, resetRemoveTeacher } = classModifySlice.actions;
 
 export default classModifySlice.reducer;
