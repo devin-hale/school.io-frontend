@@ -23,6 +23,7 @@ import {
 	EditRounded,
 	DeleteRounded,
 	GroupAdd,
+	ArrowLeftRounded,
 } from '@mui/icons-material';
 import { useState } from 'react';
 import { getStudentInstance } from '@/redux/slices/students/studentsSlice';
@@ -84,8 +85,8 @@ export default function ClassInstancePage({
 		}
 	}, [removeClassOpen]);
 	useEffect(() => {
-		console.log(loading)
-		console.log(addClassOpen)
+		console.log(loading);
+		console.log(addClassOpen);
 		if (!addClassOpen) {
 			dispatch(
 				getStudentInstance({
@@ -97,7 +98,7 @@ export default function ClassInstancePage({
 	}, [addClassOpen]);
 
 	useEffect(() => {
-		console.log('doin the loading thing')
+		console.log('doin the loading thing');
 		if (studentState.studentInstance.loading) setLoading(true);
 		else setLoading(false);
 	}, [studentState.studentInstance.loading]);
@@ -108,6 +109,10 @@ export default function ClassInstancePage({
 
 	const handleOptionsClose = (): void => {
 		setOptionsAnchor(null);
+	};
+
+	const handleBack = (): void => {
+		router.push(`/dashboard/students`);
 	};
 
 	return (
@@ -142,6 +147,12 @@ export default function ClassInstancePage({
 								studentInstance?.english_language_learner ?? false,
 						}}
 					/>
+					<Button
+						variant='text'
+						onClick={handleBack}
+					>
+						<ArrowLeftRounded /> Back
+					</Button>
 					<Paper className='p0 max-w-[90vw]'>
 						<Card
 							className='m-1'
