@@ -14,7 +14,7 @@ export type ClassInfoState = {
 	classInfo: IClass | null;
 };
 
-const initialClassInfoState : ClassInfoState = {
+const initialClassInfoState: ClassInfoState = {
 	loading: false,
 	message: null,
 	error: false,
@@ -42,7 +42,7 @@ export type IStudent = {
 	active: string;
 };
 
-const initialClassStudentsState : ClassStudentsState = {
+const initialClassStudentsState: ClassStudentsState = {
 	loading: false,
 	message: null,
 	error: false,

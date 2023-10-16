@@ -43,6 +43,7 @@ import PageLoader from '../../_components/pageLoader';
 import RemoveTeacherModal from './_components/removeTeacherConfirmation';
 import StudentGrid from '../../_components/studentGrid/studentGrid';
 import EditClassModal from './_components/editClass';
+import AddStudentToClassModal from './_components/addStudent';
 
 export default function ClassInstancePage({
 	params,
@@ -63,11 +64,13 @@ export default function ClassInstancePage({
 		userId: '',
 		name: '',
 	});
+	const [addStudentOpen, setAddStudentOpen] = useState<boolean>(false);
 
-	useEffect(() => { }, [addTeacherOpen]);
+	useEffect(() => { }, [addTeacherOpen, addStudentOpen]);
 
 	const [optionsAnchor, setOptionsAnchor] = useState<null | HTMLElement>(null);
 	const optionsOpen: boolean = Boolean(optionsAnchor);
+
 
 	const userState: UserState = useSelector((state: RootState) => state.user);
 	const userData = useSelector((state: RootState) => state.userData);
@@ -159,6 +162,7 @@ export default function ClassInstancePage({
 				<PageLoader />
 			) : (
 				<>
+					<AddStudentToClassModal open={addStudentOpen} setOpen={setAddStudentOpen} currentStudents={studentState.classStudents.students} classId={params.classId} orgId={userState.userInfo.org!} />
 					<EditClassModal
 						open={editClassOpen}
 						setOpen={setEditClassOpen}

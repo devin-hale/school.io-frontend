@@ -1,4 +1,6 @@
 {
+	"printWidth": 80,
+
 	"trailingComma": "es5",
 
 	"useTabs": true,
@@ -8,7 +10,7 @@
 	"singleQuote": true,
 	"jsxSingleQuote": true,
 
-	"bracketSpacking": true,
+	"bracketSpacing": true,
 
 	"proseWrap": "always",
 
