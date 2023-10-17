@@ -8,7 +8,7 @@ import {
 } from '@mui/x-data-grid';
 import { useRouter } from 'next/navigation';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '@/app/hooks';
 import {
@@ -23,11 +23,15 @@ import {
 	ContactPageRounded,
 } from '@mui/icons-material';
 import { IStudent } from '@/redux/slices/classes/classInstanceSlice';
+import UnenrollStudentModal from '../../students/[studentId]/_components/unenrollStudents';
+import { Dispatch } from 'react';
 
 interface IStudentGridProps {
 	students: IStudent[];
 	type: 'org' | 'class';
 	sourceId: string;
+	removeStudentOpen?: boolean;
+	setRemoveStudentOpen?: Dispatch<SetStateAction<boolean>>
 }
 
 export default function StudentGrid(props: IStudentGridProps): JSX.Element {
@@ -40,6 +44,7 @@ export default function StudentGrid(props: IStudentGridProps): JSX.Element {
 	const [actionMenuStudentId, setActionMenuStudentId] = useState<string | null>(
 		null
 	);
+	const [removeStudentId, setRemoveStudentId] = useState<string | null>(null);
 
 	const user: UserState = useSelector((state: RootState) => state.user);
 
@@ -58,11 +63,26 @@ export default function StudentGrid(props: IStudentGridProps): JSX.Element {
 	) {
 		handleActionMenuOpen(e);
 		setActionMenuStudentId(studentId);
+		setRemoveStudentId(studentId);
 	}
 
 	function handleStudentInfoNavigate() {
 		router.push(`/dashboard/students/${actionMenuStudentId}`);
 	}
+	useEffect(() => {
+			switch (props.type) {
+				case 'org':
+					dispatch(
+						getOrgStudents({ token: user.token!, orgId: props.sourceId })
+					);
+					break;
+				case 'class':
+					dispatch(
+						getClassStudents({ token: user.token!, classId: props.sourceId })
+					);
+					break;
+			}
+	}, [user.token, props.sourceId, props.type]);
 
 	const studentGridCols: GridColDef[] = [
 		{ field: 'last_name', headerName: 'Last name', flex: 0.25 },
@@ -102,19 +122,16 @@ export default function StudentGrid(props: IStudentGridProps): JSX.Element {
 	const studentRows = [...props.students].sort((a, b) =>
 		a.last_name < b.last_name ? -1 : 1
 	);
-	useEffect(() => {
-		switch (props.type) {
-			case "org":
-				dispatch(getOrgStudents({ token: user.token!, orgId: props.sourceId }));
-				break
-			case "class":
-				dispatch(getClassStudents({ token: user.token!, classId: props.sourceId }))
-				break
-		}
-	}, [user.token, props.sourceId, props.type]);
+
 
 	return (
 		<div>
+			<UnenrollStudentModal
+				open={props.removeStudentOpen!}
+				setOpen={props.setRemoveStudentOpen!}
+				studentId={removeStudentId!}
+				classId={props.sourceId}
+			/>
 			<Menu
 				anchorEl={actionMenuAnchor}
 				open={actionMenuOpen}
@@ -131,12 +148,12 @@ export default function StudentGrid(props: IStudentGridProps): JSX.Element {
 					Student Info
 				</MenuItem>
 				<Divider />
-				<MenuItem onClick={() => console.log('yeah')}>
+				<MenuItem onClick={() => props.setRemoveStudentOpen!(true)}>
 					<ToggleOffRounded
 						sx={{ width: 20 }}
 						className='mr-2'
 					/>
-					Toggle Active
+					Unenroll Student
 				</MenuItem>
 			</Menu>
 			<DataGrid

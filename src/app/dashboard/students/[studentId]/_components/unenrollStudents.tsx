@@ -43,7 +43,9 @@ export default function UnenrollStudentModal(
 
 	function handleClose(): void {
 		dispatch(resetRemoveClass());
-		dispatch(getStudentInstance({token: user.token!, studentId: props.studentId }))
+		dispatch(
+			getStudentInstance({ token: user.token!, studentId: props.studentId })
+		);
 		props.setOpen(false);
 	}
 
@@ -74,42 +76,41 @@ export default function UnenrollStudentModal(
 
 	return (
 		<>
-				<Dialog
-					open={props.open}
-					onClose={handleDlgClose}
-					className='flex flex-nowrap justify-center'
-					disableEscapeKeyDown
-				>
-					{modifyStudentState.loading ? (
-						<div className='p-4'>
-							<CircularProgress color='primary' />
+			<Dialog
+				open={props.open}
+				onClose={handleDlgClose}
+				className='flex flex-nowrap justify-center'
+				disableEscapeKeyDown
+			>
+				{modifyStudentState.loading ? (
+					<div className='p-4'>
+						<CircularProgress color='primary' />
+					</div>
+				) : (
+					<div className='p-3 flex flex-col items-center'>
+						<DialogTitle>Unenroll this student from class?</DialogTitle>
+						<div className='w-full flex flex-wrap justify-evenly'>
+							<Button
+								onClick={handleDelete}
+								color='warning'
+								variant='contained'
+								className='w-fit bg-red-400 self-center m-1'
+							>
+								Unenroll
+							</Button>
+
+							<Button
+								onClick={handleClose}
+								color='info'
+								variant='contained'
+								className='w-fit bg-blue-400 text-white self-center m-1'
+							>
+								Cancel
+							</Button>
 						</div>
-					) : (
-								<div className='p-3 flex flex-col items-center'>
-
-									<DialogTitle>Unenroll this student from class?</DialogTitle>
-									<div className='w-full flex flex-wrap justify-evenly'>
-										<Button
-											onClick={handleDelete}
-											color='warning'
-											variant='contained'
-											className='w-fit bg-red-400 self-center m-1'
-										>
-											Unenroll
-										</Button>
-
-										<Button
-											onClick={handleClose}
-											color='info'
-											variant='contained'
-											className='w-fit bg-blue-400 text-white self-center m-1'
-										>
-											Cancel
-										</Button>
-									</div>
-								</div>
-							)}
-				</Dialog>
+					</div>
+				)}
+			</Dialog>
 		</>
 	);
 }

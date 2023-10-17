@@ -85,8 +85,6 @@ export default function ClassInstancePage({
 		}
 	}, [removeClassOpen]);
 	useEffect(() => {
-		console.log(loading);
-		console.log(addClassOpen);
 		if (!addClassOpen) {
 			dispatch(
 				getStudentInstance({
@@ -98,7 +96,6 @@ export default function ClassInstancePage({
 	}, [addClassOpen]);
 
 	useEffect(() => {
-		console.log('doin the loading thing');
 		if (studentState.studentInstance.loading) setLoading(true);
 		else setLoading(false);
 	}, [studentState.studentInstance.loading]);

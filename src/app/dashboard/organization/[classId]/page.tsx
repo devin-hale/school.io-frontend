@@ -44,6 +44,7 @@ import RemoveTeacherModal from './_components/removeTeacherConfirmation';
 import StudentGrid from '../../_components/studentGrid/studentGrid';
 import EditClassModal from './_components/editClass';
 import AddStudentToClassModal from './_components/addStudent';
+import UnenrollStudentModal from '../../students/[studentId]/_components/unenrollStudents';
 
 export default function ClassInstancePage({
 	params,
@@ -65,12 +66,12 @@ export default function ClassInstancePage({
 		name: '',
 	});
 	const [addStudentOpen, setAddStudentOpen] = useState<boolean>(false);
+	const [removeStudentOpen, setRemoveStudentOpen] = useState<boolean>(false);
 
-	useEffect(() => { }, [addTeacherOpen, addStudentOpen]);
+	useEffect(() => {}, [addTeacherOpen, addStudentOpen]);
 
 	const [optionsAnchor, setOptionsAnchor] = useState<null | HTMLElement>(null);
 	const optionsOpen: boolean = Boolean(optionsAnchor);
-
 
 	const userState: UserState = useSelector((state: RootState) => state.user);
 	const userData = useSelector((state: RootState) => state.userData);
@@ -111,7 +112,7 @@ export default function ClassInstancePage({
 	);
 
 	useEffect(() => {
-		if (userState.token && !editClassOpen) {
+		if (userState.token && !editClassOpen && !addStudentOpen && !removeStudentOpen) {
 			dispatch(
 				getClassInfo({ classId: params.classId, token: userState.token! })
 			);
@@ -123,7 +124,9 @@ export default function ClassInstancePage({
 		modifyState.addTeacher.complete,
 		modifyState.removeTeacher.complete,
 		modifyState.edit.complete,
-		editClassOpen
+		editClassOpen,
+		addStudentOpen,
+		removeStudentOpen,
 	]);
 
 	useEffect(() => {
@@ -162,7 +165,13 @@ export default function ClassInstancePage({
 				<PageLoader />
 			) : (
 				<>
-					<AddStudentToClassModal open={addStudentOpen} setOpen={setAddStudentOpen} currentStudents={studentState.classStudents.students} classId={params.classId} orgId={userState.userInfo.org!} />
+					<AddStudentToClassModal
+						open={addStudentOpen}
+						setOpen={setAddStudentOpen}
+						currentStudents={studentState.classStudents.students}
+						classId={params.classId}
+						orgId={userState.userInfo.org!}
+					/>
 					<EditClassModal
 						open={editClassOpen}
 						setOpen={setEditClassOpen}
@@ -213,7 +222,7 @@ export default function ClassInstancePage({
 								<strong className='pr-1'>Teacher(s): </strong>
 								<div className='flex flex-row flex-wrap items-center justify-evenly m-1'>
 									{modifyState.addTeacher.loading ||
-										modifyState.removeTeacher.loading ? (
+									modifyState.removeTeacher.loading ? (
 										<CircularProgress color='secondary' />
 									) : (
 										classTeachers
@@ -248,10 +257,18 @@ export default function ClassInstancePage({
 							</MenuItem>
 						</Menu>
 					</Paper>
+					<div className='p-1 w-full flex justify-end'>
+						<Button onClick={() => setAddStudentOpen(true)}>
+							<PersonAddRounded />
+							Add Student
+						</Button>
+					</div>
 					<StudentGrid
 						students={studentState.classStudents.students}
 						type='class'
 						sourceId={params.classId}
+						setRemoveStudentOpen={setRemoveStudentOpen}
+						removeStudentOpen={removeStudentOpen}
 					/>
 				</>
 			)}

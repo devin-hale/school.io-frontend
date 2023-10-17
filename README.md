@@ -41,7 +41,7 @@ Tech used:
 - [x] Add/Remove Teachers to/from class
 - [x] Create class grid
 - [x] Edit Class Info 
-- [ ] Add/Remove Students to/from Class
+- [x] Add/Remove Students to/from Class
 
 **Students Admin Page**
 - [x] Display org students

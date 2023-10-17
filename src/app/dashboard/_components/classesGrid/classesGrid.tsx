@@ -43,7 +43,6 @@ export default function ClassesGrid(props: IClassGridProps): JSX.Element {
 	);
 
 	const [removeClassId, setRemoveClassId] = useState<string | null>(null);
-	console.log(removeClassId);
 
 	const user: UserState = useSelector((state: RootState) => state.user);
 	const classState = useSelector(
