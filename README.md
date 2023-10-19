@@ -29,12 +29,10 @@ Tech used:
 ### **CURRENTLY:**
 
 **Logic**
-- [ ] Organize state logic into get slices, and modify slices.
-- [ ] Complete reducers for endpoints
+- [x] Complete reducers for endpoints
     - [x] Students
     - [x] Users
-    - [ ] Classes
-    - [ ] Orgs
+    - [x] Classes
 
 **Orgs/ClassInstance Admin Page**
 - [x] Display Classes, Teachers, Students
