@@ -3,10 +3,14 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 const APIDOMAIN: string = process.env.NEXT_PUBLIC_APIDOMAIN!;
 
 export interface IUserDataState {
+	orgUsers: ICallState;
+	userInstance: ICallState;
+}
+
+interface ICallState {
 	loading: boolean;
 	message: string | null;
 	users: IUser[];
-	userOptions: string[];
 }
 
 interface IUser {
@@ -19,61 +23,110 @@ interface IUser {
 	verified: boolean | null;
 }
 
-const initialState : IUserDataState = {
+const initialCallState: ICallState = {
 	loading: false,
 	message: null,
 	users: [],
-	userOptions: [],
+};
+
+const initialState: IUserDataState = {
+	orgUsers: initialCallState,
+	userInstance: initialCallState,
+};
+
+interface IGetUserInstanceReq {
+	token: string;
+	params: {
+		userId: string;
+	};
 }
 
-interface IReqBody {
+export const getUserInstance = createAsyncThunk(
+	'userData/getUserInstance',
+	async (reqBody: IGetUserInstanceReq) => {
+		const response = await fetch(
+			`${APIDOMAIN}/users/${reqBody.params.userId}`,
+			{
+				method: 'get',
+				mode: 'cors',
+				headers: {
+					Authorization: `Bearer ${reqBody.token}`,
+				},
+			}
+		);
+
+		const data = await response.json();
+		return data;
+	}
+);
+
+interface IGetOrgUsersReq {
 	token: string;
 	orgId: string;
 }
 
 export const getOrgUsers = createAsyncThunk(
 	'userData/getOrgUsers',
-	async (reqBody:IReqBody) =>  {
-		const response = await fetch(`${APIDOMAIN}/users/organization/${reqBody.orgId}`, {
-			method: 'get',
-			mode: 'cors',
-			headers: {
-				'Authorization': `Bearer ${reqBody.token}`
-			},
-		})
+	async (reqBody: IGetOrgUsersReq) => {
+		const response = await fetch(
+			`${APIDOMAIN}/users/organization/${reqBody.orgId}`,
+			{
+				method: 'get',
+				mode: 'cors',
+				headers: {
+					Authorization: `Bearer ${reqBody.token}`,
+				},
+			}
+		);
 
 		const data = await response.json();
 		return data;
 	}
-)
+);
 
 export const userDataSlice = createSlice({
 	name: 'userData',
 	initialState,
-	reducers:{},
+	reducers: {},
 	extraReducers: (builder) => {
 		builder
+			.addCase(getUserInstance.pending, (state) => {
+				state.userInstance = { ...initialCallState, loading: true };
+			})
+			.addCase(getUserInstance.rejected, (state) => {
+				state.userInstance = {
+					loading: false,
+					message: 'Error: network request rejected.',
+					users: [],
+				};
+			})
+			.addCase(getUserInstance.fulfilled, (state, action) => {
+				state.userInstance = {
+					loading: false,
+					message: action.payload.message,
+					users: action.payload.content,
+				};
+			})
 			.addCase(getOrgUsers.pending, (state) => {
-				state.loading = true;
-				state.message = null;
-				state.users = [];
-				state.userOptions = [];
+				state.orgUsers = { ...initialCallState, loading: true };
 			})
 			.addCase(getOrgUsers.rejected, (state) => {
-				state.loading = false;
-				state.message = 'Error: network request rejected.'
-				state.users = [];
-				state.userOptions = [];
+				state.orgUsers = {
+					loading: false,
+					message: 'Error: network request rejected.',
+					users: [],
+				};
 			})
 			.addCase(getOrgUsers.fulfilled, (state, action) => {
-				state.loading = false;
-				state.message = action.payload.message;
-				state.users = action.payload.content;
-				state.userOptions = action.payload.content.map((user:any) => `${user.first_name} ${user.last_name}`);
-			})
-	}
-})
+				state.orgUsers = {
+					loading: false,
+					message: action.payload.message,
+					users: action.payload.content,
+				};
+			});
+	},
+});
 
-export const {} = userDataSlice.actions;
+export const { } = userDataSlice.actions;
 
 export default userDataSlice.reducer;

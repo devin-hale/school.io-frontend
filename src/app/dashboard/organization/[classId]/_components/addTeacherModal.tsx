@@ -46,7 +46,7 @@ export default function AddTeacherModal(
 	const modifyState = useSelector(
 		(state: RootState) => state.classModify.addTeacher
 	);
-	const defaultFilter = userData.users.filter(
+	const defaultFilter = userData.orgUsers.users.filter(
 		(user) =>
 			!props.teachers.some(
 				(teacher: any) =>
@@ -62,7 +62,7 @@ export default function AddTeacherModal(
 
 	useEffect(() => {
 		setUsersFilter(defaultFilter);
-	}, [userData.users]);
+	}, [userData.orgUsers.users]);
 
 	useEffect(() => {
 		dispatch(

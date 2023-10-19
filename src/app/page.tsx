@@ -64,7 +64,7 @@ export default function Login(): JSX.Element {
 			setLoading(true);
 			router.push('/dashboard');
 		}
-	},);
+	});
 
 	const handleEmailInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		const emailInput: string = e.target.value;

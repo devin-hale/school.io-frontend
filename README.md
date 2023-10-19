@@ -32,7 +32,7 @@ Tech used:
 - [ ] Organize state logic into get slices, and modify slices.
 - [ ] Complete reducers for endpoints
     - [x] Students
-    - [ ] Users
+    - [x] Users
     - [ ] Classes
     - [ ] Orgs
 
