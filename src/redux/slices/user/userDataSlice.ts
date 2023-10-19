@@ -13,7 +13,7 @@ interface ICallState {
 	users: IUser[];
 }
 
-interface IUser {
+export interface IUser {
 	user: string | null;
 	_id: string | null;
 	first_name: string | null;

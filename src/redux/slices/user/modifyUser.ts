@@ -14,12 +14,16 @@ interface ICallState {
 	loading: boolean;
 	message: string | null;
 	content: any | null;
+	complete: boolean | null;
+	statusCode: number | null;
 }
 
 const initialCallState = {
 	loading: false,
 	message: null,
 	content: null,
+	complete: null,
+	statusCode: null,
 };
 
 const initialState: modifyUserState = {
@@ -34,24 +38,27 @@ interface BaseCallReq {
 	token: string;
 }
 
-interface ICreateUserCall extends BaseCallReq {
+export interface ICreateUserCall extends BaseCallReq {
 	body: {
 		first_name: string;
 		last_name: string;
 		email: string;
 		gender: string;
 		password: string;
+		orgCode: string;
 	};
 }
 
 export const createUser = createAsyncThunk(
 	'userData/createUser',
 	async (reqBody: ICreateUserCall) => {
+		console.log(reqBody)
 		const response = await fetch(`${APIDOMAIN}/users/create`, {
 			method: 'post',
 			mode: 'cors',
 			headers: {
 				Authorization: `Bearer ${reqBody.token}`,
+				'Content-Type': 'application/json;charset=utf-8'
 			},
 			body: JSON.stringify(reqBody.body),
 		});
@@ -184,7 +191,23 @@ export const deleteUserReq = createAsyncThunk(
 export const modifyUserSlice = createSlice({
 	name: 'modifyUser',
 	initialState,
-	reducers: {},
+	reducers: {
+		resetCreateUser: (state) => {
+			state.createUser = initialCallState;
+		},
+		resetEditUser: (state) => {
+			state.editUser = initialCallState;
+		},
+		resetEditEmail: (state) => {
+			state.editEmail = initialCallState;
+		},
+		resetEditPass: (state) => {
+			state.editPass = initialCallState;
+		},
+		resetDeleteUser: (state) => {
+			state.deleteUser = initialCallState;
+		},
+	},
 	extraReducers: (builder) => {
 		builder
 			//CreateUser
@@ -196,13 +219,17 @@ export const modifyUserSlice = createSlice({
 					loading: false,
 					message: 'Error: Network request failed.',
 					content: null,
+					complete: true,
+					statusCode: 500,
 				};
 			})
-			.addCase(createUser.rejected, (state, action: any) => {
+			.addCase(createUser.fulfilled, (state, action: any) => {
 				state.createUser = {
 					loading: false,
 					message: action.payload.message,
 					content: action.payload.content,
+					complete: true,
+					statusCode: action.payload.statusCode,
 				};
 			})
 			//EditUser
@@ -214,13 +241,17 @@ export const modifyUserSlice = createSlice({
 					loading: false,
 					message: 'Error: Network request failed.',
 					content: null,
+					complete: true,
+					statusCode: 500,
 				};
 			})
-			.addCase(editUser.rejected, (state, action: any) => {
+			.addCase(editUser.fulfilled, (state, action: any) => {
 				state.editUser = {
 					loading: false,
 					message: action.payload.message,
 					content: action.payload.content,
+					complete: true,
+					statusCode: action.payload.statusCode,
 				};
 			})
 			//EditEmail
@@ -232,13 +263,17 @@ export const modifyUserSlice = createSlice({
 					loading: false,
 					message: 'Error: Network request failed.',
 					content: null,
+					complete: true,
+					statusCode: 500,
 				};
 			})
-			.addCase(editUserEmailReq.rejected, (state, action: any) => {
+			.addCase(editUserEmailReq.fulfilled, (state, action: any) => {
 				state.editEmail = {
 					loading: false,
 					message: action.payload.message,
 					content: action.payload.content,
+					complete: true,
+					statusCode: action.payload.statusCode,
 				};
 			})
 			//EditPass
@@ -250,13 +285,17 @@ export const modifyUserSlice = createSlice({
 					loading: false,
 					message: 'Error: Network request failed.',
 					content: null,
+					complete: true,
+					statusCode: 500,
 				};
 			})
-			.addCase(editUserPassReq.rejected, (state, action: any) => {
+			.addCase(editUserPassReq.fulfilled, (state, action: any) => {
 				state.editPass = {
 					loading: false,
 					message: action.payload.message,
 					content: action.payload.content,
+					complete: true,
+					statusCode: action.payload.statusCode,
 				};
 			})
 			//DeleteUser
@@ -268,14 +307,28 @@ export const modifyUserSlice = createSlice({
 					loading: false,
 					message: 'Error: Network request failed.',
 					content: null,
+					complete: true,
+					statusCode: 500,
 				};
 			})
-			.addCase(deleteUserReq.rejected, (state, action: any) => {
+			.addCase(deleteUserReq.fulfilled, (state, action: any) => {
 				state.deleteUser = {
 					loading: false,
 					message: action.payload.message,
 					content: action.payload.content,
+					complete: true,
+					statusCode: action.payload.statusCode,
 				};
 			});
 	},
 });
+
+export const {
+	resetEditPass,
+	resetEditUser,
+	resetEditEmail,
+	resetCreateUser,
+	resetDeleteUser,
+} = modifyUserSlice.actions;
+
+export default modifyUserSlice.reducer;

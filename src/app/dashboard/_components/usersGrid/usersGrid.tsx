@@ -18,9 +18,13 @@ import {
 	ToggleOffRounded,
 	ContactPageRounded,
 } from '@mui/icons-material';
-import { getOrgUsers } from '@/redux/slices/user/userDataSlice';
+import { IUser, getOrgUsers } from '@/redux/slices/user/userDataSlice';
 
-export default function UsersGrid(): JSX.Element {
+interface IUsersGrid {
+	users: IUser[];
+}
+
+export default function UsersGrid(props : IUsersGrid): JSX.Element {
 	const dispatch = useAppDispatch();
 	const router: AppRouterInstance = useRouter();
 	const [actionMenuAnchor, setActionMenuAchor] = useState<HTMLElement | null>(
@@ -30,11 +34,7 @@ export default function UsersGrid(): JSX.Element {
 	const [actionMenuUserId, setActionMenuUserId] = useState<string | null>(
 		null
 	);
-
 	const user: UserState = useSelector((state: RootState) => state.user);
-	const userDataState = useSelector(
-		(state: RootState) => state.userData.orgUsers
-	);
 
 	function handleActionMenuOpen(e: React.MouseEvent<HTMLElement>) {
 		setActionMenuAchor(e.currentTarget);
@@ -56,12 +56,7 @@ export default function UsersGrid(): JSX.Element {
 	function handleStudentInfoNavigate() {
 		router.push(`/dashboard/students/${actionMenuUserId}`);
 	}
-	useEffect(() => {
-		if (user.token && user.userInfo.org) {
-			dispatch(getOrgUsers({ token: user.token!, orgId: user.userInfo.org! }));
-		}
-	}, [user.token, user.userInfo.org]);
-
+	
 	const userGridCols: GridColDef[] = [
 		{ field: 'last_name', headerName: 'Last name', flex: 0.25 },
 		{ field: 'first_name', headerName: 'First name', flex: 0.25 },
@@ -82,7 +77,7 @@ export default function UsersGrid(): JSX.Element {
 		},
 	];
 
-	const userRows = [...userDataState.users].sort((a, b) =>
+	const userRows = [...props.users].sort((a, b) =>
 		a.last_name! < b.last_name! ? -1 : 1
 	);
 
