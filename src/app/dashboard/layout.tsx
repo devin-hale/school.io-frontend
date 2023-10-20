@@ -41,8 +41,6 @@ import { tools, features, userFeature } from './_userData/userPerms';
 import LogOutButton from '@/components/logOutButton';
 import { useRouter } from 'next/navigation';
 
-
-
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -144,13 +142,12 @@ export default function DashBoardLayout({
 		}
 	}, []);
 
-const handleLogOut = (): void => {
+	const handleLogOut = (): void => {
 		setLoading(true);
 		localStorage.clear();
 		dispatch(logOut());
-		router.push('/')
+		router.push('/');
 	};
-
 
 	const userPerms: userFeature[] = features.filter((feature: userFeature) =>
 		feature.userTypes.some((type: string) => type == userInfo.userInfo.accType)
@@ -182,11 +179,11 @@ const handleLogOut = (): void => {
 		router.push(`/dashboard/${pageName.toLowerCase()}`);
 	};
 
-	const handleProfileNavigate = () :void => {
+	const handleProfileNavigate = (): void => {
 		setCurrentPage('');
 		setOpen(false);
-		router.push(`/dashboard/profile`)
-	}
+		router.push(`/dashboard/profile`);
+	};
 
 	const MINUTE_MS = 60000;
 	useEffect(() => {
@@ -332,8 +329,8 @@ const handleLogOut = (): void => {
 								>
 									{userInfo.userInfo.firstName ? (
 										<div className='mr-2 hidden sm:block'>
-											{`${userInfo.userInfo.firstName} ${userInfo.userInfo.lastName}`}	
-										</div>	
+											{`${userInfo.userInfo.firstName} ${userInfo.userInfo.lastName}`}
+										</div>
 									) : (
 										<CircularProgress
 											className='mr-2'
@@ -354,11 +351,6 @@ const handleLogOut = (): void => {
 									transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 									anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 								>
-									<MenuItem onClick={handleProfileNavigate}>
-										<Logout /> User Profile
-									</MenuItem>
-
-									<Divider />
 									<MenuItem onClick={handleLogOut}>
 										<Logout /> Log Out
 									</MenuItem>
