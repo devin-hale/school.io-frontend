@@ -1,7 +1,7 @@
 # school.io (NEXTJS FRONT END REFACTOR)
 
 ## Description
-### Version 0.4.3
+### Version 0.5.0
 This is the beginning stages of a project intended to act as a simple website for teachers to create, update, and store important documentation.
 The idea came from listening to my wife, who is a 3rd grade teacher.  According to her, the biggest annoyance is a teacher is keeping track of
 documentation.  This can be as simple as writing down "I spoke with little Billy's parents at X time on Y date.  We spoke about this...".  This
@@ -51,8 +51,6 @@ Tech used:
 **Users Admin Page**
 - [x] Display all org users.
 - [x] Create user.
+- [x] Edit Password
 
-** User Profile Page **
-- [ ] Edit user info.
-- 
 
