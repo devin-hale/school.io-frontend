@@ -51,6 +51,8 @@ Tech used:
 **Users Admin Page**
 - [x] Display all org users.
 - [x] Create user.
+
+** User Profile Page **
 - [ ] Edit user info.
-- [ ] Disable/Delete user.
+- 
 

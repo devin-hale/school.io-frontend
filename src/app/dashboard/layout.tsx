@@ -182,6 +182,12 @@ const handleLogOut = (): void => {
 		router.push(`/dashboard/${pageName.toLowerCase()}`);
 	};
 
+	const handleProfileNavigate = () :void => {
+		setCurrentPage('');
+		setOpen(false);
+		router.push(`/dashboard/profile`)
+	}
+
 	const MINUTE_MS = 60000;
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -348,6 +354,11 @@ const handleLogOut = (): void => {
 									transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 									anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 								>
+									<MenuItem onClick={handleProfileNavigate}>
+										<Logout /> User Profile
+									</MenuItem>
+
+									<Divider />
 									<MenuItem onClick={handleLogOut}>
 										<Logout /> Log Out
 									</MenuItem>

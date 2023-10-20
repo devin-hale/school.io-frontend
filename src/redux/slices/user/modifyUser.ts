@@ -52,13 +52,13 @@ export interface ICreateUserCall extends BaseCallReq {
 export const createUser = createAsyncThunk(
 	'userData/createUser',
 	async (reqBody: ICreateUserCall) => {
-		console.log(reqBody)
+		console.log(reqBody);
 		const response = await fetch(`${APIDOMAIN}/users/create`, {
 			method: 'post',
 			mode: 'cors',
 			headers: {
 				Authorization: `Bearer ${reqBody.token}`,
-				'Content-Type': 'application/json;charset=utf-8'
+				'Content-Type': 'application/json;charset=utf-8',
 			},
 			body: JSON.stringify(reqBody.body),
 		});
@@ -90,6 +90,7 @@ export const editUser = createAsyncThunk(
 				mode: 'cors',
 				headers: {
 					Authorization: `Bearer ${reqBody.token}`,
+					'Content-Type': 'application/json;charset=utf-8',
 				},
 				body: JSON.stringify(reqBody.body),
 			}
@@ -113,12 +114,13 @@ export const editUserEmailReq = createAsyncThunk(
 	'userData/editUserEmail',
 	async (reqBody: IEditEmailCall) => {
 		const response = await fetch(
-			`${APIDOMAIN}/users/edit/${reqBody.params.userId}`,
+			`${APIDOMAIN}/users/${reqBody.params.userId}/email/edit/`,
 			{
 				method: 'put',
 				mode: 'cors',
 				headers: {
 					Authorization: `Bearer ${reqBody.token}`,
+					'Content-Type': 'application/json;charset=utf-8',
 				},
 				body: JSON.stringify(reqBody.body),
 			}
@@ -129,7 +131,7 @@ export const editUserEmailReq = createAsyncThunk(
 	}
 );
 
-interface IEditPassReq extends BaseCallReq {
+export interface IEditPassReq extends BaseCallReq {
 	params: {
 		userId: string;
 	};
@@ -142,13 +144,15 @@ interface IEditPassReq extends BaseCallReq {
 export const editUserPassReq = createAsyncThunk(
 	'userData/editUserPass',
 	async (reqBody: IEditPassReq) => {
+		console.log(reqBody);
 		const response = await fetch(
-			`${APIDOMAIN}/users/edit/${reqBody.params.userId}`,
+			`${APIDOMAIN}/users/${reqBody.params.userId}/password/edit/`,
 			{
-				method: 'put',
+				method: 'PUT',
 				mode: 'cors',
 				headers: {
 					Authorization: `Bearer ${reqBody.token}`,
+					'Content-Type': 'application/json;charset=utf-8',
 				},
 				body: JSON.stringify(reqBody.body),
 			}
@@ -172,12 +176,13 @@ export const deleteUserReq = createAsyncThunk(
 	'userData/deleteUser',
 	async (reqBody: IDeleteUserReq) => {
 		const response = await fetch(
-			`${APIDOMAIN}/users/edit/${reqBody.params.userId}`,
+			`${APIDOMAIN}/users/${reqBody.params.userId}/delete`,
 			{
 				method: 'delete',
 				mode: 'cors',
 				headers: {
 					Authorization: `Bearer ${reqBody.token}`,
+					'Content-Type': 'application/json;charset=utf-8',
 				},
 				body: JSON.stringify(reqBody.body),
 			}
