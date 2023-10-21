@@ -28,10 +28,10 @@ import { Dispatch } from 'react';
 
 interface IStudentGridProps {
 	students: IStudent[];
-	type: 'org' | 'class';
+	type: 'org' | 'class' | 'userClass';
 	sourceId: string;
 	removeStudentOpen?: boolean;
-	setRemoveStudentOpen?: Dispatch<SetStateAction<boolean>>
+	setRemoveStudentOpen?: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function StudentGrid(props: IStudentGridProps): JSX.Element {
@@ -70,18 +70,16 @@ export default function StudentGrid(props: IStudentGridProps): JSX.Element {
 		router.push(`/dashboard/students/${actionMenuStudentId}`);
 	}
 	useEffect(() => {
-			switch (props.type) {
-				case 'org':
-					dispatch(
-						getOrgStudents({ token: user.token!, orgId: props.sourceId })
-					);
-					break;
-				case 'class':
-					dispatch(
-						getClassStudents({ token: user.token!, classId: props.sourceId })
-					);
-					break;
-			}
+		switch (props.type) {
+			case 'org':
+				dispatch(getOrgStudents({ token: user.token!, orgId: props.sourceId }));
+				break;
+			case 'class':
+				dispatch(
+					getClassStudents({ token: user.token!, classId: props.sourceId })
+				);
+				break;
+		}
 	}, [user.token, props.sourceId, props.type]);
 
 	const studentGridCols: GridColDef[] = [
@@ -123,7 +121,6 @@ export default function StudentGrid(props: IStudentGridProps): JSX.Element {
 		a.last_name < b.last_name ? -1 : 1
 	);
 
-
 	return (
 		<div>
 			<UnenrollStudentModal
@@ -147,14 +144,18 @@ export default function StudentGrid(props: IStudentGridProps): JSX.Element {
 					/>
 					Student Info
 				</MenuItem>
-				<Divider />
-				<MenuItem onClick={() => props.setRemoveStudentOpen!(true)}>
-					<ToggleOffRounded
-						sx={{ width: 20 }}
-						className='mr-2'
-					/>
-					Unenroll Student
-				</MenuItem>
+				{props.type === 'org' && (
+					<div>
+						<Divider />
+						<MenuItem onClick={() => props.setRemoveStudentOpen!(true)}>
+							<ToggleOffRounded
+								sx={{ width: 20 }}
+								className='mr-2'
+							/>
+							Unenroll Student
+						</MenuItem>
+					</div>
+				)}
 			</Menu>
 			<DataGrid
 				sx={{

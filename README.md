@@ -28,29 +28,33 @@ Tech used:
 
 ### **CURRENTLY:**
 
-**Logic**
-- [x] Complete reducers for endpoints
-    - [x] Students
-    - [x] Users
-    - [x] Classes
+- Class 
+    - [ ] View Students
+        - [ ] Student profile
+        - [ ] View classes
+        - [ ] View Incidents
+        - [ ] View PST
 
-**Orgs/ClassInstance Admin Page**
-- [x] Display Classes, Teachers, Students
-- [x] Add/Remove Teachers to/from class
-- [x] Create class grid
-- [x] Edit Class Info 
-- [x] Add/Remove Students to/from Class
+- Comms
+    - [ ] Grid
+    - [ ] Make
+    - [ ] View
+        - [ ] Edit
+        - [ ] Delete
+    - [ ] Print
 
-**Students Admin Page**
-- [x] Display org students
-- [x] Create students
-- [x] Edit Student Info
-- [x] Delete Student
-- [x] Add/Remove Students to/from Class
+- PST
+    - [ ] Grid
+    - [ ] Make
+    - [ ] View
+        - [ ] Edit
+        - [ ] Delete
+    - [ ] Print
 
-**Users Admin Page**
-- [x] Display all org users.
-- [x] Create user.
-- [x] Edit Password
-
-
+- Incidents
+    - [ ] Grid
+    - [ ] Make
+    - [ ] View
+        - [ ] Edit
+        - [ ] Delete
+    - [ ] Print

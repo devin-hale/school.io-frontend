@@ -107,7 +107,7 @@ export default function CreateUserModal(
 	function handlePassChange(): void {
 		setPassword(
 			`${firstNameField === '' ? '' : `${firstNameField[0].toLowerCase()}`}${lastNameField === '' ? '' : `${lastNameField.toLowerCase()}`
-			}${user.userInfo.userId!.slice(0, 4)}`
+			}${user.userInfo.org!.slice(0, 4)}`
 		);
 	}
 
