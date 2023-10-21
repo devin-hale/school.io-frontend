@@ -25,7 +25,7 @@ import { getStudentInstance } from '@/redux/slices/students/studentsSlice';
 import { Dispatch } from 'react';
 
 interface IClassGridProps {
-	type: 'student' | 'org';
+	type: 'student' | 'org' | 'userStudent';
 	sourceId: string;
 	removeClassOpen?: boolean;
 	setRemoveClassOpen?: Dispatch<SetStateAction<boolean>>;
@@ -118,13 +118,15 @@ export default function ClassesGrid(props: IClassGridProps): JSX.Element {
 				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 			>
-				<MenuItem onClick={handleClassInfoNavigate}>
-					<ContactPageRounded
-						sx={{ width: 20 }}
-						className='mr-2'
-					/>
-					Class Info
-				</MenuItem>
+				{props.type === 'userStudent' ? null : (
+					<MenuItem onClick={handleClassInfoNavigate}>
+						<ContactPageRounded
+							sx={{ width: 20 }}
+							className='mr-2'
+						/>
+						Class Info
+					</MenuItem>
+				)}
 				{props.type === 'student' &&
 					(user.userInfo.accType === 'Admin' ||
 						user.userInfo.accType === 'Staff') && (

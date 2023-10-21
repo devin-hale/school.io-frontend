@@ -30,8 +30,8 @@ Tech used:
 
 - Class 
     - [ ] View Students
-        - [ ] Student profile
-        - [ ] View classes
+        - [x] Student profile
+        - [x] View classes
         - [ ] View Incidents
         - [ ] View PST
 

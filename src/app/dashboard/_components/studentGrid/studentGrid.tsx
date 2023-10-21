@@ -67,7 +67,14 @@ export default function StudentGrid(props: IStudentGridProps): JSX.Element {
 	}
 
 	function handleStudentInfoNavigate() {
-		router.push(`/dashboard/students/${actionMenuStudentId}`);
+		switch (props.type) {
+			case 'userClass':
+				router.push(`/dashboard/classes/${props.sourceId}/${actionMenuStudentId}`);
+				break;
+			default:
+				router.push(`/dashboard/students/${actionMenuStudentId}`);
+				break;
+		}
 	}
 	useEffect(() => {
 		switch (props.type) {
