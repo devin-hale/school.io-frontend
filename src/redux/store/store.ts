@@ -8,6 +8,7 @@ import classInstanceReducer from '../slices/classes/classInstanceSlice';
 import classModifyReducer from '../slices/classes/modifyClass';
 import studentsReducer from '../slices/students/studentsSlice';
 import studentsModifyReducer from '../slices/students/modifyStudentsSlice';
+import pstReducer from '../slices/pst/pstSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
 		classModify: classModifyReducer,
 		students: studentsReducer,
 		studentsModify: studentsModifyReducer,
+		pst: pstReducer,
 	},
 });
 
