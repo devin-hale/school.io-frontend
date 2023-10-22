@@ -60,7 +60,7 @@ using a standard MVC pattern. Tech used:
 
 - PST
 
-  - [ ] GetSlice
+  - [x] GetSlice
   - [ ] ModifySlice
   - [ ] Grid
   - [ ] Make
