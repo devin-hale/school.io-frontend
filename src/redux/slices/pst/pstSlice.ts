@@ -42,10 +42,10 @@ export interface IGetPST extends IBaseRequest {
 	};
 }
 
-const getPstInstance = createAsyncThunk(
+export const getPstInstance = createAsyncThunk(
 	'pstSlice/getInstance',
 	async (req: IGetPST) => {
-		const response = await fetch(`${APIDOMAIN}/pst/${req.params.pstId}`, {
+		const response = await fetch(`${APIDOMAIN}/docs/pst/${req.params.pstId}`, {
 			method: 'GET',
 			mode: 'cors',
 			headers: {
@@ -64,10 +64,10 @@ export interface IGetOrgPST extends IBaseRequest {
 	};
 }
 
-const getOrgPST = createAsyncThunk(
+export const getOrgPST = createAsyncThunk(
 	'pstSlice/getOrgPst',
 	async (req: IGetOrgPST) => {
-		const response = await fetch(`${APIDOMAIN}/pst/org/${req.params.orgId}`, {
+		const response = await fetch(`${APIDOMAIN}/docs/pst/org/${req.params.orgId}`, {
 			method: 'GET',
 			mode: 'cors',
 			headers: {
@@ -86,10 +86,10 @@ export interface IGetUserPST extends IBaseRequest {
 	};
 }
 
-const getUserPST = createAsyncThunk(
+export const getUserPST = createAsyncThunk(
 	'pstSlice/getUserPST',
 	async (req: IGetUserPST) => {
-		const response = await fetch(`${APIDOMAIN}/pst/user/${req.params.userId}`, {
+		const response = await fetch(`${APIDOMAIN}/docs/pst/user/${req.params.userId}`, {
 			method: 'GET',
 			mode: 'cors',
 			headers: {
@@ -108,11 +108,11 @@ export interface IGetClassPST extends IBaseRequest {
 	};
 }
 
-const getClassPST = createAsyncThunk(
+export const getClassPST = createAsyncThunk(
 	'pstSlice/getClassPst',
 	async (req: IGetClassPST) => {
 		const response = await fetch(
-			`${APIDOMAIN}/pst/class/${req.params.classId}`,
+			`${APIDOMAIN}/docs/pst/class/${req.params.classId}`,
 			{
 				method: 'GET',
 				mode: 'cors',
@@ -133,11 +133,11 @@ export interface IGetStudentPST extends IBaseRequest {
 	};
 }
 
-const getStudentPST = createAsyncThunk(
+export const getStudentPST = createAsyncThunk(
 	'pstSlice/getStudentPST',
 	async (req: IGetStudentPST) => {
 		const response = await fetch(
-			`${APIDOMAIN}/pst/student/${req.params.studentId}`,
+			`${APIDOMAIN}/docs/pst/student/${req.params.studentId}`,
 			{
 				method: 'GET',
 				mode: 'cors',

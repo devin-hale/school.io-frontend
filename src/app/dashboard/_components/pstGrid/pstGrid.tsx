@@ -24,9 +24,16 @@ import {
 	ContactPageRounded,
 } from '@mui/icons-material';
 import UnenrollStudentModal from '../../students/[studentId]/_components/unenrollStudents';
+import {
+	IPSTState,
+	getClassPST,
+	getOrgPST,
+	getStudentPST,
+	getUserPST,
+} from '@/redux/slices/pst/pstSlice';
 
 interface IPSTGridProps {
-	type: 'user' | 'student' | 'class';
+	type: 'user' | 'student' | 'class' | 'org';
 	sourceId: string;
 	deleteModalOpen: boolean;
 	setDeleteModalOpen: Dispatch<SetStateAction<boolean>>;
@@ -40,16 +47,49 @@ export default function PSTGrid(props: IPSTGridProps) {
 		null
 	);
 	const actionMenuOpen = Boolean(actionMenuAnchor);
-	const [actionMenuPSTId, setActionMenuPSTId] = useState<string | null>(
-		null
-	);
+	const [actionMenuPSTId, setActionMenuPSTId] = useState<string | null>(null);
 
 	const [removePSTId, setRemovePSTId] = useState<string | null>(null);
 
 	const user: UserState = useSelector((state: RootState) => state.user);
-	const classState = useSelector(
-		(state: RootState) => state.students.studentInstance.student?.classes
-	);
+	const pstState: IPSTState = useSelector((state: RootState) => state.pst);
+
+	useEffect(() => {
+		if (user.token) {
+			switch (props.type) {
+				case 'user':
+					dispatch(
+						getUserPST({
+							token: user.token!,
+							params: { userId: props.sourceId },
+						})
+					);
+					break;
+				case 'student':
+					dispatch(
+						getStudentPST({
+							token: user.token!,
+							params: { studentId: props.sourceId },
+						})
+					);
+					break;
+				case 'org':
+					dispatch(
+						getOrgPST({ token: user.token!, params: { orgId: props.sourceId } })
+					);
+					break;
+				case 'class':
+					dispatch(
+						getClassPST({
+							token: user.token!,
+							params: { classId: props.sourceId },
+						})
+					);
+					break;
+			}
+		}
+	}, [user.token, user.loading]);
+
 
 	function handleActionMenuOpen(
 		e: React.MouseEvent<HTMLElement>,
@@ -79,14 +119,17 @@ export default function PSTGrid(props: IPSTGridProps) {
 		}
 	}
 
-	const classGridCols: GridColDef[] = [
-		{ field: 'name', headerName: 'Class', flex: 0.3 },
-		{ field: 'subject', headerName: 'Subject', type: 'string', flex: 0.3 },
+	const pstGridCols: GridColDef[] = [
+		{ field: 'owner', headerName: 'Owner', flex: 0.3 },
+		{ field: 'class', headerName: 'Class', type: 'string', flex: 0.3 },
 		{
-			field: 'grade_level',
-			headerName: 'Grade',
-			type: 'number',
+			field: 'header',
+			headerName: 'School Year',
+			type: 'string',
 			flex: 0.2,
+			valueGetter: (params) => {
+				return params.row.schoolYear;
+			},
 		},
 		{
 			field: 'actions',
@@ -105,7 +148,20 @@ export default function PSTGrid(props: IPSTGridProps) {
 		},
 	];
 
-	const classRows = [...classState!].sort((a, b) => (a.name < b.name ? -1 : 1));
+	const getRows = () => {
+		switch (props.type) {
+			case 'user':
+				return pstState.userPSTs.content;
+			case 'class':
+				return pstState.classPSTs.content;
+			case 'org':
+				return pstState.orgPSTs.content;
+			case 'student':
+				return pstState.studentPSTs.content;
+		}
+	};
+
+	const pstRows: any[] = [];
 
 	return (
 		<div>
@@ -126,7 +182,7 @@ export default function PSTGrid(props: IPSTGridProps) {
 				</MenuItem>
 				<div>
 					<Divider />
-					<MenuItem onClick={() => { }}>Delete PST</MenuItem>
+					<MenuItem onClick={() => {}}>Delete PST</MenuItem>
 				</div>
 			</Menu>
 			<DataGrid
@@ -136,9 +192,9 @@ export default function PSTGrid(props: IPSTGridProps) {
 					},
 					maxWidth: '90vw',
 				}}
-				rows={classRows}
+				rows={pstRows ?? []}
 				getRowId={(row) => row._id}
-				columns={classGridCols}
+				columns={pstGridCols}
 				initialState={{
 					pagination: {
 						paginationModel: { page: 0, pageSize: 10 },
