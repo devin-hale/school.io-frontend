@@ -50,7 +50,7 @@ export interface ICreatePST extends IBaseRequest {}
 export const createPST = createAsyncThunk(
 	'pstSlice/createPST',
 	async (req: ICreatePST) => {
-		const response: Response = await fetch(`${APIDOMAIN}/pst/create`, {
+		const response: Response = await fetch(`${APIDOMAIN}/docs/pst/create`, {
 			method: 'POST',
 			mode: 'cors',
 			headers: {
@@ -77,7 +77,7 @@ export const addStudent = createAsyncThunk(
 	'pstSlice/addStudentToPST',
 	async (req: IAddStudentToPST) => {
 		const response: Response = await fetch(
-			`${APIDOMAIN}/pst/${req.params.pstId}/addStudent`,
+			`${APIDOMAIN}/docs/pst/${req.params.pstId}/addStudent`,
 			{
 				method: 'POST',
 				mode: 'cors',
@@ -107,7 +107,7 @@ export const addClass = createAsyncThunk(
 	'pstSlice/addClassToPST',
 	async (req: IAddClassToPST) => {
 		const response: Response = await fetch(
-			`${APIDOMAIN}/pst/${req.params.pstId}/addClass`,
+			`${APIDOMAIN}/docs/pst/${req.params.pstId}/addClass`,
 			{
 				method: 'POST',
 				mode: 'cors',
@@ -134,7 +134,7 @@ export const addWeek = createAsyncThunk(
 	'pstSlice/addWeekToPST',
 	async (req: IAddWeekToPST) => {
 		const response: Response = await fetch(
-			`${APIDOMAIN}/pst/${req.params.pstId}/addWeek`,
+			`${APIDOMAIN}/docs/pst/${req.params.pstId}/addWeek`,
 			{
 				method: 'POST',
 				mode: 'cors',
@@ -166,7 +166,7 @@ export const editHeader = createAsyncThunk(
 	'pstSlice/editPSTHeader',
 	async (req: IEditHeader) => {
 		const response: Response = await fetch(
-			`${APIDOMAIN}/pst/${req.params.pstId}/header`,
+			`${APIDOMAIN}/docs/pst/${req.params.pstId}/header`,
 			{
 				method: 'PUT',
 				mode: 'cors',
@@ -211,7 +211,7 @@ export const editWeek = createAsyncThunk(
 	'pstSlice/editPSTWeek',
 	async (req: IEditPSTWeek) => {
 		const response: Response = await fetch(
-			`${APIDOMAIN}/pst/${req.params.pstId}/week/${req.params.weekNo}`,
+			`${APIDOMAIN}/docs/pst/${req.params.pstId}/week/${req.params.weekNo}`,
 			{
 				method: 'PUT',
 				mode: 'cors',
@@ -241,7 +241,7 @@ export const editAccess = createAsyncThunk(
 	'pstSlice/editPSTAccess',
 	async (req: IEditPSTAccess) => {
 		const response: Response = await fetch(
-			`${APIDOMAIN}/pst/${req.params.pstId}/editAccess`,
+			`${APIDOMAIN}/docs/pst/${req.params.pstId}/editAccess`,
 			{
 				method: 'PUT',
 				mode: 'cors',
@@ -269,7 +269,7 @@ export const deleteWeek = createAsyncThunk(
 	'pstSlice/deletePSTWeek',
 	async (req: IDeletePSTWeek) => {
 		const response: Response = await fetch(
-			`${APIDOMAIN}/pst/${req.params.pstId}/week/${req.params.weekNo}`,
+			`${APIDOMAIN}/docs/pst/${req.params.pstId}/week/${req.params.weekNo}`,
 			{
 				method: 'DELETE',
 				mode: 'cors',
@@ -295,7 +295,7 @@ export const deletePST = createAsyncThunk(
 	'pstSlice/deletePST',
 	async (req: IDeletePST) => {
 		const response: Response = await fetch(
-			`${APIDOMAIN}/pst/${req.params.pstId}/delete`,
+			`${APIDOMAIN}/docs/pst/${req.params.pstId}/delete`,
 			{
 				method: 'DELETE',
 				mode: 'cors',

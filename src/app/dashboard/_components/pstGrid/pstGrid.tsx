@@ -90,7 +90,6 @@ export default function PSTGrid(props: IPSTGridProps) {
 		}
 	}, [user.token, user.loading]);
 
-
 	function handleActionMenuOpen(
 		e: React.MouseEvent<HTMLElement>,
 		classId: string
@@ -114,23 +113,34 @@ export default function PSTGrid(props: IPSTGridProps) {
 
 	function handlePSTInfoNavigate() {
 		switch (props.type) {
-			case 'student':
+			case 'user':
 				router.push(`/dashboard/pst/${actionMenuPSTId}`);
 		}
 	}
 
 	const pstGridCols: GridColDef[] = [
-		{ field: 'owner', headerName: 'Owner', flex: 0.3 },
-		{ field: 'class', headerName: 'Class', type: 'string', flex: 0.3 },
+		{
+			field: 'owner',
+			headerName: 'Owner',
+			flex: 0.3,
+			valueGetter: (params) => {
+				return `${params.row.owner.last_name}, ${params.row.owner.first_name}`;
+			},
+		},
 		{
 			field: 'header',
-			headerName: 'School Year',
+			headerName: 'Student',
 			type: 'string',
 			flex: 0.2,
 			valueGetter: (params) => {
-				return params.row.schoolYear;
+				if (params.row.header.student === undefined) {
+					return 'None'
+				}
+				return params.row.header.student;
 			},
 		},
+
+		{ field: 'class', headerName: 'Class', type: 'string', flex: 0.3 },
 		{
 			field: 'actions',
 			type: 'actions',
@@ -147,21 +157,26 @@ export default function PSTGrid(props: IPSTGridProps) {
 			],
 		},
 	];
+	let pstRows: any[] = [];
 
 	const getRows = () => {
 		switch (props.type) {
 			case 'user':
-				return pstState.userPSTs.content;
+				pstRows = pstState.userPSTs.content;
+				break;
 			case 'class':
-				return pstState.classPSTs.content;
+				pstRows = pstState.classPSTs.content;
+				break;
 			case 'org':
-				return pstState.orgPSTs.content;
+				pstRows = pstState.orgPSTs.content;
+				break;
 			case 'student':
-				return pstState.studentPSTs.content;
+				pstRows = pstState.studentPSTs.content;
+				break;
 		}
 	};
 
-	const pstRows: any[] = [];
+	getRows();
 
 	return (
 		<div>
@@ -192,7 +207,7 @@ export default function PSTGrid(props: IPSTGridProps) {
 					},
 					maxWidth: '90vw',
 				}}
-				rows={pstRows ?? []}
+				rows={pstState.userPSTs.content ?? []}
 				getRowId={(row) => row._id}
 				columns={pstGridCols}
 				initialState={{
