@@ -9,6 +9,7 @@ import classModifyReducer from '../slices/classes/modifyClass';
 import studentsReducer from '../slices/students/studentsSlice';
 import studentsModifyReducer from '../slices/students/modifyStudentsSlice';
 import pstReducer from '../slices/pst/pstSlice';
+import pstModifyReducer from '../slices/pst/modifyPSTSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -22,6 +23,7 @@ export const store = configureStore({
 		students: studentsReducer,
 		studentsModify: studentsModifyReducer,
 		pst: pstReducer,
+		pstModify: pstModifyReducer,
 	},
 });
 

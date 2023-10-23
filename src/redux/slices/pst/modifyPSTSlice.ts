@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import pstSlice from './pstSlice';
 
 const APIDOMAIN: string = process.env.NEXT_PUBLIC_APIDOMAIN!;
 
 export interface IModifyPSTState {
 	create: IGetState;
 	addStudent: IGetState;
+	addClass: IGetState;
 	addWeek: IGetState;
 	editHeader: IGetState;
 	editWeek: IGetState;
@@ -30,6 +32,7 @@ const initialGetState: IGetState = {
 const initialState: IModifyPSTState = {
 	create: initialGetState,
 	addStudent: initialGetState,
+	addClass: initialGetState,
 	addWeek: initialGetState,
 	editHeader: initialGetState,
 	editWeek: initialGetState,
@@ -42,11 +45,7 @@ interface IBaseRequest {
 	token: string;
 }
 
-export interface ICreatePST extends IBaseRequest {
-	body: {
-		classId: string;
-	};
-}
+export interface ICreatePST extends IBaseRequest {}
 
 export const createPST = createAsyncThunk(
 	'pstSlice/createPST',
@@ -58,7 +57,6 @@ export const createPST = createAsyncThunk(
 				Authorization: `Bearer ${req.token}`,
 				'Content-Type': `application/json;charset=utf-8`,
 			},
-			body: JSON.stringify(req.body),
 		});
 
 		const data = await response.json();
@@ -80,6 +78,36 @@ export const addStudent = createAsyncThunk(
 	async (req: IAddStudentToPST) => {
 		const response: Response = await fetch(
 			`${APIDOMAIN}/pst/${req.params.pstId}/addStudent`,
+			{
+				method: 'POST',
+				mode: 'cors',
+				headers: {
+					Authorization: `Bearer ${req.token}`,
+					'Content-Type': `application/json;charset=utf-8`,
+				},
+				body: JSON.stringify(req.body),
+			}
+		);
+
+		const data = await response.json();
+		return data;
+	}
+);
+
+export interface IAddClassToPST extends IBaseRequest {
+	params: {
+		pstId: string;
+	};
+	body: {
+		classId: string;
+	};
+}
+
+export const addClass = createAsyncThunk(
+	'pstSlice/addClassToPST',
+	async (req: IAddClassToPST) => {
+		const response: Response = await fetch(
+			`${APIDOMAIN}/pst/${req.params.pstId}/addClass`,
 			{
 				method: 'POST',
 				mode: 'cors',
@@ -286,7 +314,35 @@ export const deletePST = createAsyncThunk(
 export const modifyPSTSlice = createSlice({
 	name: 'pstSlice',
 	initialState,
-	reducers: {},
+	reducers: {
+		resetCreatePST: (state) => {
+			state.create = initialGetState;
+		},
+		resetAddStudentToPST: (state) => {
+			state.addStudent = initialGetState;
+		},
+		resetAddClassToPST: (state) => {
+			state.addClass = initialGetState;
+		},
+		resetAddWeekToPST: (state) => {
+			state.addWeek = initialGetState;
+		},
+		resetEditPSTHeader: (state) => {
+			state.editHeader = initialGetState;
+		},
+		resetEditPSTWeek: (state) => {
+			state.editWeek = initialGetState;
+		},
+		resetEditPSTAccess: (state) => {
+			state.editAccess = initialGetState;
+		},
+		resetDeletePSTWeek: (state) => {
+			state.deleteWeek = initialGetState;
+		},
+		resetDeletePST: (state) => {
+			state.deletePST = initialGetState;
+		},
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(createPST.pending, (state) => {
@@ -440,6 +496,39 @@ export const modifyPSTSlice = createSlice({
 					content: action.payload.content,
 					statusCode: action.payload.statusCode,
 				};
+			})
+			.addCase(addClass.pending, (state) => {
+				state.addClass = { ...initialGetState, loading: true };
+			})
+			.addCase(addClass.rejected, (state) => {
+				state.addClass = {
+					loading: false,
+					message: 'Network error.',
+					content: null,
+					statusCode: 500,
+				};
+			})
+			.addCase(addClass.fulfilled, (state, action) => {
+				state.addClass = {
+					loading: false,
+					message: action.payload.message,
+					content: action.payload.content,
+					statusCode: action.payload.statusCode,
+				};
 			});
 	},
 });
+
+export const {
+	resetCreatePST,
+	resetAddStudentToPST,
+	resetAddWeekToPST,
+	resetAddClassToPST,
+	resetEditPSTHeader,
+	resetEditPSTWeek,
+	resetEditPSTAccess,
+	resetDeletePST,
+	resetDeletePSTWeek,
+} = modifyPSTSlice.actions;
+
+export default modifyPSTSlice.reducer;
