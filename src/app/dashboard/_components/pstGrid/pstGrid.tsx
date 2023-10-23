@@ -128,17 +128,27 @@ export default function PSTGrid(props: IPSTGridProps) {
 			},
 		},
 		{
-			field: 'header',
+			field: 'student',
 			headerName: 'Student',
 			type: 'string',
-			flex: 0.2,
+			flex: 0.3,
 			valueGetter: (params) => {
-				if (params.row.header.student === undefined) {
+				if (params.row.student === undefined) {
 					return 'None'
 				}
-				return params.row.header.student;
+				return params.row.student;
 			},
 		},
+		{
+			field: 'header',
+			headerName: 'School Year',
+			type: 'string',
+			flex: 0.5,
+			valueGetter: (params) => {
+				return `${params.row.header.schoolYear}, ${params.row.header.gradingPeriod}`;
+			},
+		},
+
 
 		{ field: 'class', headerName: 'Class', type: 'string', flex: 0.3 },
 		{

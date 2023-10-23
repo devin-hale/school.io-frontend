@@ -62,8 +62,8 @@ using a standard MVC pattern. Tech used:
 
   - [x] GetSlice
   - [x] ModifySlice
-  - [ ] Grid
-  - [ ] Make
+  - [x] Grid
+  - [x] Make
   - [ ] View
     - [ ] Edit
     - [ ] Delete
