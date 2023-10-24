@@ -28,7 +28,7 @@ import {
 	resetEditStudent,
 } from '@/redux/slices/students/modifyStudentsSlice';
 
-export interface ICreateClassModalProps {
+export interface IEditStudentModalProps {
 	open: boolean;
 	setOpen: Dispatch<SetStateAction<boolean>>;
 	studentInfo: {
@@ -44,7 +44,7 @@ export interface ICreateClassModalProps {
 }
 
 export default function EditStudentModal(
-	props: ICreateClassModalProps
+	props: IEditStudentModalProps
 ): JSX.Element {
 	const dispatch: Dispatch<any> = useAppDispatch();
 	const user = useSelector((state: RootState) => state.user);

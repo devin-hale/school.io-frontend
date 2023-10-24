@@ -154,6 +154,10 @@ export default function PSTIdPage({
 								{` ${pstInstance.header.gradingPeriod}`}
 							</h2>
 							<h2>
+								<strong className="underline">Intervention Type:</strong>
+								{` ${pstInstance.header.intervention_type}`}
+							</h2>
+							<h2>
 								<strong className='underline'>Student Name:</strong>
 								{pstInstance.student
 									? ` ${pstInstance.student.first_name}, ${pstInstance.student.last_name}`
@@ -164,10 +168,6 @@ export default function PSTIdPage({
 							<h2>
 								<strong className='underline'> West Virginia Phonics:</strong>
 								{` ${pstInstance.header.west_virginia_phonics}`}
-							</h2>
-							<h2>
-								<strong className='underline'>Reading IXL:</strong>
-								{` ${pstInstance.header.readingIXL}`}
 							</h2>
 							<h2>
 								<strong className='underline'>Progress Monitoring Goal:</strong>
