@@ -8,10 +8,12 @@ import {
 	CircularProgress,
 	ListItem,
 	ListItemButton,
+	Button,
 } from '@mui/material';
 import { useAppDispatch } from '@/app/hooks';
 import { RootState } from '@/redux/store/store';
 import { getPstInstance } from '@/redux/slices/pst/pstSlice';
+import EditPSTHeaderModal from './_components/editHeaderModal';
 
 export default function PSTIdPage({
 	params,
@@ -22,15 +24,17 @@ export default function PSTIdPage({
 	const user = useSelector((state: RootState) => state.user);
 	const pstGet = useSelector((state: RootState) => state.pst);
 	const pstInstance = pstGet.pstInstance.content;
-	console.log(pstInstance);
+	const pstModify = useSelector((state:RootState) => state.pstModify)
+
+	const [editHeaderModal, setEditHeaderModal] = useState(false);
 
 	useEffect(() => {
-		if (user.token!) {
+		if (user.token! && !pstModify.editHeader.loading) {
 			dispatch(
 				getPstInstance({ token: user.token!, params: { pstId: params.pstId } })
 			);
 		}
-	}, [user.token]);
+	}, [user.token,pstModify.editHeader.loading ]);
 
 	const pstWeekList = pstInstance
 		? pstInstance.weeks.map((week: any) => (
@@ -135,16 +139,43 @@ export default function PSTIdPage({
 
 	return (
 		<>
+			{pstGet.pstInstance.content && (
+				<EditPSTHeaderModal
+					open={editHeaderModal}
+					setOpen={setEditHeaderModal}
+					headerInfo={{
+						pstId: pstInstance._id,
+						schoolYear: pstInstance.header.schoolYear,
+						gradingPeriod: pstInstance.header.gradingPeriod,
+						studentName: pstInstance.student
+							? `${pstInstance.student.first_name} ${pstInstance.student.last_name}`
+							: '',
+						interventionType: pstInstance.header.intervention_type,
+						west_virginia_phonics: pstInstance.header.west_virginia_phonics,
+						progress_monitoring_goal:
+							pstInstance.header.progress_monitoring_goal,
+					}}
+				/>
+			)}
 			{!pstGet.pstInstance.content ? (
 				<CircularProgress />
 			) : (
 				<Paper className='p-2'>
+					<Card className='p-2 m-2'>
+						<h2>
+							<strong className='underline'>Documenting Teacher:</strong>
+							{` ${pstInstance.owner.last_name}, ${pstInstance.owner.first_name}`}
+						</h2>
+
+						<h2>
+							<strong className='underline'>Student Name:</strong>
+							{pstInstance.student
+								? ` ${pstInstance.student.first_name}, ${pstInstance.student.last_name}`
+								: ''}
+						</h2>
+					</Card>
 					<Card className='p-2 m-2 flex flex-row flex-wrap'>
 						<div className='mr-5'>
-							<h2>
-								<strong className='underline'>Documenting Teacher:</strong>
-								{` ${pstInstance.owner.last_name}, ${pstInstance.owner.first_name}`}
-							</h2>
 							<h2>
 								<strong className='underline'>School Year:</strong>
 								{` ${pstInstance.header.schoolYear}`}
@@ -154,14 +185,8 @@ export default function PSTIdPage({
 								{` ${pstInstance.header.gradingPeriod}`}
 							</h2>
 							<h2>
-								<strong className="underline">Intervention Type:</strong>
+								<strong className='underline'>Intervention Type:</strong>
 								{` ${pstInstance.header.intervention_type}`}
-							</h2>
-							<h2>
-								<strong className='underline'>Student Name:</strong>
-								{pstInstance.student
-									? ` ${pstInstance.student.first_name}, ${pstInstance.student.last_name}`
-									: ''}
 							</h2>
 						</div>
 						<div>
@@ -174,6 +199,14 @@ export default function PSTIdPage({
 								{` ${pstInstance.header.progress_monitoring_goal}`}
 							</h2>
 						</div>
+						<Button
+							className='bg-green-400 text-white m-auto'
+							type='button'
+							variant='contained'
+							onClick={() => setEditHeaderModal(true)}
+						>
+							Edit
+						</Button>
 					</Card>
 					<Card className='p-2 m-2'>{pstWeekList}</Card>
 				</Paper>

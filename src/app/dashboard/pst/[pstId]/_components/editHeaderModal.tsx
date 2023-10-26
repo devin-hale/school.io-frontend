@@ -20,13 +20,13 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
 import { Dispatch } from 'react';
 import { useAppDispatch } from '@/app/hooks';
-import { getOrgStudents } from '@/redux/slices/students/studentsSlice';
 import {
 	IEditStudentReq,
 	IModifyStudentsState,
 	editStudentInfo,
 	resetEditStudent,
 } from '@/redux/slices/students/modifyStudentsSlice';
+import { editHeader } from '@/redux/slices/pst/modifyPSTSlice';
 
 export interface IEditPSTHeaderProps {
 	open: boolean;
@@ -38,7 +38,7 @@ export interface IEditPSTHeaderProps {
 		studentName: string;
 		interventionType: string;
 		west_virginia_phonics: boolean;
-		progress_monitoring_goal: boolean;
+		progress_monitoring_goal: string;
 	};
 }
 
@@ -83,19 +83,20 @@ export default function EditPSTHeaderModal(
 
 	function handleGradingPeriodChange(e: SelectChangeEvent) {
 		if (e.target.value == '') {
-			setSchoolYearField({
-				schoolYear: '',
+			setGradingPeriodField({
+				gradingPeriod: '',
 				error: true,
 				errorText: 'A grading period must be selected',
 			});
 		} else {
-			setSchoolYearField({
-				schoolYear: e.target.value,
+			setGradingPeriodField({
+				gradingPeriod: e.target.value,
 				error: false,
 				errorText: '',
 			});
 		}
 	}
+	console.log(gradingPeriodField)
 
 	/*Intervention Type*/
 	const [interventionType, setInterventionType] = useState({
@@ -125,7 +126,29 @@ export default function EditPSTHeaderModal(
 		props.headerInfo.west_virginia_phonics
 	);
 
-	function handleSave(): void { }
+	const [pMG, setPMG] = useState({
+		pMG: props.headerInfo.progress_monitoring_goal,
+		error: false,
+		errorText: '',
+	});
+
+	function handleSave(): void {
+		let payload = {
+			token: user.token!,
+			params: {
+				pstId: props.headerInfo.pstId,
+			},
+			body: {
+				gradingPeriod: gradingPeriodField.gradingPeriod,
+				schoolYear: schoolYearField.schoolYear,
+				intervention_type: interventionType.interventionType,
+				west_virginia_phonics: wggState,
+				progress_monitoring_goal: pMG.pMG,
+			},
+		};
+		dispatch(editHeader(payload));
+		handleClose();
+	}
 
 	function handleClose(): void {
 		props.setOpen(false);
@@ -162,7 +185,7 @@ export default function EditPSTHeaderModal(
 						<div className='flex flex-row w-full justify-center'>
 							<FormControl
 								variant='filled'
-								className='m-2 w-36'
+								className='m-2 w-[150px]'
 								error={schoolYearField.error}
 								required
 							>
@@ -182,12 +205,12 @@ export default function EditPSTHeaderModal(
 							</FormControl>
 							<FormControl
 								variant='filled'
-								className='m-2 w-36'
-								error={schoolYearField.error}
+								className='m-2 w-[200px]'
+								error={gradingPeriodField.error}
 								required
 							>
 								<InputLabel id='createClassModalGradeLevel'>
-									School Year
+									Grading Period
 								</InputLabel>
 								<Select
 									labelId='createClassModalGradingPeriod'
@@ -195,10 +218,10 @@ export default function EditPSTHeaderModal(
 									onChange={handleGradingPeriodChange}
 									required
 								>
-									<MenuItem value={'1st Nine Weeks'}>2022 - 2023</MenuItem>
-									<MenuItem value={'2nd Nine Weeks'}>2022 - 2023</MenuItem>
-									<MenuItem value={'3rd Nine Weeks'}>2022 - 2023</MenuItem>
-									<MenuItem value={'4th Nine Weeks'}>2022 - 2023</MenuItem>
+									<MenuItem value={'1st Nine Weeks'}>1st Nine Weeks</MenuItem>
+									<MenuItem value={'2nd Nine Weeks'}>2nd Nine Weeks</MenuItem>
+									<MenuItem value={'3rd Nine Weeks'}>3rd Nine Weeks</MenuItem>
+									<MenuItem value={'4th Nine Weeks'}>4th Nine Weeks</MenuItem>
 								</Select>
 							</FormControl>
 							<FormControl
@@ -246,6 +269,11 @@ export default function EditPSTHeaderModal(
 								variant='contained'
 								type='button'
 								onClick={handleSave}
+								disabled={
+									schoolYearField.error ||
+									gradingPeriodField.error ||
+									interventionType.error
+								}
 							>
 								Save
 							</Button>
