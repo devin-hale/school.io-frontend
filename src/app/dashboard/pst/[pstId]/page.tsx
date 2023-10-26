@@ -14,6 +14,26 @@ import { useAppDispatch } from '@/app/hooks';
 import { RootState } from '@/redux/store/store';
 import { getPstInstance } from '@/redux/slices/pst/pstSlice';
 import EditPSTHeaderModal from './_components/editHeaderModal';
+import EditWeekModal from './_components/editWeekModal';
+
+interface IPSTWeek {
+	weekNo: number;
+	dates: string;
+	attendance: {
+		monday: string;
+		tuesday: string;
+		wednesday: string;
+		thursday: string;
+		friday: string;
+	};
+	tier1: {
+		documentation: string[];
+		standards: string[];
+	};
+	tier2: string[];
+	parentComm: string[];
+	progressMonitor: string[];
+}
 
 export default function PSTIdPage({
 	params,
@@ -24,9 +44,17 @@ export default function PSTIdPage({
 	const user = useSelector((state: RootState) => state.user);
 	const pstGet = useSelector((state: RootState) => state.pst);
 	const pstInstance = pstGet.pstInstance.content;
-	const pstModify = useSelector((state:RootState) => state.pstModify)
+	const pstModify = useSelector((state: RootState) => state.pstModify);
 
 	const [editHeaderModal, setEditHeaderModal] = useState(false);
+	const [editWeekModal, setEditWeekModal] = useState<boolean>(false);
+	const [selectedWeek, setSelectedWeek] = useState<IPSTWeek | null>(null);
+
+	const handleSelectWeek = (week: IPSTWeek) => {
+		setSelectedWeek({
+			...week,
+		});
+	};
 
 	useEffect(() => {
 		if (user.token! && !pstModify.editHeader.loading) {
@@ -34,7 +62,7 @@ export default function PSTIdPage({
 				getPstInstance({ token: user.token!, params: { pstId: params.pstId } })
 			);
 		}
-	}, [user.token,pstModify.editHeader.loading ]);
+	}, [user.token, pstModify.editHeader.loading]);
 
 	const pstWeekList = pstInstance
 		? pstInstance.weeks.map((week: any) => (
@@ -44,6 +72,16 @@ export default function PSTIdPage({
 						className='p-2'
 					>
 						<header>
+							<Button
+								className='float-right'
+								type='button'
+								onClick={() => {
+									handleSelectWeek(week);
+									setEditWeekModal(true);
+								}}
+							>
+								Edit Week
+							</Button>
 							<div>
 								<strong className='underline'>Week Number:</strong>
 								{` ${week.weekNo}`}
@@ -130,8 +168,22 @@ export default function PSTIdPage({
 						<div>
 							<strong className='underline'>Tier 2 Documentation:</strong>
 						</div>
-						<div>Parent Communication</div>
-						<div>Progress Monitoring</div>
+						<div>
+							<strong className='underline'>Parent Communication:</strong>
+							<div>
+								{week.parentComm.map((comm: any) => (
+									<p key={comm.length}> {comm}</p>
+								))}
+							</div>
+						</div>
+						<div>
+							<strong className='underline'>Progress Monitoring</strong>
+							<div>
+								{week.progressMonitor.map((prog: any) => (
+									<p key={prog.length}> {prog}</p>
+								))}
+							</div>
+						</div>
 					</Card>
 				</ListItem>
 		  ))
@@ -155,6 +207,14 @@ export default function PSTIdPage({
 						progress_monitoring_goal:
 							pstInstance.header.progress_monitoring_goal,
 					}}
+				/>
+			)}
+			{pstGet.pstInstance.content && selectedWeek && (
+				<EditWeekModal
+					open={editWeekModal}
+					setOpen={setEditWeekModal}
+					pstId={params.pstId}
+					weekInfo={selectedWeek}
 				/>
 			)}
 			{!pstGet.pstInstance.content ? (
