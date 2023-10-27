@@ -15,6 +15,9 @@ import { RootState } from '@/redux/store/store';
 import { getPstInstance } from '@/redux/slices/pst/pstSlice';
 import EditPSTHeaderModal from './_components/editHeaderModal';
 import EditWeekModal from './_components/editWeekModal';
+import dayjs from 'dayjs';
+import weekday from 'dayjs/plugin/weekday';
+dayjs.extend(weekday);
 
 interface IPSTWeek {
 	weekNo: number;

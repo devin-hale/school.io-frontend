@@ -1,11 +1,25 @@
 'use client';
-import { Dialog, DialogContent, Box, DialogTitle, Button } from '@mui/material';
+import {
+	Dialog,
+	DialogContent,
+	Box,
+	DialogTitle,
+	Button,
+	FormControl,
+	InputLabel,
+	Select,
+	MenuItem,
+	SelectChangeEvent,
+} from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
+import dayjs, { Dayjs } from 'dayjs';
+import weekday from 'dayjs/plugin/weekday';
+dayjs.extend(weekday);
 import { Dispatch, SetStateAction } from 'react';
 import { useState, useEffect } from 'react';
 import { useAppDispatch } from '@/app/hooks';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
-import { getPstInstance } from '@/redux/slices/pst/pstSlice';
 
 interface IEditWeekModalProps {
 	open: boolean;
@@ -37,6 +51,14 @@ export default function EditWeekModal(props: IEditWeekModalProps): JSX.Element {
 	const pstInstance = useSelector((state: RootState) => state.pst.pstInstance);
 	const modifyPST = useSelector((state: RootState) => state.pstModify);
 
+	const weekDatesSplit: string[] = props.weekInfo.dates.split(' to ');
+
+	const [weekDates, setWeekDates] = useState({
+		data1: dayjs(weekDatesSplit[0]),
+		data2: dayjs(weekDatesSplit[1]),
+	});
+
+
 	const handleClose = () => {
 		props.setOpen(false);
 	};
@@ -58,6 +80,12 @@ export default function EditWeekModal(props: IEditWeekModalProps): JSX.Element {
 			<DialogTitle>Edit Week {props.weekInfo.weekNo}</DialogTitle>
 			<DialogContent>Words</DialogContent>
 			<div className='m-2 w-60 sm:w-[300px] flex flex-row flex-wrap justify-center'>
+				<DatePicker
+					label='Week Start'
+					defaultValue={weekDates.data1}
+					onChange={(newValue) => setWeekDates({...weekDates, data1: newValue!})}
+				/>
+
 				<Button
 					sx={{ width: 'fit-content', margin: 1, color: 'white' }}
 					className='bg-green-400'

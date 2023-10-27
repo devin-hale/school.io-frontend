@@ -5,7 +5,10 @@ import ReduxProvider from '@/redux/store/ReduxProvider';
 import { Roboto } from 'next/font/google';
 import localFont from 'next/font/local';
 
-const coolvetica = localFont({src: './../fonts/coolveticarg.otf', variable: '--font-coolvetica'})
+const coolvetica = localFont({
+	src: './../fonts/coolveticarg.otf',
+	variable: '--font-coolvetica',
+});
 
 const roboto = Roboto({
 	weight: ['400', '500', '700'],
@@ -26,8 +29,7 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<body className={`${roboto.className} ${coolvetica.variable}`}>
-				<ReduxProvider>
-				{children}</ReduxProvider>
+				<ReduxProvider>{children}</ReduxProvider>
 			</body>
 		</html>
 	);
