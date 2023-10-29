@@ -119,7 +119,6 @@ export default function EditPSTHeaderModal(
 			});
 		}
 	}
-	console.log(gradingPeriodField);
 
 	/*Intervention Type*/
 	const [interventionType, setInterventionType] = useState({

@@ -61,7 +61,6 @@ export default function EditWeekModal(props: IEditWeekModalProps): JSX.Element {
 		data1: dayjs(weekDatesSplit[0]),
 		data2: dayjs(weekDatesSplit[1]),
 	});
-	console.log(weekDates);
 
 	const [attendance, setAttendance] = useState({
 		days: {

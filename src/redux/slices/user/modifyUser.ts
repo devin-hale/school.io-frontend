@@ -52,7 +52,6 @@ export interface ICreateUserCall extends BaseCallReq {
 export const createUser = createAsyncThunk(
 	'userData/createUser',
 	async (reqBody: ICreateUserCall) => {
-		console.log(reqBody);
 		const response = await fetch(`${APIDOMAIN}/users/create`, {
 			method: 'post',
 			mode: 'cors',
@@ -144,7 +143,6 @@ export interface IEditPassReq extends BaseCallReq {
 export const editUserPassReq = createAsyncThunk(
 	'userData/editUserPass',
 	async (reqBody: IEditPassReq) => {
-		console.log(reqBody);
 		const response = await fetch(
 			`${APIDOMAIN}/users/${reqBody.params.userId}/password/edit/`,
 			{
