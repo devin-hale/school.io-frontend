@@ -17,6 +17,8 @@ import EditPSTHeaderModal from './_components/editHeaderModal';
 import EditWeekModal from './_components/editWeekModal';
 import dayjs from 'dayjs';
 import weekday from 'dayjs/plugin/weekday';
+import { AddRounded } from '@mui/icons-material';
+import { addWeek } from '@/redux/slices/pst/modifyPSTSlice';
 dayjs.extend(weekday);
 
 interface IPSTWeek {
@@ -59,13 +61,21 @@ export default function PSTIdPage({
 		});
 	};
 
+	function handleAddWeek() {
+		dispatch(addWeek({ token: user.token!, params: { pstId: params.pstId } }));
+	}
+
 	useEffect(() => {
-		if (user.token! && !pstModify.editHeader.loading && !pstModify.editHeader.loading) {
+		if (
+			user.token! &&
+			!pstModify.editHeader.loading &&
+			!pstModify.editHeader.loading
+		) {
 			dispatch(
 				getPstInstance({ token: user.token!, params: { pstId: params.pstId } })
 			);
 		}
-	}, [user.token, pstModify.editHeader.loading, pstModify.editWeek.loading]);
+	}, [user.token, pstModify.editHeader.loading, pstModify.editWeek.loading, pstModify.addWeek.loading]);
 
 	const pstWeekList = pstInstance
 		? pstInstance.weeks.map((week: any) => (
@@ -102,9 +112,7 @@ export default function PSTIdPage({
 									className='p-1 m-1 w-[150px]'
 								>
 									<strong className='underline'>Monday:</strong>
-									<p>
-										{week.attendance.monday ?? 'N/A' }
-									</p>
+									<p>{week.attendance.monday ?? 'N/A'}</p>
 								</Card>
 								<Card
 									elevation={3}
@@ -144,9 +152,7 @@ export default function PSTIdPage({
 									className='p-1 m-1 w-[150px]'
 								>
 									<strong className='underline'>Friday:</strong>
-									<p>
-										{week.attendance.friday ?? 'N/A' }
-									</p>
+									<p>{week.attendance.friday ?? 'N/A'}</p>
 								</Card>
 							</div>
 						</div>
@@ -171,7 +177,6 @@ export default function PSTIdPage({
 									<p key={comm.length}> {comm}</p>
 								))}
 							</div>
-
 						</div>
 						<div>
 							<strong className='underline'>Parent Communication:</strong>
@@ -273,7 +278,16 @@ export default function PSTIdPage({
 							Edit
 						</Button>
 					</Card>
-					<Card className='p-2 m-2'>{pstWeekList}</Card>
+					<Card className='p-2 m-2'>
+						<Button
+							type='button'
+							className='float-right'
+							onClick={handleAddWeek}
+						>
+							<AddRounded color='primary' /> Add Week
+						</Button>
+						{pstWeekList}
+					</Card>
 				</Paper>
 			)}
 		</>

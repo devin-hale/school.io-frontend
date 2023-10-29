@@ -64,8 +64,8 @@ using a standard MVC pattern. Tech used:
   - [x] ModifySlice
   - [x] Grid
   - [x] Make
-  - [ ] View
-    - [ ] Edit
+  - [x] View
+    - [x] Edit
     - [ ] Delete
   - [ ] Print/Download
 
