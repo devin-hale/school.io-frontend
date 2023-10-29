@@ -24,6 +24,7 @@ import { useState, useEffect } from 'react';
 import { useAppDispatch } from '@/app/hooks';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
+import { editWeek } from '@/redux/slices/pst/modifyPSTSlice';
 
 interface IEditWeekModalProps {
 	open: boolean;
@@ -60,6 +61,7 @@ export default function EditWeekModal(props: IEditWeekModalProps): JSX.Element {
 		data1: dayjs(weekDatesSplit[0]),
 		data2: dayjs(weekDatesSplit[1]),
 	});
+	console.log(weekDates);
 
 	const [attendance, setAttendance] = useState({
 		days: {
@@ -92,7 +94,62 @@ export default function EditWeekModal(props: IEditWeekModalProps): JSX.Element {
 		...props.weekInfo.parentComm,
 	]);
 
+	const handleSave = () => {
+		let req = {
+			token: user.token!,
+			params: {
+				pstId: props.pstId,
+				weekNo: props.weekInfo.weekNo.toString(),
+			},
+			body: {
+				dates: `${weekDates.data1.format(
+					'MM-DD-YYYY'
+				)} to ${weekDates.data2.format('MM-DD-YYYY')}`,
+				attendance: attendance.days,
+				tier1: {
+					documentation: tier1Doc.data.doc,
+					standards: tier1Doc.data.standards,
+				},
+				tier2: tier2Doc.data,
+				parentComm: parentComm,
+				progressMonitor: progressMonitor,
+			},
+		};
+		dispatch(editWeek(req));
+		handleClose();
+	};
+
 	const handleClose = () => {
+		setWeekDates({
+			data1: dayjs(weekDatesSplit[0]),
+			data2: dayjs(weekDatesSplit[1]),
+		});
+		setAttendance({
+			days: {
+				monday: props.weekInfo.attendance.monday,
+				tuesday: props.weekInfo.attendance.tuesday,
+				wednesday: props.weekInfo.attendance.wednesday,
+				thursday: props.weekInfo.attendance.thursday,
+				friday: props.weekInfo.attendance.friday,
+			},
+			error: false,
+			errorText: '',
+		});
+		setTier1Doc({
+			data: {
+				doc: props.weekInfo.tier1.documentation,
+				standards: props.weekInfo.tier1.standards,
+			},
+			error: false,
+			errorText: '',
+		});
+		setTier2Doc({
+			data: props.weekInfo.tier2,
+			error: false,
+			errorText: '',
+		});
+		setParentComm([...props.weekInfo.parentComm]);
+		setProgressMonitor([...props.weekInfo.progressMonitor]);
 		props.setOpen(false);
 	};
 
@@ -288,9 +345,6 @@ export default function EditWeekModal(props: IEditWeekModalProps): JSX.Element {
 		setParentComm(tempArr);
 	}
 
-
-	
-
 	const parentCommMap = parentComm.map((doc: any, index: number) => (
 		<div
 			key={index}
@@ -304,6 +358,54 @@ export default function EditWeekModal(props: IEditWeekModalProps): JSX.Element {
 				}
 			/>
 			<IconButton onClick={() => handleParentCommDelete(index)}>
+				<DeleteRounded color='error' />
+			</IconButton>
+		</div>
+	));
+
+	const [progressMonitor, setProgressMonitor] = useState(
+		props.weekInfo.progressMonitor
+	);
+
+	function handleProgressMAdd() {
+		setProgressMonitor([...progressMonitor, '']);
+	}
+
+	function handleProgressMChange(
+		e: React.ChangeEvent<HTMLInputElement>,
+		index: number
+	) {
+		if (e.target.value.length === 0) {
+			let tempArr: string[] = [...progressMonitor];
+			tempArr[index] = '';
+			setProgressMonitor(tempArr);
+		} else if (e.target.value.length < 30) {
+			let tempArr: string[] = [...progressMonitor];
+			tempArr[index] = e.target.value;
+			setProgressMonitor(tempArr);
+		} else {
+		}
+	}
+
+	function handleProgressMDelete(index: number) {
+		let tempArr: string[] = [...progressMonitor];
+		tempArr.splice(index, 1);
+		setProgressMonitor(tempArr);
+	}
+
+	const progressMMap = progressMonitor.map((doc: any, index: number) => (
+		<div
+			key={index}
+			className='flex flex-row m-2'
+		>
+			<TextField
+				type='text'
+				value={doc}
+				onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+					handleProgressMChange(e, index)
+				}
+			/>
+			<IconButton onClick={() => handleProgressMDelete(index)}>
 				<DeleteRounded color='error' />
 			</IconButton>
 		</div>
@@ -556,7 +658,20 @@ export default function EditWeekModal(props: IEditWeekModalProps): JSX.Element {
 					</div>
 					<div className='flex flex-row flex-wrap'>{parentCommMap}</div>
 				</div>
-
+				<div>
+					<div className='mb-1'>
+						<strong className='underline text-[20px]'>
+							Progress Monitoring:
+						</strong>
+						<IconButton
+							className='ml-1'
+							onClick={handleProgressMAdd}
+						>
+							<AddRounded color='primary' />
+						</IconButton>
+					</div>
+					<div className='flex flex-row flex-wrap'>{progressMMap}</div>
+				</div>
 
 				<div className='self-end'>
 					<Button
@@ -565,6 +680,7 @@ export default function EditWeekModal(props: IEditWeekModalProps): JSX.Element {
 						color='primary'
 						variant='contained'
 						type='button'
+						onClick={handleSave}
 					>
 						Save Changes
 					</Button>

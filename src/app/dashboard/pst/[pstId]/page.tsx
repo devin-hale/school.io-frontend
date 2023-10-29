@@ -60,12 +60,12 @@ export default function PSTIdPage({
 	};
 
 	useEffect(() => {
-		if (user.token! && !pstModify.editHeader.loading) {
+		if (user.token! && !pstModify.editHeader.loading && !pstModify.editHeader.loading) {
 			dispatch(
 				getPstInstance({ token: user.token!, params: { pstId: params.pstId } })
 			);
 		}
-	}, [user.token, pstModify.editHeader.loading]);
+	}, [user.token, pstModify.editHeader.loading, pstModify.editWeek.loading]);
 
 	const pstWeekList = pstInstance
 		? pstInstance.weeks.map((week: any) => (
@@ -103,9 +103,7 @@ export default function PSTIdPage({
 								>
 									<strong className='underline'>Monday:</strong>
 									<p>
-										{week.attendance.monday !== ''
-											? week.attendance.monday
-											: 'N/A'}
+										{week.attendance.monday ?? 'N/A' }
 									</p>
 								</Card>
 								<Card
@@ -115,7 +113,7 @@ export default function PSTIdPage({
 									<strong className='underline'>Tuesday:</strong>
 									<p>
 										{week.attendance.monday !== ''
-											? week.attendance.monday
+											? week.attendance.tuesday
 											: 'N/A'}
 									</p>
 								</Card>
@@ -126,7 +124,7 @@ export default function PSTIdPage({
 									<strong className='underline'>Wednesday:</strong>
 									<p>
 										{week.attendance.monday !== ''
-											? week.attendance.monday
+											? week.attendance.wednesday
 											: 'N/A'}
 									</p>
 								</Card>
@@ -137,7 +135,7 @@ export default function PSTIdPage({
 									<strong className='underline'>Thursday:</strong>
 									<p>
 										{week.attendance.monday !== ''
-											? week.attendance.monday
+											? week.attendance.thursday
 											: 'N/A'}
 									</p>
 								</Card>
@@ -147,9 +145,7 @@ export default function PSTIdPage({
 								>
 									<strong className='underline'>Friday:</strong>
 									<p>
-										{week.attendance.monday !== ''
-											? week.attendance.monday
-											: 'N/A'}
+										{week.attendance.friday ?? 'N/A' }
 									</p>
 								</Card>
 							</div>
@@ -170,6 +166,12 @@ export default function PSTIdPage({
 						</div>
 						<div>
 							<strong className='underline'>Tier 2 Documentation:</strong>
+							<div>
+								{week.tier2.map((comm: any) => (
+									<p key={comm.length}> {comm}</p>
+								))}
+							</div>
+
 						</div>
 						<div>
 							<strong className='underline'>Parent Communication:</strong>

@@ -51,6 +51,29 @@ export default function EditPSTHeaderModal(
 		(state: RootState) => state.studentsModify
 	);
 
+	const [progressMonitorField, setProgressMonitorField] = useState({
+		progressM: props.headerInfo.progress_monitoring_goal,
+		error: false,
+		errorText: '',
+	});
+
+	function handleProgressMChange(e: React.ChangeEvent<HTMLInputElement>) {
+		if (e.target.value.length === 0) {
+			setProgressMonitorField({
+				progressM: '',
+				error: true,
+				errorText: 'Progress monitoring must be filled out.',
+			});
+		} else if (e.target.value.length < 30) {
+			setProgressMonitorField({
+				progressM: e.target.value,
+				error: false,
+				errorText: '',
+			});
+		} else {
+		}
+	}
+
 	/*School Year*/
 	const [schoolYearField, setSchoolYearField] = useState({
 		schoolYear: props.headerInfo.schoolYear,
@@ -143,7 +166,7 @@ export default function EditPSTHeaderModal(
 				schoolYear: schoolYearField.schoolYear,
 				intervention_type: interventionType.interventionType,
 				west_virginia_phonics: wggState,
-				progress_monitoring_goal: pMG.pMG,
+				progress_monitoring_goal: progressMonitorField.progressM,
 			},
 		};
 		dispatch(editHeader(payload));
@@ -260,6 +283,15 @@ export default function EditPSTHeaderModal(
 							</FormGroup>
 							{/* <TextField value={} type='' />
 							 */}
+							<TextField
+								className='w-[300px]'
+								label='Progress Monitoring'
+								value={progressMonitorField.progressM}
+								type='text'
+								error={progressMonitorField.error}
+								helperText={progressMonitorField.errorText}
+								onChange={handleProgressMChange}
+							/>
 						</div>
 						<div className='m-2 w-60 sm:w-[300px] flex flex-row flex-wrap justify-center'>
 							<Button
@@ -272,7 +304,8 @@ export default function EditPSTHeaderModal(
 								disabled={
 									schoolYearField.error ||
 									gradingPeriodField.error ||
-									interventionType.error
+									interventionType.error ||
+									progressMonitorField.error
 								}
 							>
 								Save
