@@ -9,6 +9,7 @@ import {
 	ListItem,
 	ListItemButton,
 	Button,
+	IconButton,
 } from '@mui/material';
 import { useAppDispatch } from '@/app/hooks';
 import { RootState } from '@/redux/store/store';
@@ -17,8 +18,9 @@ import EditPSTHeaderModal from './_components/editHeaderModal';
 import EditWeekModal from './_components/editWeekModal';
 import dayjs from 'dayjs';
 import weekday from 'dayjs/plugin/weekday';
-import { AddRounded } from '@mui/icons-material';
+import { AddRounded, EditRounded } from '@mui/icons-material';
 import { addWeek } from '@/redux/slices/pst/modifyPSTSlice';
+import AddStudentToPSTModal from './_components/addStudentModal';
 dayjs.extend(weekday);
 
 interface IPSTWeek {
@@ -54,6 +56,7 @@ export default function PSTIdPage({
 	const [editHeaderModal, setEditHeaderModal] = useState(false);
 	const [editWeekModal, setEditWeekModal] = useState<boolean>(false);
 	const [selectedWeek, setSelectedWeek] = useState<IPSTWeek | null>(null);
+	const [addStudentOpen, setAddStudentOpen] = useState<boolean>(false);
 
 	const handleSelectWeek = (week: IPSTWeek) => {
 		setSelectedWeek({
@@ -69,13 +72,21 @@ export default function PSTIdPage({
 		if (
 			user.token! &&
 			!pstModify.editHeader.loading &&
-			!pstModify.editHeader.loading
+			!pstModify.editHeader.loading &&
+			!pstModify.addStudent.loading
 		) {
 			dispatch(
 				getPstInstance({ token: user.token!, params: { pstId: params.pstId } })
 			);
 		}
-	}, [user.token, pstModify.editHeader.loading, pstModify.editWeek.loading, pstModify.addWeek.loading]);
+	}, [
+		user.token,
+		pstModify.editHeader.loading,
+		pstModify.editWeek.loading,
+		pstModify.addWeek.loading,
+		pstModify.addStudent.loading,
+	]);
+
 
 	const pstWeekList = pstInstance
 		? pstInstance.weeks.map((week: any) => (
@@ -95,7 +106,7 @@ export default function PSTIdPage({
 							>
 								Edit Week
 							</Button>
-							<div>
+							<div className='text-[20px]'>
 								<strong className='underline'>Week Number:</strong>
 								{` ${week.weekNo}`}
 							</div>
@@ -227,26 +238,38 @@ export default function PSTIdPage({
 					weekInfo={selectedWeek}
 				/>
 			)}
+			{pstGet.pstInstance.content && (
+				<AddStudentToPSTModal
+					open={addStudentOpen}
+					setOpen={setAddStudentOpen}
+					pstId={params.pstId}
+				/>
+			)}
 			{!pstGet.pstInstance.content ? (
 				<CircularProgress />
 			) : (
 				<Paper className='p-2'>
-					<Card className='p-2 m-2'>
-						<h2>
+					<Card className='p-2 m-2 flex flex-row flex-wrap items-center'>
+						<h2 className='m-1 mr-[40px]'>
 							<strong className='underline'>Documenting Teacher:</strong>
 							{` ${pstInstance.owner.last_name}, ${pstInstance.owner.first_name}`}
 						</h2>
-
 						<h2>
 							<strong className='underline'>Student Name:</strong>
 							{pstInstance.student
-								? ` ${pstInstance.student.first_name}, ${pstInstance.student.last_name}`
+								? ` ${pstInstance.student.first_name} ${pstInstance.student.last_name}`
 								: ''}
+							<IconButton onClick={() => setAddStudentOpen(true)}>
+								<EditRounded
+									className='w-[20px]'
+									color='primary'
+								/>
+							</IconButton>
 						</h2>
 					</Card>
 					<Card className='p-2 m-2 flex flex-row flex-wrap'>
-						<div className='mr-5'>
-							<h2>
+						<div className='mr-5 flex flex-row'>
+							<h2 className='mr-[40px]'>
 								<strong className='underline'>School Year:</strong>
 								{` ${pstInstance.header.schoolYear}`}
 							</h2>
@@ -254,12 +277,13 @@ export default function PSTIdPage({
 								<strong className='underline'>Grading Period:</strong>
 								{` ${pstInstance.header.gradingPeriod}`}
 							</h2>
+						</div>
+						<div>
 							<h2>
 								<strong className='underline'>Intervention Type:</strong>
 								{` ${pstInstance.header.intervention_type}`}
 							</h2>
-						</div>
-						<div>
+
 							<h2>
 								<strong className='underline'> West Virginia Phonics:</strong>
 								{` ${pstInstance.header.west_virginia_phonics}`}
