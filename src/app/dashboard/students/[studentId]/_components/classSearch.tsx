@@ -7,7 +7,7 @@ import {
 	CircularProgress,
 	Autocomplete,
 	TextField,
-	DialogContent
+	DialogContent,
 } from '@mui/material';
 import { SetStateAction, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -100,40 +100,52 @@ export default function AddClassModal(props: IClassAddModalProps): JSX.Element {
 				className='flex flex-nowrap justify-center'
 				disableEscapeKeyDown
 			>
-			<DialogContent>
-<DialogTitle>Enroll Student:</DialogTitle>
-				<Autocomplete
-					id='classes-search'
-					options={classOptions}
-					onChange={(e, value) => setSelectedClass(value)}
-					renderInput={(params) => (
-						<TextField
-							{...params}
-							label='Search Classes...'
-						/>
-					)}
-				/>
-				<div className='m-2 mt-4'>
-					<Button
-						variant='contained'
-						color='success'
-						className='bg-green-400 text-white mr-4'
-						disabled={!selectedClass ? true : false}
-						onClick={handleSave}
-					>
-						Enroll
-					</Button>
-					<Button
-						variant='contained'
-						color='error'
-						className='bg-red-400 text-white'
-						onClick={handleClose}
-					>
-						Cancel
-					</Button>
-				</div>
-			</DialogContent>
-				
+				<DialogContent>
+					<DialogTitle>Enroll Student:</DialogTitle>
+					<Autocomplete
+						id='classes-search'
+						options={classOptions}
+						onChange={(e, value) => setSelectedClass(value)}
+						renderOption={(props, option) => {
+							return (
+								<li
+									{...props}
+									key={option.classId}
+								>
+									{option.label}
+								</li>
+							);
+						}}
+						renderInput={(params) => (
+							<TextField
+								{...params}
+								label='Search Classes...'
+							/>
+						)}
+						isOptionEqualToValue={(option, value) =>
+							option.classId === value.classId
+						}
+					/>
+					<div className='m-2 mt-4'>
+						<Button
+							variant='contained'
+							color='success'
+							className='bg-green-400 text-white mr-4'
+							disabled={!selectedClass ? true : false}
+							onClick={handleSave}
+						>
+							Enroll
+						</Button>
+						<Button
+							variant='contained'
+							color='error'
+							className='bg-red-400 text-white'
+							onClick={handleClose}
+						>
+							Cancel
+						</Button>
+					</div>
+				</DialogContent>
 			</Dialog>
 		</>
 	);

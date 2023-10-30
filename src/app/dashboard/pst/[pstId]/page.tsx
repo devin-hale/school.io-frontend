@@ -18,9 +18,15 @@ import EditPSTHeaderModal from './_components/editHeaderModal';
 import EditWeekModal from './_components/editWeekModal';
 import dayjs from 'dayjs';
 import weekday from 'dayjs/plugin/weekday';
-import { AddRounded, EditRounded } from '@mui/icons-material';
+import {
+	AddRounded,
+	DeleteRounded,
+	EditRounded,
+	SettingsRounded,
+} from '@mui/icons-material';
 import { addWeek } from '@/redux/slices/pst/modifyPSTSlice';
 import AddStudentToPSTModal from './_components/addStudentModal';
+import DeleteWeekModal from './_components/deleteWeekConfirm';
 dayjs.extend(weekday);
 
 interface IPSTWeek {
@@ -56,6 +62,7 @@ export default function PSTIdPage({
 	const [editHeaderModal, setEditHeaderModal] = useState(false);
 	const [editWeekModal, setEditWeekModal] = useState<boolean>(false);
 	const [selectedWeek, setSelectedWeek] = useState<IPSTWeek | null>(null);
+	const [deleteWeek, setDeleteWeek] = useState<boolean>(false);
 	const [addStudentOpen, setAddStudentOpen] = useState<boolean>(false);
 
 	const handleSelectWeek = (week: IPSTWeek) => {
@@ -73,7 +80,8 @@ export default function PSTIdPage({
 			user.token! &&
 			!pstModify.editHeader.loading &&
 			!pstModify.editHeader.loading &&
-			!pstModify.addStudent.loading
+			!pstModify.addStudent.loading &&
+			!pstModify.deleteWeek.loading
 		) {
 			dispatch(
 				getPstInstance({ token: user.token!, params: { pstId: params.pstId } })
@@ -85,129 +93,163 @@ export default function PSTIdPage({
 		pstModify.editWeek.loading,
 		pstModify.addWeek.loading,
 		pstModify.addStudent.loading,
+		pstModify.deleteWeek.loading,
 	]);
 
-
 	const pstWeekList = pstInstance
-		? pstInstance.weeks.map((week: any) => (
-				<ListItem key={week.weekNo}>
-					<Card
-						elevation={3}
-						className='p-2'
+		? [...pstInstance.weeks]
+				.sort((a: any, b: any) => (a.weekNo < b.weekNo ? -1 : 1))
+				.map((week: any) => (
+					<ListItem
+						key={week.weekNo}
+						className='w-[1000px]'
 					>
-						<header>
-							<Button
-								className='float-right'
-								type='button'
-								onClick={() => {
-									handleSelectWeek(week);
-									setEditWeekModal(true);
-								}}
-							>
-								Edit Week
-							</Button>
-							<div className='text-[20px]'>
-								<strong className='underline'>Week Number:</strong>
-								{` ${week.weekNo}`}
-							</div>
-							<div>
-								<strong className='underline'>Dates:</strong>
-								{` ${week.dates}`}
-							</div>
-						</header>
-						<div>
-							<strong className='underline'>Attendance:</strong>
-							<div className='flex flex-row flex-wrap'>
-								<Card
-									elevation={3}
-									className='p-1 m-1 w-[150px]'
+						<Card
+							elevation={4}
+							className='p-2 w-full'
+						>
+							<header>
+								<Button
+									className='float-right bg-green-400'
+									type='button'
+									variant='contained'
+									onClick={() => {
+										handleSelectWeek(week);
+										setEditWeekModal(true);
+									}}
 								>
-									<strong className='underline'>Monday:</strong>
-									<p>{week.attendance.monday ?? 'N/A'}</p>
-								</Card>
-								<Card
-									elevation={3}
-									className='p-1 m-1 w-[150px]'
+									<EditRounded className='text-white' />
+								</Button>
+								<IconButton
+									className='float-right mr-1'
+									onClick={() => {
+										handleSelectWeek(week);
+										setDeleteWeek(true);
+									}}
 								>
-									<strong className='underline'>Tuesday:</strong>
-									<p>
-										{week.attendance.monday !== ''
-											? week.attendance.tuesday
-											: 'N/A'}
-									</p>
-								</Card>
-								<Card
-									elevation={3}
-									className='p-1 m-1 w-[150px]'
-								>
-									<strong className='underline'>Wednesday:</strong>
-									<p>
-										{week.attendance.monday !== ''
-											? week.attendance.wednesday
-											: 'N/A'}
-									</p>
-								</Card>
-								<Card
-									elevation={3}
-									className='p-1 m-1 w-[150px]'
-								>
-									<strong className='underline'>Thursday:</strong>
-									<p>
-										{week.attendance.monday !== ''
-											? week.attendance.thursday
-											: 'N/A'}
-									</p>
-								</Card>
-								<Card
-									elevation={3}
-									className='p-1 m-1 w-[150px]'
-								>
-									<strong className='underline'>Friday:</strong>
-									<p>{week.attendance.friday ?? 'N/A'}</p>
-								</Card>
+									<DeleteRounded color='error' />
+								</IconButton>
+								<div className='text-[20px]'>
+									<strong className='underline'>Week Number:</strong>
+									{` ${week.weekNo}`}
+								</div>
+								<div className='mb-3'>
+									<strong className='underline'>Dates:</strong>
+									{` ${week.dates}`}
+								</div>
+								<Divider />
+							</header>
+							<div className='mt-3 mb-3 w-full'>
+								<strong className='underline text-[18px]'>Attendance:</strong>
+								<div className='flex flex-row flex-wrap justify-evenly'>
+									<Card
+										elevation={3}
+										className='p-1 m-1 w-[150px]'
+									>
+										<strong className='underline'>Monday:</strong>
+										<p>{week.attendance.monday ?? 'N/A'}</p>
+									</Card>
+									<Card
+										elevation={3}
+										className='p-1 m-1 w-[150px]'
+									>
+										<strong className='underline'>Tuesday:</strong>
+										<p>
+											{week.attendance.monday !== ''
+												? week.attendance.tuesday
+												: 'N/A'}
+										</p>
+									</Card>
+									<Card
+										elevation={3}
+										className='p-1 m-1 w-[150px]'
+									>
+										<strong className='underline'>Wednesday:</strong>
+										<p>
+											{week.attendance.monday !== ''
+												? week.attendance.wednesday
+												: 'N/A'}
+										</p>
+									</Card>
+									<Card
+										elevation={3}
+										className='p-1 m-1 w-[150px]'
+									>
+										<strong className='underline'>Thursday:</strong>
+										<p>
+											{week.attendance.monday !== ''
+												? week.attendance.thursday
+												: 'N/A'}
+										</p>
+									</Card>
+									<Card
+										elevation={3}
+										className='p-1 m-1 w-[150px]'
+									>
+										<strong className='underline'>Friday:</strong>
+										<p>{week.attendance.friday ?? 'N/A'}</p>
+									</Card>
+								</div>
 							</div>
-						</div>
-						<div>
-							<strong className='underline'>Tier 1 Documentation:</strong>
-							<div>
-								{week.tier1.documentation.map((doc: any) => (
-									<p key={doc}>{doc}</p>
-								))}
+							<div className='flex flex-row justify-start'>
+								<div className='mb-3 mr-5'>
+									<strong className='underline text-[18px]'>
+										Tier 1 Documentation:
+									</strong>
+									<div>
+										{week.tier1.documentation.map((doc: any, index: number) => (
+											<p key={index}>- {doc}</p>
+										))}
+									</div>
+									<strong className='underline'>Standards:</strong>
+									<div className='flex flex-row'>
+										{week.tier1.standards.map(
+											(standard: any, index: number, arr: []) => (
+												<p
+													key={index}
+													className='mr-1'
+												>
+													{standard}
+													{index < arr.length - 1 ? ',' : null}
+												</p>
+											)
+										)}
+									</div>
+								</div>
+								<div className='mr-5 p-1 min-h-[150px]'>
+									<strong className='underline text-[18px]'>
+										Tier 2 Documentation:
+									</strong>
+									<div>
+										{week.tier2.map((comm: any, index: number) => (
+											<p key={index}>- {comm}</p>
+										))}
+									</div>
+								</div>
+								<div className='mr-5 p-1 min-h-[150px]'>
+									<strong className='underline text-[18px]'>
+										Parent Communication:
+									</strong>
+									<div>
+										{week.parentComm.map((comm: any, index: number) => (
+											<p key={index}>- {comm}</p>
+										))}
+									</div>
+								</div>
+								<div className='mr-5 p-1 min-h-[150px]'>
+									<strong className='underline text-[18px]'>
+										Progress Monitoring
+									</strong>
+									<div>
+										{week.progressMonitor.map((prog: any, index: number) => (
+											<p key={index}>- {prog}</p>
+										))}
+									</div>
+								</div>
 							</div>
-							<strong className='underline'>Standards:</strong>
-							<div>
-								{week.tier1.standards.map((standard: any) => (
-									<p key={standard}> {standard}</p>
-								))}
-							</div>
-						</div>
-						<div>
-							<strong className='underline'>Tier 2 Documentation:</strong>
-							<div>
-								{week.tier2.map((comm: any) => (
-									<p key={comm.length}> {comm}</p>
-								))}
-							</div>
-						</div>
-						<div>
-							<strong className='underline'>Parent Communication:</strong>
-							<div>
-								{week.parentComm.map((comm: any) => (
-									<p key={comm.length}> {comm}</p>
-								))}
-							</div>
-						</div>
-						<div>
-							<strong className='underline'>Progress Monitoring</strong>
-							<div>
-								{week.progressMonitor.map((prog: any) => (
-									<p key={prog.length}> {prog}</p>
-								))}
-							</div>
-						</div>
-					</Card>
-				</ListItem>
-		  ))
+						</Card>
+					</ListItem>
+				))
 		: [];
 
 	return (
@@ -231,12 +273,20 @@ export default function PSTIdPage({
 				/>
 			)}
 			{pstGet.pstInstance.content && selectedWeek && (
-				<EditWeekModal
-					open={editWeekModal}
-					setOpen={setEditWeekModal}
-					pstId={params.pstId}
-					weekInfo={selectedWeek}
-				/>
+				<>
+					<EditWeekModal
+						open={editWeekModal}
+						setOpen={setEditWeekModal}
+						pstId={params.pstId}
+						weekInfo={selectedWeek}
+					/>
+					<DeleteWeekModal
+						open={deleteWeek}
+						setOpen={setDeleteWeek}
+						pstId={params.pstId}
+						weekNo={selectedWeek.weekNo.toString()}
+					/>
+				</>
 			)}
 			{pstGet.pstInstance.content && (
 				<AddStudentToPSTModal
@@ -248,7 +298,7 @@ export default function PSTIdPage({
 			{!pstGet.pstInstance.content ? (
 				<CircularProgress />
 			) : (
-				<Paper className='p-2'>
+				<div className='p-2 relative'>
 					<Card className='p-2 m-2 flex flex-row flex-wrap items-center'>
 						<h2 className='m-1 mr-[40px]'>
 							<strong className='underline'>Documenting Teacher:</strong>
@@ -267,7 +317,7 @@ export default function PSTIdPage({
 							</IconButton>
 						</h2>
 					</Card>
-					<Card className='p-2 m-2 flex flex-row flex-wrap'>
+					<Card className='p-2 m-2 flex flex-col relative'>
 						<div className='mr-5 flex flex-row'>
 							<h2 className='mr-[40px]'>
 								<strong className='underline'>School Year:</strong>
@@ -294,25 +344,26 @@ export default function PSTIdPage({
 							</h2>
 						</div>
 						<Button
-							className='bg-green-400 text-white m-auto'
+							className='bg-green-400 text-white w-[25px] absolute top-[0] right-0 m-1'
 							type='button'
 							variant='contained'
 							onClick={() => setEditHeaderModal(true)}
 						>
-							Edit
+							<EditRounded className='text-white w-[23px]' />
 						</Button>
 					</Card>
-					<Card className='p-2 m-2'>
+					<div className='p-2 m-2 flex flex-row justify-between'>
+						<div>{pstWeekList}</div>
 						<Button
 							type='button'
-							className='float-right'
+							className='bg-green-400 text-white h-fit'
+							variant='contained'
 							onClick={handleAddWeek}
 						>
-							<AddRounded color='primary' /> Add Week
+							<AddRounded /> Add Week
 						</Button>
-						{pstWeekList}
-					</Card>
-				</Paper>
+					</div>
+				</div>
 			)}
 		</>
 	);

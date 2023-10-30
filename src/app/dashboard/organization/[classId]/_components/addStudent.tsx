@@ -7,7 +7,7 @@ import {
 	CircularProgress,
 	Autocomplete,
 	TextField,
-	DialogContent
+	DialogContent,
 } from '@mui/material';
 import { SetStateAction, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -29,7 +29,10 @@ import {
 import { getOrgClasses } from '@/redux/slices/classes/classSlice';
 import { IStudent } from '@/redux/slices/classes/classInstanceSlice';
 import { userInfo } from 'os';
-import { getOrgStudents, getStudentInstance } from '@/redux/slices/students/studentsSlice';
+import {
+	getOrgStudents,
+	getStudentInstance,
+} from '@/redux/slices/students/studentsSlice';
 
 export interface IAddStudentToClassModal {
 	open: boolean;
@@ -39,7 +42,9 @@ export interface IAddStudentToClassModal {
 	orgId: string;
 }
 
-export default function AddStudentToClassModal(props: IAddStudentToClassModal): JSX.Element {
+export default function AddStudentToClassModal(
+	props: IAddStudentToClassModal
+): JSX.Element {
 	const dispatch: Dispatch<any> = useAppDispatch();
 	const router = useRouter();
 	const user = useSelector((state: RootState) => state.user);
@@ -47,9 +52,13 @@ export default function AddStudentToClassModal(props: IAddStudentToClassModal): 
 		(state: RootState) => state.studentsModify.delete
 	);
 	const orgClasses = useSelector((state: RootState) => state.class);
-	const orgStudents = useSelector((state: RootState) => state.students.orgStudents)
+	const orgStudents = useSelector(
+		(state: RootState) => state.students.orgStudents
+	);
 
-	const [selectedStudent, setSelectedStudent] = useState<studentOption | null>(null);
+	const [selectedStudent, setSelectedStudent] = useState<studentOption | null>(
+		null
+	);
 
 	useEffect(() => {
 		dispatch(getOrgStudents({ token: user.token!, orgId: props.orgId }));
@@ -76,7 +85,7 @@ export default function AddStudentToClassModal(props: IAddStudentToClassModal): 
 				classId: props.classId,
 			},
 		};
-		dispatch(addStudentClass(dispatchBody))
+		dispatch(addStudentClass(dispatchBody));
 		handleClose();
 	};
 
@@ -92,7 +101,10 @@ export default function AddStudentToClassModal(props: IAddStudentToClassModal): 
 					(studentClass) => studentClass._id === orgStudent._id
 				)
 		)
-		.map((orgStudent) => ({ label: `${orgStudent.first_name} ${orgStudent.last_name}`, studentId: orgStudent._id! }));
+		.map((orgStudent) => ({
+			label: `${orgStudent.first_name} ${orgStudent.last_name}`,
+			studentId: orgStudent._id!,
+		}));
 
 	return (
 		<>
@@ -108,12 +120,25 @@ export default function AddStudentToClassModal(props: IAddStudentToClassModal): 
 						id='classes-search'
 						options={studentOptions}
 						onChange={(e, value) => setSelectedStudent(value)}
+						renderOption={(props, option) => {
+							return (
+								<li
+									{...props}
+									key={option.studentId}
+								>
+									{option.label}
+								</li>
+							);
+						}}
 						renderInput={(params) => (
 							<TextField
 								{...params}
 								label='Search Students...'
 							/>
 						)}
+						isOptionEqualToValue={(option, value) =>
+							option.studentId === value.studentId
+						}
 					/>
 					<div className='m-2 mt-4'>
 						<Button
@@ -135,7 +160,6 @@ export default function AddStudentToClassModal(props: IAddStudentToClassModal): 
 						</Button>
 					</div>
 				</DialogContent>
-
 			</Dialog>
 		</>
 	);

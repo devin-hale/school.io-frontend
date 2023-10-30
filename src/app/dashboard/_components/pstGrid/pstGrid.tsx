@@ -8,14 +8,9 @@ import {
 } from '@mui/x-data-grid';
 import { Dispatch } from 'react';
 import { useRouter } from 'next/navigation';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
 import { useState, useEffect, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '@/app/hooks';
-import {
-	getClassStudents,
-	getOrgStudents,
-} from '@/redux/slices/students/studentsSlice';
 import { UserState } from '@/redux/slices/user/userSlice';
 import { Menu, MenuItem, Divider } from '@mui/material';
 import {
@@ -23,7 +18,6 @@ import {
 	ToggleOffRounded,
 	ContactPageRounded,
 } from '@mui/icons-material';
-import UnenrollStudentModal from '../../students/[studentId]/_components/unenrollStudents';
 import {
 	IPSTState,
 	getClassPST,
@@ -136,12 +130,12 @@ export default function PSTGrid(props: IPSTGridProps) {
 				if (params.row.student === undefined) {
 					return 'None'
 				}
-				return params.row.student;
+				return `${params.row.student.first_name} ${params.row.student.last_name}`;
 			},
 		},
 		{
 			field: 'header',
-			headerName: 'School Year',
+			headerName: 'School Year/Grading Period',
 			type: 'string',
 			flex: 0.5,
 			valueGetter: (params) => {
@@ -149,8 +143,6 @@ export default function PSTGrid(props: IPSTGridProps) {
 			},
 		},
 
-
-		{ field: 'class', headerName: 'Class', type: 'string', flex: 0.3 },
 		{
 			field: 'actions',
 			type: 'actions',
