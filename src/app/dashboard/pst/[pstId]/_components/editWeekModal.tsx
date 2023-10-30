@@ -177,7 +177,7 @@ export default function EditWeekModal(props: IEditWeekModalProps): JSX.Element {
 			let tempArr: string[] = [...tier1Doc.data.doc];
 			tempArr[index] = '';
 			setTier1Doc({ ...tier1Doc, data: { ...tier1Doc.data, doc: tempArr } });
-		} else if (e.target.value.length < 30) {
+		} else if (e.target.value.length < 100) {
 			let tempArr: string[] = [...tier1Doc.data.doc];
 			tempArr[index] = e.target.value;
 			setTier1Doc({ ...tier1Doc, data: { ...tier1Doc.data, doc: tempArr } });
@@ -286,7 +286,7 @@ export default function EditWeekModal(props: IEditWeekModalProps): JSX.Element {
 			let tempArr: string[] = [...tier2Doc.data];
 			tempArr[index] = '';
 			setTier2Doc({ ...tier2Doc, data: tempArr });
-		} else if (e.target.value.length < 30) {
+		} else if (e.target.value.length < 100) {
 			let tempArr: string[] = [...tier2Doc.data];
 			tempArr[index] = e.target.value;
 			setTier2Doc({ ...tier2Doc, data: tempArr });
@@ -330,7 +330,7 @@ export default function EditWeekModal(props: IEditWeekModalProps): JSX.Element {
 			let tempArr: string[] = [...parentComm];
 			tempArr[index] = '';
 			setParentComm(tempArr);
-		} else if (e.target.value.length < 30) {
+		} else if (e.target.value.length < 100) {
 			let tempArr: string[] = [...parentComm];
 			tempArr[index] = e.target.value;
 			setParentComm(tempArr);
@@ -378,7 +378,7 @@ export default function EditWeekModal(props: IEditWeekModalProps): JSX.Element {
 			let tempArr: string[] = [...progressMonitor];
 			tempArr[index] = '';
 			setProgressMonitor(tempArr);
-		} else if (e.target.value.length < 30) {
+		} else if (e.target.value.length < 100) {
 			let tempArr: string[] = [...progressMonitor];
 			tempArr[index] = e.target.value;
 			setProgressMonitor(tempArr);

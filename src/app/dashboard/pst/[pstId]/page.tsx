@@ -20,13 +20,21 @@ import dayjs from 'dayjs';
 import weekday from 'dayjs/plugin/weekday';
 import {
 	AddRounded,
+	CheckRounded,
+	CloseRounded,
 	DeleteRounded,
+	DownloadRounded,
 	EditRounded,
+	PermDeviceInformationRounded,
+	PictureAsPdfRounded,
 	SettingsRounded,
 } from '@mui/icons-material';
 import { addWeek } from '@/redux/slices/pst/modifyPSTSlice';
 import AddStudentToPSTModal from './_components/addStudentModal';
 import DeleteWeekModal from './_components/deleteWeekConfirm';
+import ReactPDF, { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
+import PSTPDF from './_components/PDF';
+import { useRouter } from 'next/navigation';
 dayjs.extend(weekday);
 
 interface IPSTWeek {
@@ -58,12 +66,21 @@ export default function PSTIdPage({
 	const pstGet = useSelector((state: RootState) => state.pst);
 	const pstInstance = pstGet.pstInstance.content;
 	const pstModify = useSelector((state: RootState) => state.pstModify);
+	const router = useRouter();
 
 	const [editHeaderModal, setEditHeaderModal] = useState(false);
 	const [editWeekModal, setEditWeekModal] = useState<boolean>(false);
 	const [selectedWeek, setSelectedWeek] = useState<IPSTWeek | null>(null);
 	const [deleteWeek, setDeleteWeek] = useState<boolean>(false);
 	const [addStudentOpen, setAddStudentOpen] = useState<boolean>(false);
+
+	const [pdfSave, setPDFSave] = useState(false);
+
+	const handlePDFSave = () => {};
+
+	const handlePDFNav = () => {
+		router.push(`/dashboard/pst/${params.pstId}/pdf`);
+	};
 
 	const handleSelectWeek = (week: IPSTWeek) => {
 		setSelectedWeek({
@@ -99,9 +116,9 @@ export default function PSTIdPage({
 	const pstWeekList = pstInstance
 		? [...pstInstance.weeks]
 				.sort((a: any, b: any) => (a.weekNo < b.weekNo ? -1 : 1))
-				.map((week: any) => (
+				.map((week: any, index: number, weekArr) => (
 					<ListItem
-						key={week.weekNo}
+						key={index}
 						className='w-[1000px]'
 					>
 						<Card
@@ -120,15 +137,17 @@ export default function PSTIdPage({
 								>
 									<EditRounded className='text-white' />
 								</Button>
-								<IconButton
-									className='float-right mr-1'
-									onClick={() => {
-										handleSelectWeek(week);
-										setDeleteWeek(true);
-									}}
-								>
-									<DeleteRounded color='error' />
-								</IconButton>
+								{index === weekArr.length - 1 && (
+									<IconButton
+										className='float-right mr-1'
+										onClick={() => {
+											handleSelectWeek(week);
+											setDeleteWeek(true);
+										}}
+									>
+										<DeleteRounded color='error' />
+									</IconButton>
+								)}
 								<div className='text-[20px]'>
 									<strong className='underline'>Week Number:</strong>
 									{` ${week.weekNo}`}
@@ -298,8 +317,11 @@ export default function PSTIdPage({
 			{!pstGet.pstInstance.content ? (
 				<CircularProgress />
 			) : (
-				<div className='p-2 relative'>
-					<Card className='p-2 m-2 flex flex-row flex-wrap items-center'>
+				<div
+					id='printTarget'
+					className='p-2 relative'
+				>
+					<Card className='p-2 m-2 flex flex-row flex-wrap items-center relative'>
 						<h2 className='m-1 mr-[40px]'>
 							<strong className='underline'>Documenting Teacher:</strong>
 							{` ${pstInstance.owner.last_name}, ${pstInstance.owner.first_name}`}
@@ -316,6 +338,14 @@ export default function PSTIdPage({
 								/>
 							</IconButton>
 						</h2>
+						<PDFDownloadLink
+							className='absolute right-0 mr-2 text-white bg-blue-400 p-2 rounded hover:bg-blue-200 hover:transition-all transition-all drop-shadow-md'
+							document={<PSTPDF data={pstGet.pstInstance.content}/>}
+							fileName='example.pdf'
+						>
+							<PictureAsPdfRounded className='mr-1' />
+							Download as PDF{' '}
+						</PDFDownloadLink>
 					</Card>
 					<Card className='p-2 m-2 flex flex-col relative'>
 						<div className='mr-5 flex flex-row'>
@@ -336,7 +366,7 @@ export default function PSTIdPage({
 
 							<h2>
 								<strong className='underline'> West Virginia Phonics:</strong>
-								{` ${pstInstance.header.west_virginia_phonics}`}
+								{pstInstance.header.west_virginia_phonics ? <CheckRounded color='primary' /> : <CloseRounded color='error'/>}
 							</h2>
 							<h2>
 								<strong className='underline'>Progress Monitoring Goal:</strong>
