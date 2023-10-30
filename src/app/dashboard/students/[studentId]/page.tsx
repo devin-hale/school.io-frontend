@@ -24,6 +24,7 @@ import {
 	DeleteRounded,
 	GroupAdd,
 	ArrowLeftRounded,
+	AddRounded,
 } from '@mui/icons-material';
 import { useState } from 'react';
 import { getStudentInstance } from '@/redux/slices/students/studentsSlice';
@@ -32,6 +33,8 @@ import EditStudentModal from './_components/editStudentModal';
 import DeleteStudentModal from './_components/deleteConfirm';
 import ClassesGrid from '../../_components/classesGrid/classesGrid';
 import AddClassModal from './_components/classSearch';
+import PSTGrid from '../../_components/pstGrid/pstGrid';
+import { createPST } from '@/redux/slices/pst/modifyPSTSlice';
 
 export default function ClassInstancePage({
 	params,
@@ -62,6 +65,17 @@ export default function ClassInstancePage({
 
 	const [addClassOpen, setAddClassOpen] = useState<boolean>(false);
 	const [removeClassOpen, setRemoveClassOpen] = useState<boolean>(false);
+	const [removePSTOpen, setRemovePSTOpen] = useState(false);
+
+	const handleAddPST = (): void => {
+		dispatch(
+			createPST({
+				token: userState.token!,
+				body: { student: params.studentId },
+			})
+		);
+	};
+
 
 	useEffect(() => {
 		if (userState.token) {
@@ -239,6 +253,27 @@ export default function ClassInstancePage({
 									setRemoveClassOpen={setRemoveClassOpen}
 								/>
 							</div>
+							<div className='flex flex-row flexwrap justify-between m-1 p-1'>
+								<Typography>
+									<strong className='underline'>PST Documentation:</strong>
+								</Typography>
+								<Button
+									className='bg-green-400 text-white'
+									variant='contained'
+									onClick={handleAddPST}
+								>
+									<AddRounded /> Create PST
+								</Button>
+							</div>
+							<div className='m-2'>
+								<PSTGrid
+									type='student'
+									sourceId={params.studentId}
+									deleteModalOpen={removePSTOpen}
+									setDeleteModalOpen={setRemovePSTOpen}
+								/>
+							</div>
+
 						</Card>
 					</Paper>
 				</>

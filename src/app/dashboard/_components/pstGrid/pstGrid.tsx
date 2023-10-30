@@ -25,12 +25,13 @@ import {
 	getStudentPST,
 	getUserPST,
 } from '@/redux/slices/pst/pstSlice';
+import DeletePSTModal from './deletePST';
 
 interface IPSTGridProps {
 	type: 'user' | 'student' | 'class' | 'org';
 	sourceId: string;
-	deleteModalOpen: boolean;
-	setDeleteModalOpen: Dispatch<SetStateAction<boolean>>;
+	deleteModalOpen?: boolean;
+	setDeleteModalOpen?: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function PSTGrid(props: IPSTGridProps) {
@@ -47,9 +48,54 @@ export default function PSTGrid(props: IPSTGridProps) {
 
 	const user: UserState = useSelector((state: RootState) => state.user);
 	const pstState: IPSTState = useSelector((state: RootState) => state.pst);
+	const modifyPSTState = useSelector((state: RootState) => state.pstModify);
+
+	let userRows = pstState.userPSTs.content;
+	let classRows = pstState.classPSTs.content;
+	let orgRows = pstState.orgPSTs.content;
+	let studentRows = pstState.studentPSTs.content;
+
+	const [pstRows, setPSTRows] = useState(getPstRows());
+
+	function getPstRows() {
+		switch (props.type) {
+			case 'user':
+				return userRows ?? [];
+			case 'student':
+				return studentRows ?? [];
+			case 'class':
+				return classRows ?? [];
+			case 'org':
+				return orgRows ?? [];
+		}
+	}
 
 	useEffect(() => {
-		if (user.token) {
+		if (
+			!pstState.orgPSTs.loading &&
+			!pstState.classPSTs.loading &&
+			!pstState.userPSTs.loading &&
+			!pstState.studentPSTs.loading &&
+			!modifyPSTState.create.loading &&
+			!modifyPSTState.deletePST.loading
+		) {
+			setPSTRows(getPstRows());
+		}
+	}, [
+		pstState.orgPSTs.loading,
+		pstState.classPSTs.loading,
+		pstState.userPSTs.loading,
+		pstState.studentPSTs.loading,
+		modifyPSTState.create.loading,
+		modifyPSTState.deletePST.loading,
+	]);
+
+	useEffect(() => {
+		if (
+			user.token! &&
+			!modifyPSTState.create.loading &&
+			!modifyPSTState.deletePST.loading
+		) {
 			switch (props.type) {
 				case 'user':
 					dispatch(
@@ -82,7 +128,11 @@ export default function PSTGrid(props: IPSTGridProps) {
 					break;
 			}
 		}
-	}, [user.token, user.loading]);
+	}, [
+		user.token,
+		modifyPSTState.deletePST.loading,
+		modifyPSTState.create.loading,
+	]);
 
 	function handleActionMenuOpen(
 		e: React.MouseEvent<HTMLElement>,
@@ -94,7 +144,6 @@ export default function PSTGrid(props: IPSTGridProps) {
 
 	function handleActionMenuClose(): void {
 		setActionMenuAchor(null);
-		setActionMenuPSTId(null);
 	}
 
 	function handleActionMenuClick(
@@ -106,10 +155,7 @@ export default function PSTGrid(props: IPSTGridProps) {
 	}
 
 	function handlePSTInfoNavigate() {
-		switch (props.type) {
-			case 'user':
 				router.push(`/dashboard/pst/${actionMenuPSTId}`);
-		}
 	}
 
 	const pstGridCols: GridColDef[] = [
@@ -128,7 +174,7 @@ export default function PSTGrid(props: IPSTGridProps) {
 			flex: 0.3,
 			valueGetter: (params) => {
 				if (params.row.student === undefined) {
-					return 'None'
+					return 'None';
 				}
 				return `${params.row.student.first_name} ${params.row.student.last_name}`;
 			},
@@ -159,29 +205,14 @@ export default function PSTGrid(props: IPSTGridProps) {
 			],
 		},
 	];
-	let pstRows: any[] = [];
-
-	const getRows = () => {
-		switch (props.type) {
-			case 'user':
-				pstRows = pstState.userPSTs.content;
-				break;
-			case 'class':
-				pstRows = pstState.classPSTs.content;
-				break;
-			case 'org':
-				pstRows = pstState.orgPSTs.content;
-				break;
-			case 'student':
-				pstRows = pstState.studentPSTs.content;
-				break;
-		}
-	};
-
-	getRows();
 
 	return (
 		<div>
+			<DeletePSTModal
+				open={props.deleteModalOpen!}
+				setOpen={props.setDeleteModalOpen!}
+				pstId={actionMenuPSTId!}
+			/>
 			<Menu
 				anchorEl={actionMenuAnchor}
 				open={actionMenuOpen}
@@ -199,7 +230,9 @@ export default function PSTGrid(props: IPSTGridProps) {
 				</MenuItem>
 				<div>
 					<Divider />
-					<MenuItem onClick={() => {}}>Delete PST</MenuItem>
+					<MenuItem onClick={() => props.setDeleteModalOpen!(true)}>
+						Delete PST
+					</MenuItem>
 				</div>
 			</Menu>
 			<DataGrid
@@ -209,7 +242,7 @@ export default function PSTGrid(props: IPSTGridProps) {
 					},
 					maxWidth: '90vw',
 				}}
-				rows={pstState.userPSTs.content ?? []}
+				rows={pstRows}
 				getRowId={(row) => row._id}
 				columns={pstGridCols}
 				initialState={{

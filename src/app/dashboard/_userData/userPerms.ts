@@ -10,18 +10,17 @@ const features: userFeature[] = [
 		userTypes: ['Basic', 'Admin', 'Staff'],
 		icon: 'GroupsRounded',
 	},
-
-	{
+	/* {
 		name: 'Communication',
 		userTypes: ['Basic', 'Admin', 'Staff'],
 		icon: 'ChatRounded',
 	},
-
 	{
 		name: 'Incidents',
 		userTypes: ['Basic', 'Admin', 'Staff'],
 		icon: 'DirectionsRunRounded',
 	},
+	*/
 	{
 		name: 'PST',
 		userTypes: ['Basic', 'Admin', 'Staff'],

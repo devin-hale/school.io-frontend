@@ -92,6 +92,13 @@ export default function ClassInstancePage({
 		}
 	}, [classInstance.classInfo]);
 
+	useEffect(() => {
+		if (userState.token!) {
+			dispatch(
+				getClassInfo({ token: userState.token!, classId: params.classId })
+			);
+		}
+	},[userState.token]);
 
 	const handleBack = (): void => {
 		router.push(`/dashboard/classes`);
@@ -125,7 +132,7 @@ export default function ClassInstancePage({
 								<strong className='pr-1'>Teacher(s): </strong>
 								<div className='flex flex-row flex-wrap items-center justify-evenly m-1'>
 									{modifyState.addTeacher.loading ||
-										modifyState.removeTeacher.loading ? (
+									modifyState.removeTeacher.loading ? (
 										<CircularProgress color='secondary' />
 									) : (
 										classTeachers

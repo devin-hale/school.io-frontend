@@ -45,7 +45,11 @@ interface IBaseRequest {
 	token: string;
 }
 
-export interface ICreatePST extends IBaseRequest {}
+export interface ICreatePST extends IBaseRequest {
+	body: {
+		student?: string;
+	}
+}
 
 export const createPST = createAsyncThunk(
 	'pstSlice/createPST',
@@ -57,6 +61,7 @@ export const createPST = createAsyncThunk(
 				Authorization: `Bearer ${req.token}`,
 				'Content-Type': `application/json;charset=utf-8`,
 			},
+			body: JSON.stringify(req.body)
 		});
 
 		const data = await response.json();

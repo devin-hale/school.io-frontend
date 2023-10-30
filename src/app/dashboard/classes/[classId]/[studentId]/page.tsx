@@ -24,11 +24,15 @@ import {
 	DeleteRounded,
 	GroupAdd,
 	ArrowLeftRounded,
+	AddRounded,
 } from '@mui/icons-material';
 import { useState } from 'react';
 import { getStudentInstance } from '@/redux/slices/students/studentsSlice';
 import PageLoader from '@/app/dashboard/_components/pageLoader';
 import ClassesGrid from '@/app/dashboard/_components/classesGrid/classesGrid';
+import PSTGrid from '@/app/dashboard/_components/pstGrid/pstGrid';
+import { createPST } from '@/redux/slices/pst/modifyPSTSlice';
+import { userInfo } from 'os';
 
 export default function ClassInstancePage({
 	params,
@@ -50,6 +54,7 @@ export default function ClassInstancePage({
 
 	const [addClassOpen, setAddClassOpen] = useState<boolean>(false);
 	const [removeClassOpen, setRemoveClassOpen] = useState<boolean>(false);
+	const [removePSTOpen, setRemovePSTOpen] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (userState.token) {
@@ -98,6 +103,15 @@ export default function ClassInstancePage({
 
 	const handleBack = (): void => {
 		router.push(`/dashboard/students`);
+	};
+
+	const handleAddPST = (): void => {
+		dispatch(
+			createPST({
+				token: userState.token!,
+				body: { student: params.studentId },
+			})
+		);
 	};
 
 	return (
@@ -169,7 +183,7 @@ export default function ClassInstancePage({
 									transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 									anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 								>
-									<MenuItem onClick={() => { }}>
+									<MenuItem onClick={() => {}}>
 										<EditRounded className='mr-1' /> Option
 									</MenuItem>
 								</Menu>
@@ -187,6 +201,28 @@ export default function ClassInstancePage({
 									sourceId={studentState.studentInstance.student!._id}
 									removeClassOpen={removeClassOpen}
 									setRemoveClassOpen={setRemoveClassOpen}
+								/>
+							</div>
+						</Card>
+						<Card className='m-2 p-3'>
+							<div className='flex flex-row flexwrap justify-between m-1 p-1'>
+								<Typography>
+									<strong className='underline'>PST Documentation:</strong>
+								</Typography>
+								<Button
+									className='bg-green-400 text-white'
+									variant='contained'
+									onClick={handleAddPST}
+								>
+									<AddRounded /> Create PST
+								</Button>
+							</div>
+							<div className='m-2'>
+								<PSTGrid
+									type='student'
+									sourceId={params.studentId}
+									deleteModalOpen={removePSTOpen}
+									setDeleteModalOpen={setRemovePSTOpen}
 								/>
 							</div>
 						</Card>
