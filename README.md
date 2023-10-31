@@ -1,17 +1,17 @@
-# school.io (NEXTJS FRONT END REFACTOR)
+# school.io
 
 ## Description
 
-### Version 0.5.0
+### Version 1.0.0
 
-This is the beginning stages of a project intended to act as a simple website
-for teachers to create, update, and store important documentation. The idea came
-from listening to my wife, who is a 3rd grade teacher. According to her, the
-biggest annoyance is a teacher is keeping track of documentation. This can be as
-simple as writing down "I spoke with little Billy's parents at X time on Y date.
-We spoke about this...". This documentation comes in handy when little Billy's
-mom calls the principal to complain. Keeping that documentation is a way for the
-classroom teacher to CYA, because without it, nobody else will.
+This is a project intended to act as a simple website for teachers to create, update,
+and store important documentation. The idea came from listening to my wife, who is
+a 3rd grade teacher. According to her, the biggest annoyance is a teacher is keeping 
+track of documentation. This can be as simple as writing down
+"I spoke with little Billy's parents at X time on Y date. We spoke about this...".
+This documentation comes in handy when little Billy's mom calls the principal to
+complain. Keeping that documentation is a way for the classroom teacher to CYA,
+because without it, nobody else will.
 
 It can also be as extensive as tracking specific student information over time,
 as required by a state's board of education. The best case scenario is that this
@@ -28,53 +28,18 @@ Essentially, I want this application to cut that down to an absolute minimum.
 ## Tech
 
 The current iteration of this model is mostly to build a usable proof of concept
-using a standard MVC pattern. Tech used:
+using an MVC pattern where the backend is a separate app. Tech used:
 
+**Back End**
 - Typescript
-- nodeJS/Express
+- nodeJS/Express backend
 - MongoDB with Mongoose
+
+**Front End**
 - React/NextJS
+- Redux ToolKit
+- TailwindCSS
+- MaterialUI
 
-## Status
 
-### **CURRENTLY:**
 
-- Class
-
-  - [ ] View Students
-    - [x] Student profile
-    - [x] View classes
-    - [ ] View Incidents
-    - [ ] View PST
-
-- Comms
-
-  - [ ] GetSlice
-  - [ ] ModifySlice
-  - [ ] Grid
-  - [ ] Make
-  - [ ] View
-    - [ ] Edit
-    - [ ] Delete
-  - [ ] Print/Download
-
-- PST
-
-  - [x] GetSlice
-  - [x] ModifySlice
-  - [x] Grid
-  - [x] Make
-  - [x] View
-    - [x] Edit
-    - [ ] Delete
-  - [ ] Print/Download
-
-- Incidents
-  - [ ] GetSlice
-  - [ ] ModifySlice
-  - [ ] Grid
-  - [ ] Make
-  - [ ] View
-    - [ ] Edit
-    - [ ] Delete
-  - [ ] Print/Download
